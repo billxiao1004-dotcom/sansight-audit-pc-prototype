@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sansight 审核模块 PC 端原型 v0.4</title>
+<style>
+  :root{
+    --primary:#C6000B;
+    --primary-bg:#FFE8E6;
+    --link:#2563EB;
+    --text:rgba(5,12,50,.85);
+    --text-2:rgba(5,12,50,.6);
+    --text-3:rgba(5,12,50,.38);
+    --border:#E9EBEF;
+    --head:#F5F5F5;
+    --bg:#F5F6F8;
+    --orange:#FA8C16;
+    --green:#27AE60;
+    --red:#C6000B;
+    --shadow:0 2px 10px rgba(5,12,50,.06);
+    --radius:4px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--text);background:var(--bg);font-size:14px;letter-spacing:0;overflow:hidden;
+  }
+  button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+  input,select,textarea{font-family:inherit;font-size:13px;color:var(--text)}
+  svg{display:block}
+  .icon{width:18px;height:18px;flex:none}
+  .icon.sm{width:15px;height:15px}
+  .icon.lg{width:20px;height:20px}
+  .app{display:flex;flex-direction:column;height:100vh;min-width:1280px}
+
+  .topbar{
+    height:52px;flex:none;display:flex;align-items:center;justify-content:space-between;
+    padding:0 16px;background:#fff;border-bottom:1px solid var(--border);z-index:20;
+  }
+  .brand{display:flex;align-items:center;gap:10px;min-width:216px}
+  .brand .logo{width:28px;height:28px;border-radius:6px;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff}
+  .brand .name{font-size:16px;font-weight:600}
+  .brand .ver{font-size:12px;color:var(--text-2);background:var(--head);border:1px solid var(--border);border-radius:10px;padding:1px 8px}
+  .top-actions{display:flex;align-items:center;gap:10px}
+  .tenant-name{font-size:13px;color:var(--text-2);padding-right:12px;border-right:1px solid var(--border)}
+  .icon-btn{
+    width:34px;height:34px;border-radius:var(--radius);display:inline-flex;align-items:center;justify-content:center;
+    color:var(--text-2);position:relative;
+  }
+  .icon-btn:hover{background:var(--head);color:var(--text)}
+  .avatar{
+    width:32px;height:32px;border-radius:50%;background:var(--primary-bg);color:var(--primary);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;
+  }
+
+  .workspace{flex:1;display:flex;min-height:0;position:relative}
+  .sidebar{
+    width:216px;flex:none;background:#fff;border-right:1px solid var(--border);
+    overflow-y:auto;padding:10px 8px;
+  }
+  .nav-item{
+    display:flex;align-items:center;gap:9px;height:38px;padding:0 10px;border-radius:var(--radius);
+    color:var(--text);font-size:13.5px;cursor:pointer;white-space:nowrap;
+  }
+  .nav-item:hover{background:var(--head)}
+  .nav-item .label{flex:1;overflow:hidden;text-overflow:ellipsis}
+  .nav-item.active{background:var(--primary-bg);color:var(--primary);font-weight:600}
+  .nav-divider{height:1px;background:var(--border);margin:8px 6px}
+
+  .middle{
+    width:272px;flex:none;background:#fff;border-right:1px solid var(--border);
+    display:flex;flex-direction:column;min-height:0;
+  }
+  .middle-head{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px}
+  .middle-title{font-size:16px;font-weight:600}
+  .board-meta{
+    display:flex;align-items:center;gap:8px;padding:0 16px 12px;color:var(--text-2);font-size:12px;
+  }
+  .board-meta .dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex:none}
+  .category-list{flex:1;padding:0 10px;overflow-y:auto}
+  .category-item{
+    display:flex;align-items:center;gap:10px;height:46px;padding:0 12px;border-radius:var(--radius);
+    cursor:pointer;color:var(--text);font-size:14px;margin-bottom:4px;border:1px solid transparent;
+  }
+  .category-item:hover{background:var(--head)}
+  .category-item.active{background:var(--primary-bg);color:var(--primary);font-weight:600;border-color:rgba(198,0,11,.15)}
+  .category-item .count{margin-left:auto}
+  .badge{min-width:20px;height:20px;border-radius:10px;background:var(--primary);color:#fff;font-size:12px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px;font-weight:500}
+  .badge.zero{background:var(--head);color:var(--text-3)}
+
+  .main{flex:1;min-width:0;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+  .view{display:flex;flex-direction:column;gap:14px}
+  .view[hidden]{display:none}
+  .page-head{display:flex;align-items:center;gap:14px}
+  .page-title{font-size:18px;font-weight:600}
+  .page-sub{color:var(--text-2);font-size:13px}
+  .page-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .mode-switch{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2)}
+  .switch{width:36px;height:20px;border-radius:10px;background:#C7CBD4;position:relative;transition:background .15s;cursor:pointer}
+  .switch::after{content:"";position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .switch.on{background:var(--primary)}
+  .switch.on::after{left:18px}
+
+  .filter-row{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);
+    border-radius:var(--radius);padding:10px 12px;
+  }
+  .filter-item{display:flex;align-items:center;gap:8px}
+  .filter-item .f-label{font-size:13px;color:var(--text-2);flex:none}
+  .filter-search{position:relative;width:200px}
+  .filter-search .icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3)}
+  .filter-search input{width:100%;height:34px;border:1px solid var(--border);border-radius:var(--radius);padding:0 10px 0 32px;background:#fff}
+  .dropdown{position:relative}
+  .dropdown-trigger{
+    display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 10px;border:1px solid var(--border);
+    border-radius:var(--radius);background:#fff;font-size:13px;min-width:118px;justify-content:space-between;color:var(--text);
+  }
+  .dropdown-trigger:hover{border-color:#C7CBD4}
+  .dropdown-trigger .caret{color:var(--text-3);transition:transform .15s}
+  .dropdown.open .caret{transform:rotate(180deg)}
+  .dropdown-menu{
+    position:absolute;top:40px;left:0;min-width:220px;background:#fff;border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);padding:6px;z-index:60;display:none;
+  }
+  .dropdown.open .dropdown-menu{display:block}
+  .detail-panel .dropdown-menu{top:auto;bottom:calc(100% + 6px)}
+  .menu-opt{
+    display:flex;align-items:center;gap:8px;height:34px;padding:0 8px;border-radius:var(--radius);cursor:pointer;font-size:13px;
+  }
+  .menu-opt:hover{background:var(--head)}
+  .menu-opt .check{width:16px;height:16px;border:1px solid #C7CBD4;border-radius:3px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:#fff}
+  .menu-opt.on .check{background:var(--primary);border-color:var(--primary)}
+  .menu-opt.on{color:var(--primary)}
+  .menu-sep{height:1px;background:var(--border);margin:5px 4px}
+  .menu-clear{display:flex;align-items:center;justify-content:center;gap:6px;height:30px;margin:0 4px 6px;border:1px dashed var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text-2);cursor:pointer}
+  .menu-clear:hover{color:var(--primary);border-color:var(--primary);background:var(--primary-bg)}
+  .date-range{padding:8px;display:flex;flex-direction:column;gap:8px;min-width:280px}
+  .date-range .dr-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-2)}
+  .date-range .dr-row .dr-label{flex:none;width:56px}
+  .date-range input[type="date"]{height:32px;border:1px solid var(--border);border-radius:var(--radius);padding:0 8px;flex:1;color:var(--text);background:#fff;min-width:0}
+  .btn-reset{height:34px;padding:0 12px;border:1px solid var(--border);border-radius:var(--radius);background:#fff;font-size:13px;color:var(--text)}
+  .btn-reset:hover{color:var(--primary);border-color:var(--primary)}
+  .filter-count{font-size:12px;color:var(--text-3)}
+
+  .table-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .table-head,.group-row,.event-row{display:grid;align-items:center}
+  .table-head{
+    grid-template-columns:200px 130px minmax(220px,1fr) 150px 110px 170px;
+    background:var(--head);font-size:12.5px;color:var(--text-2);height:42px;padding:0 12px;border-bottom:1px solid var(--border);
+  }
+  .table-body{max-height:calc(100vh - 330px);overflow-y:auto}
+  .event-row{
+    grid-template-columns:200px 130px minmax(220px,1fr) 150px 110px 170px;
+    height:52px;padding:0 12px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;
+  }
+  .event-row:hover{background:#FAFBFC}
+  .event-row .dev-cell{display:flex;align-items:center;gap:9px;min-width:0}
+  .dev-thumb{
+    width:34px;height:34px;border-radius:var(--radius);background:var(--head);flex:none;
+    display:flex;align-items:center;justify-content:center;color:var(--text-2);
+  }
+  .dev-cell .d-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dev-cell .d-type{font-size:12px;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row-actions{display:flex;align-items:center;gap:8px}
+  .row-actions .link-btn{color:var(--link);font-size:13px;padding:4px 2px;white-space:nowrap}
+  .row-actions .link-btn:hover{text-decoration:underline}
+  .tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:10px;font-size:12px;white-space:nowrap}
+  .tag.pending{background:var(--primary-bg);color:var(--primary)}
+  .tag.done{background:rgba(39,174,96,.12);color:var(--green)}
+  .tag.ignored{background:var(--head);color:var(--text-2)}
+  .status-online{color:var(--green);font-size:12px;white-space:nowrap}
+  .group-row{
+    grid-template-columns:40px 1fr 140px 120px;
+    height:50px;padding:0 12px;border-bottom:1px solid var(--border);cursor:pointer;font-size:13px;
+  }
+  .group-row:hover{background:#FAFBFC}
+  .group-row .g-name{font-weight:600;display:flex;align-items:center;gap:8px;min-width:0}
+  .group-row .g-arrow{color:var(--text-3);transition:transform .15s}
+  .group-row.open .g-arrow{transform:rotate(90deg)}
+  .event-subrows .event-row{padding-left:36px}
+  .more-less{height:34px;display:flex;align-items:center;gap:6px;color:var(--link);font-size:12.5px;cursor:pointer;padding:0 12px 0 48px}
+
+  .mask{
+    position:absolute;inset:0;background:rgba(5,12,50,.28);z-index:30;display:none;
+  }
+  .mask.on{display:block}
+  .detail-panel{
+    position:absolute;top:0;right:0;bottom:0;z-index:40;width:620px;flex:none;
+    background:#fff;border-left:1px solid var(--border);box-shadow:-10px 0 28px rgba(5,12,50,.10);
+    display:flex;flex-direction:column;min-height:0;overflow:hidden;
+  }
+  .detail-panel[hidden]{display:none}
+  .panel-view{display:flex;flex-direction:column;flex:1;min-height:0}
+  .panel-view[hidden]{display:none}
+  .detail-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);flex:none}
+  .btn-back{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:var(--radius);font-size:13px;color:var(--text-2)}
+  .btn-back:hover{background:var(--head);color:var(--text)}
+  .detail-title{font-size:17px;font-weight:600}
+  .detail-sub{color:var(--text-2);font-size:12.5px}
+  .detail-asset{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);flex:none;background:#FAFBFC}
+  .asset-thumb{width:52px;height:52px;border-radius:var(--radius);background:var(--head);display:flex;align-items:center;justify-content:center;color:var(--text-2)}
+  .asset-name{font-size:16px;font-weight:600}
+  .asset-type{font-size:13px;color:var(--text-2)}
+  .detail-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:16px}
+  .detail-section{display:flex;flex-direction:column;gap:10px}
+  .sec-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600}
+  .sec-title .bar{width:3px;height:14px;border-radius:2px;background:var(--primary)}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .kv2{
+    background:#FAFBFC;border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;
+    display:flex;flex-direction:column;gap:4px;min-width:0;
+  }
+  .kv2 .k{font-size:12px;color:var(--text-3)}
+  .kv2 .v{font-size:13px;line-height:1.5;word-break:break-word}
+  .kv2.wide{grid-column:1 / -1}
+  .diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .action-bar{display:flex;align-items:center;gap:10px;padding:12px 18px;border-top:1px solid var(--border);flex:none;background:#fff}
+  .btn-primary{
+    height:36px;padding:0 16px;border-radius:var(--radius);background:var(--primary);color:#fff;
+    font-size:13px;display:inline-flex;align-items:center;gap:7px;
+  }
+  .btn-primary:hover{background:#AD0009}
+  .btn-primary:disabled{background:#E8A8AC;cursor:not-allowed}
+  .btn-default{
+    height:36px;padding:0 14px;border-radius:var(--radius);border:1px solid var(--border);background:#fff;
+    font-size:13px;display:inline-flex;align-items:center;gap:7px;
+  }
+  .btn-default:hover{border-color:var(--primary);color:var(--primary)}
+  .btn-default:disabled{color:var(--text-3);border-color:var(--border);cursor:not-allowed}
+  .btn-default:disabled:hover{color:var(--text-3);border-color:var(--border)}
+  .spacer{flex:1}
+  .op-list{display:flex;flex-direction:column}
+  .op-item{position:relative;padding:0 0 16px 22px;font-size:13px}
+  .op-item::before{content:"";position:absolute;left:4px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--primary);border:2px solid #fff;box-shadow:0 0 0 1px var(--border)}
+  .op-item:not(:last-child)::after{content:"";position:absolute;left:8px;top:16px;bottom:-2px;width:1px;background:var(--border)}
+  .op-item .op-title{font-weight:600}
+  .op-item .op-meta{color:var(--text-2);font-size:12px;margin-top:2px}
+  .op-item .op-detail{color:var(--text-2);font-size:12.5px;margin-top:4px;background:#FAFBFC;border-radius:var(--radius);padding:8px 10px}
+
+  .task-list{display:flex;flex-direction:column;gap:10px}
+  .task-card{
+    border:1px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;background:#fff;
+    display:flex;flex-direction:column;gap:8px;
+  }
+  .task-card:hover{border-color:var(--link);box-shadow:var(--shadow)}
+  .task-card .t-row{display:flex;align-items:center;gap:8px;font-size:13px}
+  .task-card .t-title{font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .task-card .t-meta{color:var(--text-2);font-size:12px}
+
+  .settings-layout{display:flex;gap:14px;align-items:flex-start}
+  .settings-left{width:300px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;flex:none}
+  .settings-right{flex:1;background:#fff;border:1px solid var(--border);border-radius:var(--radius);min-height:420px;padding:18px}
+  .set-group{border-bottom:1px solid var(--border)}
+  .set-group:last-child{border-bottom:none}
+  .set-head{
+    height:46px;display:flex;align-items:center;gap:10px;padding:0 14px;cursor:pointer;font-size:13.5px;font-weight:600;
+  }
+  .set-head .set-count{font-size:12px;color:var(--text-3);font-weight:400}
+  .set-head .arrow{margin-left:auto;color:var(--text-3);transition:transform .15s}
+  .set-group.open .set-head .arrow{transform:rotate(90deg)}
+  .set-body{display:none;padding:0 14px 12px}
+  .set-group.open .set-body{display:block}
+  .set-row{display:flex;align-items:center;gap:10px;height:38px;font-size:13px}
+  .set-row .row-name{flex:1}
+  .mini-switch{width:34px;height:18px;border-radius:9px;background:#C7CBD4;position:relative;cursor:pointer;transition:background .15s}
+  .mini-switch::after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .15s}
+  .mini-switch.on{background:var(--primary)}
+  .mini-switch.on::after{left:18px}
+
+  .modal-mask{position:fixed;inset:0;background:rgba(5,12,50,.35);z-index:80;display:none;align-items:center;justify-content:center}
+  .modal-mask.on{display:flex}
+  .modal{
+    width:480px;max-width:calc(100vw - 40px);background:#fff;border-radius:var(--radius);
+    box-shadow:0 12px 40px rgba(5,12,50,.18);display:flex;flex-direction:column;max-height:82vh;overflow:hidden;
+  }
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
+  .modal-title{font-size:15px;font-weight:600}
+  .modal-body{padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+  .modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:12px 16px;border-top:1px solid var(--border)}
+  .modal textarea{width:100%;height:80px;border:1px solid var(--border);border-radius:var(--radius);padding:10px;resize:vertical}
+  .modal textarea:focus{border-color:var(--primary)}
+  .phrase-row{display:flex;flex-wrap:wrap;gap:8px}
+  .phrase-tag{
+    height:28px;padding:0 10px;border:1px solid var(--border);border-radius:14px;font-size:12.5px;
+    color:var(--text-2);cursor:pointer;background:#fff;
+  }
+  .phrase-tag:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-bg)}
+  .snapshot-row{display:flex;align-items:center;gap:10px;padding:10px;background:#FAFBFC;border:1px solid var(--border);border-radius:var(--radius);font-size:13px}
+  .snapshot-row .s-name{flex:1;min-width:0}
+  .snapshot-row .s-result{flex:none}
+  .thumb-row{display:flex;gap:6px;margin-top:6px}
+  .thumb{width:44px;height:44px;border-radius:var(--radius);background:var(--head);display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:10px}
+  .curve-params{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .curve-line{background:#FAFBFC;border:1px solid var(--border);border-radius:var(--radius);padding:10px;font-size:13px;line-height:1.7}
+  .curve-line .ck{color:var(--text-3);font-size:12px}
+
+  .toast{
+    position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(10px);z-index:100;
+    background:#1F2533;color:#fff;font-size:13px;border-radius:var(--radius);padding:10px 16px;
+    display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:all .2s;
+  }
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" id="brandLogo">审</div>
+      <div class="name">Sansight 审核模块</div>
+      <div class="ver">PC 原型 v0.4</div>
+    </div>
+    <div class="top-actions">
+      <div class="tenant-name">企业/代理商租户 · 演示数据</div>
+      <button class="icon-btn" id="btnSettingsTop" title="审核设置"><span class="icon" data-icon="settings"></span></button>
+      <div class="avatar">张</div>
+    </div>
+  </header>
+
+  <div class="workspace" id="workspace">
+    <aside class="sidebar" id="sidebar"></aside>
+
+    <section class="middle">
+      <div class="middle-head">
+        <div class="middle-title">审核看板</div>
+      </div>
+      <div class="board-meta">
+        <span class="dot"></span>
+        <span id="boardUpdated">数据更新：刚刚</span>
+        <button class="icon-btn" id="btnRefresh" title="刷新"><span class="icon sm" data-icon="refresh"></span></button>
+      </div>
+      <div class="category-list" id="categoryList"></div>
+    </section>
+
+    <main class="main">
+      <section class="view" id="viewList">
+        <div class="page-head">
+          <div>
+            <div class="page-title" id="listTitle">设备异常</div>
+            <div class="page-sub" id="listSub">事件明细模式 · 待处理优先</div>
+          </div>
+          <div class="page-actions">
+            <div class="mode-switch">
+              事件明细
+              <div class="switch on" id="modeSwitch" title="切换展示模式"></div>
+              设备分组
+            </div>
+            <button class="btn-default" id="btnSettings" style="height:32px;padding:0 12px"><span class="icon sm" data-icon="settings"></span>设置</button>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <div class="filter-search">
+            <span class="icon sm" data-icon="search"></span>
+            <input id="searchInput" placeholder="搜索设备编号 / 事件类型">
+          </div>
+          <div class="dropdown" id="ddStatus"></div>
+          <div class="dropdown" id="ddType"></div>
+          <div class="dropdown" id="ddDevice"></div>
+          <div class="dropdown" id="ddDate"></div>
+          <button class="btn-reset" id="btnReset">重置筛选</button>
+          <span class="filter-count" id="filterCount"></span>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-head" id="tableHead"></div>
+          <div class="table-body" id="tableBody"></div>
+        </div>
+      </section>
+
+      <section class="view" id="viewSettings" hidden>
+        <div class="page-head">
+          <div>
+            <div class="page-title">审核设置</div>
+            <div class="page-sub">事件类型开关 · 授权人员配置（仅租户管理员）</div>
+          </div>
+          <div class="page-actions">
+            <button class="btn-default" id="btnBackList" style="height:32px;padding:0 12px"><span class="icon sm" data-icon="back"></span>返回审核列表</button>
+          </div>
+        </div>
+        <div class="settings-layout">
+          <div class="settings-left" id="settingsAccordion"></div>
+          <div class="settings-right" id="settingsDetail"></div>
+        </div>
+      </section>
+    </main>
+
+    <div class="mask" id="mask"></div>
+
+    <section class="detail-panel" id="detailPanel" hidden>
+      <div class="panel-view" id="panelDetail" hidden>
+        <div class="detail-head">
+          <button class="btn-back" id="btnCloseDetail"><span class="icon sm" data-icon="back"></span>返回列表</button>
+          <div>
+            <div class="detail-title" id="detailEventType">审核事件详情</div>
+            <div class="detail-sub" id="detailEventSub"></div>
+          </div>
+        </div>
+        <div class="detail-asset" id="detailAsset"></div>
+        <div class="action-bar" id="actionBar"></div>
+        <div class="detail-body" id="detailBody"></div>
+      </div>
+
+      <div class="panel-view" id="panelTasks" hidden>
+        <div class="detail-head">
+          <button class="btn-back" id="btnBackDetail"><span class="icon sm" data-icon="back"></span>返回事件详情</button>
+          <div>
+            <div class="detail-title">关联任务</div>
+            <div class="detail-sub">仅查看 APP 端已关联任务 · 只读，无创建入口</div>
+          </div>
+        </div>
+        <div class="detail-body">
+          <div class="filter-search" style="width:100%;margin-bottom:4px">
+            <span class="icon sm" data-icon="search"></span>
+            <input id="taskSearch" placeholder="筛选任务">
+          </div>
+          <div class="task-list" id="taskList"></div>
+        </div>
+      </div>
+
+      <div class="panel-view" id="panelTaskDetail" hidden>
+        <div class="detail-head">
+          <button class="btn-back" id="btnBackTasks"><span class="icon sm" data-icon="back"></span>返回关联任务</button>
+          <div>
+            <div class="detail-title" id="tdTitle">任务详情</div>
+            <div class="detail-sub">只读查看 · 不提供任务处理操作</div>
+          </div>
+        </div>
+        <div class="detail-body" id="tdBody"></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="modal-mask" id="modalHandle">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">确认处理</div><button class="icon-btn" id="closeHandle"><span class="icon" data-icon="x"></span></button></div>
+    <div class="modal-body">
+      <textarea id="handleText" placeholder="处理结果（选填）"></textarea>
+      <div class="phrase-row" id="handlePhrases"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-default" id="cancelHandle">取消</button>
+      <button class="btn-primary" id="handleSubmit">确认提交</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="modalIgnore">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">忽略</div><button class="icon-btn" id="closeIgnore"><span class="icon" data-icon="x"></span></button></div>
+    <div class="modal-body">
+      <textarea id="ignoreText" placeholder="忽略原因（选填）"></textarea>
+      <div class="phrase-row" id="ignorePhrases"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-default" id="cancelIgnore">取消</button>
+      <button class="btn-primary" id="ignoreSubmit">确认提交</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="modalJump">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title" id="jumpTitle">查看动态曲线</div><button class="icon-btn" id="closeJump"><span class="icon" data-icon="x"></span></button></div>
+    <div class="modal-body">
+      <div class="page-sub" style="margin-bottom:4px">原型模拟跳转：设备管理-设备详情页对应页签</div>
+      <div class="curve-params" id="jumpParams"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-default" id="jumpCancel">取消</button>
+      <button class="btn-primary" id="jumpGo">模拟跳转</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="modalInspect">
+  <div class="modal" style="width:560px">
+    <div class="modal-head"><div class="modal-title">检查结果快照</div><button class="icon-btn" id="closeInspect"><span class="icon" data-icon="x"></span></button></div>
+    <div class="modal-body">
+      <div class="detail-grid">
+        <div class="kv2"><span class="k">检查类型 / 名称</span><span class="v">设备周检</span></div>
+        <div class="kv2"><span class="k">提交人</span><span class="v">张三</span></div>
+        <div class="kv2"><span class="k">提交时间</span><span class="v">2026-08-03 09:15:00</span></div>
+        <div class="kv2"><span class="k">需处理项数量</span><span class="v">2 项</span></div>
+      </div>
+      <div id="inspectItems"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-default" id="inspectClose">关闭</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-mask" id="modalMaint">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">保养处理</div><button class="icon-btn" id="closeMaint"><span class="icon" data-icon="x"></span></button></div>
+    <div class="modal-body">
+      <div class="page-sub" style="margin-bottom:4px">原型模拟跳转：PC 端已有设备保养详情页</div>
+      <div class="detail-grid">
+        <div class="kv2"><span class="k">超期 / 剩余</span><span class="v">超期 120 小时</span></div>
+        <div class="kv2"><span class="k">上次保养时间</span><span class="v">2026-05-02 10:00:00</span></div>
+        <div class="kv2 wide"><span class="k">上次保养里程 / 小时</span><span class="v">12,400 km</span></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-default" id="maintCancel">取消</button>
+      <button class="btn-default" id="maintSelf">自行保养</button>
+      <button class="btn-primary" id="maintBook">预约保养</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="icon sm" data-icon="check"></span><span id="toastText"></span></div>
+
+<script>
+/* ============ Icons ============ */
+const ICONS = {
+  check:'<path d="M4 12.5l5 5L20 6.5"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 21 21"/>',
+  refresh:'<path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4h-4"/>',
+  more:'<circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  chevronRight:'<path d="M9 5l7 7-7 7"/>',
+  truck:'<path d="M3 6h11v10H3zM14 9h4l3 3v4h-7z"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17" cy="17.5" r="1.8"/>',
+  alert:'<path d="M12 4 2.5 20h19z"/><path d="M12 10v4M12 17h.01"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  task:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+  doc:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.5 2 1.5a7 7 0 0 0 0 2.4l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1.2z"/>',
+  curve:'<path d="M3 17c3-8 6-8 9-4s6 4 9-4"/><path d="M3 21h18"/>',
+  oil:'<path d="M4 20h16a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1z"/><path d="M8 15v-4h8v4M12 11V7h3"/>',
+  location:'<path d="M12 21s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+  wrench:'<path d="M14.7 6.3a4.5 4.5 0 0 0-6 5.6L3 17.6V21h3.4l5.7-5.7a4.5 4.5 0 0 0 5.6-6L14 12l-2-2z"/>',
+  clipboard:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 10h6M9 14h6M9 18h3"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  image:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>'
+};
+function icon(name){
+  const p = ICONS[name] || ICONS.info;
+  return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+}
+
+/* ============ Data ============ */
+const CATEGORIES = [
+  {key:'equip', name:'设备异常', icon:'alert'},
+  {key:'maintain', name:'维保事项', icon:'wrench'},
+  {key:'location', name:'位置预警', icon:'location'},
+  {key:'fuel', name:'燃油异常', icon:'oil'},
+  {key:'inspect', name:'检查异常', icon:'clipboard'}
+];
+
+const EVENT_TYPES = {
+  equip:['冷却水温高','故障码','SOC过低','危险力矩','蓄电池电压低','超速','发动机转速','主卷超载','设备离线预警','长时间停机','危险负载','绝缘告警','长时间驻车','电机温度','高液压油温'],
+  maintain:['设备保养通知'],
+  location:['电子围栏预警'],
+  fuel:['油位低','偷油','漏油'],
+  inspect:['检查需处理']
+};
+
+const EVENT_SUMMARY = {
+  '冷却水温高':'冷却液或发动机水温高于 95 ℃',
+  '故障码':'设备上报故障码，请查看故障描述',
+  'SOC过低':'电量低于 20 %',
+  '危险力矩':'力矩百分比高于 85 %',
+  '蓄电池电压低':'蓄电池电压低于 24 V',
+  '超速':'设备车速高于 80 km/h',
+  '发动机转速':'发动机转速高于 2200 r/min',
+  '主卷超载':'主卷拉力高于 30 t',
+  '设备离线预警':'离线超过 24 h',
+  '长时间停机':'连续未开机超过 72 h',
+  '危险负载':'设备负载相关异常，请查看事件源详情',
+  '绝缘告警':'设备绝缘相关异常，请查看事件源详情',
+  '长时间驻车':'设备连续驻车，请查看事件源详情',
+  '电机温度':'电机温度高于 95 ℃',
+  '高液压油温':'液压油温高于 85 ℃',
+  '设备保养通知':'超时保养提醒：已超过保养日期，超期 120 h，请尽快安排保养',
+  '电子围栏预警':'设备驶出电子围栏：围栏「港区堆场」· 出圈',
+  '油位低':'油位低于 15 %',
+  '偷油':'2026-08-03 08:30 至 09:30 油位陡降比例高达 12 %，请注意排查偷油行为',
+  '漏油':'2026-08-03 08:30 至 09:30 设备油量消耗异常，请注意排查是否存在漏油情况',
+  '检查需处理':'检查结果中存在 2 项需处理项'
+};
+
+/* §4.5 事件差异信息：矩阵为“无”的事件类型不展示差异区 */
+const EVENT_DIFF = {
+  '故障码':[['故障编码','SPN 100 FMI 4'],['首次发生时间','2026-08-03 08:12:33'],['解决方案','检查冷却液位及传感器线路']],
+  '设备离线预警':[['上次在线时间','2026-08-02 09:30:00'],['离线时长','24 小时 30 分'],['最后位置','印尼雅万项目 · 停车场']],
+  '长时间停机':[['上次开机时间','2026-07-31 17:00:00'],['停机时长','72 小时 30 分']],
+  '设备保养通知':[['超期 / 剩余','超期 120 小时'],['上次保养时间','2026-05-02 10:00:00'],['上次保养里程 / 小时','12,400 km']],
+  '电子围栏预警':[['触发位置','港区堆场 · 东门']],
+  '检查需处理':[['检查类型 / 名称','设备周检'],['提交人','张三'],['提交时间','2026-08-03 09:15:00'],['需处理项数量','2 项']]
+};
+
+/* §4.5：配置查看动态曲线的事件类型 */
+const CURVE_TYPES = ['冷却水温高','SOC过低','蓄电池电压低','超速','发动机转速','危险负载','绝缘告警','电机温度'];
+
+const DEVICES = [
+  {id:'D001', name:'沪D·77K30', type:'半挂牵引车', status:'在线', project:'印尼雅万项目'},
+  {id:'D002', name:'15SR00201138', type:'旋挖钻机', status:'离线', project:'—'},
+  {id:'D003', name:'AC0250CF0056', type:'汽车起重机', status:'离线', project:'中欧班列场站'},
+  {id:'D004', name:'BC5230CA4196', type:'泵车', status:'在线', project:'印尼雅万项目'},
+  {id:'D005', name:'SY215-8888', type:'挖掘机', status:'在线', project:'港区堆场'},
+  {id:'D006', name:'X3000-6621', type:'自卸车', status:'在线', project:'印尼雅万项目'}
+];
+
+const STATUS = ['待处理','已处理','已忽略'];
+const PEOPLE = ['张三','李四','王五'];
+const TASK_SAMPLE = [
+  {title:'核查冷却水温高并补充冷却液', priority:'高', status:'待处理', type:'现场巡检', receive:'王五', create:'张三', time:'2026-08-03 14:00', desc:'APP 端已创建关联任务，PC 端只读查看。'},
+  {title:'检查油位异常并排查偷油', priority:'中', status:'处理中', type:'排查任务', receive:'李四', create:'张三', time:'2026-08-03 16:30', desc:'APP 端已创建关联任务，PC 端只读查看。'}
+];
+
+/* ============ Build events ============ */
+let EVENTS = [];
+let seq = 1;
+function buildEvents(){
+  const result = [];
+  const timeBase = new Date('2026-08-03T09:30:00');
+  const perCat = {equip:12, maintain:1, location:2, fuel:3, inspect:1};
+  CATEGORIES.forEach(cat=>{
+    const list = EVENT_TYPES[cat.key];
+    for(let i=0;i<perCat[cat.key];i++){
+      const type = list[i % list.length];
+      const dev = DEVICES[(seq) % DEVICES.length];
+      const time = new Date(timeBase.getTime() - seq*3600*1000);
+      const status = i % 5 === 4 ? '已处理' : (i % 7 === 3 ? '已忽略' : '待处理');
+      const e = {
+        id:'E' + String(seq).padStart(4,'0'),
+        cat:cat.key,
+        type,
+        deviceId:dev.id,
+        deviceName:dev.name,
+        deviceType:dev.type,
+        time:fmt(time),
+        status,
+        summary:EVENT_SUMMARY[type],
+        records:[{text:'事件进入审核池', person:'', time:fmt(time)}]
+      };
+      if((cat.key==='equip' && (type==='冷却水温高'||type==='超速')) || cat.key==='maintain'){
+        e.records.push({text:'创建关联任务', person:'张三', time:fmt(new Date(time.getTime()+2*3600*1000)), taskType:'现场巡检'});
+      }
+      result.push(e);
+      seq++;
+    }
+  });
+  return result;
+}
+function fmt(d){
+  const p = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+EVENTS = buildEvents();
+CATEGORIES.forEach(c=>{ c.count = EVENTS.filter(e=>e.cat===c.key && e.status==='待处理').length; });
+
+/* ============ State ============ */
+let currentCat = 'equip';
+let grouped = true;
+let activeEvent = null;
+let filters = {status:['待处理'], types:[], devices:[], start:'', end:''};
+
+/* ============ Sidebar / Categories ============ */
+function renderSidebar(){
+  const items = [
+    {icon:'alert', label:'审核', active:true},
+    {icon:'truck', label:'设备管理'},
+    {icon:'curve', label:'数据大屏'},
+    {icon:'doc', label:'项目管理'},
+    {icon:'settings', label:'监控中心'}
+  ];
+  document.getElementById('sidebar').innerHTML = items.map(n=>`
+    <div class="nav-item${n.active?' active':''}" data-nav>
+      ${icon(n.icon)}
+      <span class="label">${n.label}</span>
+    </div>`).join('') + '<div class="nav-divider"></div>' + ['设备保养','维修管理','费用核算','企业服务'].map(n=>`
+    <div class="nav-item" data-nav>${icon('chevronRight')}<span class="label">${n}</span></div>`).join('');
+  document.querySelectorAll('[data-nav]').forEach(item=>{
+    item.addEventListener('click',()=>{
+      if(!item.classList.contains('active')) toast('原型演示：切换到「'+item.querySelector('.label').textContent+'」');
+    });
+  });
+}
+
+function renderCategories(){
+  const el = document.getElementById('categoryList');
+  el.innerHTML = CATEGORIES.map(c=>`
+    <div class="category-item${c.key===currentCat?' active':''}" data-cat="${c.key}">
+      ${icon(c.icon)}
+      <span>${c.name}</span>
+      <span class="badge${c.count===0?' zero':''}">${c.count}</span>
+    </div>`).join('');
+  el.querySelectorAll('.category-item').forEach(item=>{
+    item.addEventListener('click',()=>{
+      currentCat = item.dataset.cat;
+      renderCategories();
+      updateListTitle();
+      if(refreshTypeDD) refreshTypeDD();
+      renderTable();
+    });
+  });
+}
+
+/* ============ Filters ============ */
+let refreshTypeDD = null;
+function optRow(v, selected){
+  return `<div class="menu-opt${selected?' on':''}" data-opt="${v}"><span class="check">${selected?icon('check'):''}</span>${v}</div>`;
+}
+function clearRow(){
+  return `<div class="menu-clear" data-clear>清除选择</div>`;
+}
+function makeDropdown(id, render){
+  const wrap = document.getElementById(id);
+  wrap.innerHTML = `<button class="dropdown-trigger"><span data-label></span><span class="caret">${icon('chevronRight')}</span></button><div class="dropdown-menu"></div>`;
+  const label = wrap.querySelector('[data-label]');
+  const menu = wrap.querySelector('.dropdown-menu');
+  const refresh = ()=>{
+    label.textContent = id==='ddStatus' ? '状态：'+(filters.status.join('/')||'全部')
+      : id==='ddType' ? '事件类型：'+(filters.types.join('/')||'全部')
+      : id==='ddDevice' ? '设备类型：'+(filters.devices.join('/')||'全部')
+      : '时间范围：'+(filters.start||'全部');
+    menu.innerHTML = render();
+    menu.querySelectorAll('[data-opt]').forEach(o=>{
+      o.addEventListener('click',e=>{
+        e.stopPropagation();
+        const v = o.dataset.opt;
+        if(id==='ddStatus'){
+          filters.status = filters.status.includes(v) ? filters.status.filter(x=>x!==v) : [...filters.status, v];
+        } else if(id==='ddType'){
+          filters.types = filters.types.includes(v) ? filters.types.filter(x=>x!==v) : [...filters.types, v];
+        } else if(id==='ddDevice'){
+          filters.devices = filters.devices.includes(v) ? filters.devices.filter(x=>x!==v) : [...filters.devices, v];
+        }
+        refresh(); renderTable();
+      });
+    });
+    const clear = menu.querySelector('[data-clear]');
+    if(clear) clear.addEventListener('click',e=>{
+      e.stopPropagation();
+      if(id==='ddStatus') filters.status=[];
+      if(id==='ddType') filters.types=[];
+      if(id==='ddDevice') filters.devices=[];
+      refresh(); renderTable();
+    });
+  };
+  wrap.querySelector('.dropdown-trigger').addEventListener('click',e=>{
+    e.stopPropagation();
+    document.querySelectorAll('.dropdown.open').forEach(d=>{if(d!==wrap)d.classList.remove('open')});
+    wrap.classList.toggle('open');
+  });
+  refresh();
+  return {wrap, refresh};
+}
+
+function initFilters(){
+  makeDropdown('ddStatus', ()=>clearRow()+STATUS.map(s=>optRow(s, filters.status.includes(s))).join(''));
+  refreshTypeDD = makeDropdown('ddType', ()=>clearRow()+EVENT_TYPES[currentCat].map(s=>optRow(s, filters.types.includes(s))).join('')).refresh;
+  const deviceTypes = [...new Set(DEVICES.map(d=>d.type))];
+  makeDropdown('ddDevice', ()=>clearRow()+deviceTypes.map(s=>optRow(s, filters.devices.includes(s))).join(''));
+  const ddDateRef = makeDropdown('ddDate', ()=>`
+    <div class="date-range">
+      <div class="dr-row"><span class="dr-label">开始日期</span><input type="date" id="rangeStart" value="${filters.start}"></div>
+      <div class="dr-row"><span class="dr-label">结束日期</span><input type="date" id="rangeEnd" value="${filters.end}"></div>
+      <div class="dr-actions"><button class="btn-reset" data-date-clear>清除</button><button class="btn-primary" data-date-ok style="height:30px;padding:0 12px">应用</button></div>
+    </div>`);
+  const ddDate = document.getElementById('ddDate');
+  ddDate.querySelector('.dropdown-menu').addEventListener('click',e=>{
+    const ok = e.target.closest('[data-date-ok]');
+    const cl = e.target.closest('[data-date-clear]');
+    if(ok){
+      filters.start = document.getElementById('rangeStart').value;
+      filters.end = document.getElementById('rangeEnd').value;
+      ddDate.classList.remove('open');
+      ddDateRef.refresh();
+      renderTable();
+    }
+    if(cl){
+      filters.start=''; filters.end='';
+      document.getElementById('rangeStart').value='';
+      document.getElementById('rangeEnd').value='';
+      ddDateRef.refresh();
+      renderTable();
+    }
+  });
+  document.getElementById('btnReset').addEventListener('click',()=>{
+    filters = {status:[], types:[], devices:[], start:'', end:''};
+    document.getElementById('searchInput').value='';
+    initFilters();
+    renderTable();
+  });
+  document.getElementById('searchInput').addEventListener('input',()=>renderTable());
+}
+
+function filteredEvents(){
+  const kw = document.getElementById('searchInput').value.trim();
+  return EVENTS.filter(e=>{
+    if(e.cat!==currentCat) return false;
+    if(filters.status.length && !filters.status.includes(e.status)) return false;
+    if(filters.types.length && !filters.types.includes(e.type)) return false;
+    if(filters.devices.length && !filters.devices.includes(e.deviceType)) return false;
+    if(kw && !(e.deviceName.includes(kw)||e.type.includes(kw))) return false;
+    return true;
+  });
+}
+
+/* ============ Table ============ */
+function updateListTitle(){
+  const cat = CATEGORIES.find(c=>c.key===currentCat);
+  document.getElementById('listTitle').textContent = cat.name;
+  document.getElementById('listSub').textContent = grouped ? '设备分组模式 · 待处理优先' : '事件明细模式 · 待处理优先';
+}
+function renderHead(){
+  const head = document.getElementById('tableHead');
+  if(grouped){
+    head.style.gridTemplateColumns = '40px 1fr 140px 120px';
+    head.innerHTML = `<span class="th">设备信息</span><span class="th">事件概况</span><span class="th">待处理</span><span class="th">操作</span>`;
+  } else {
+    head.style.gridTemplateColumns = '200px 130px minmax(220px,1fr) 150px 110px 170px';
+    head.innerHTML = `<span class="th">设备信息</span><span class="th">事件类型</span><span class="th">事件内容</span><span class="th">发生时间</span><span class="th">处理状态</span><span class="th">操作</span>`;
+  }
+}
+function statusTag(s){
+  return s==='待处理' ? '<span class="tag pending">待处理</span>' : s==='已处理' ? '<span class="tag done">已处理</span>' : '<span class="tag ignored">已忽略</span>';
+}
+function devCell(dev){
+  return `<div class="dev-cell">
+    <div class="dev-thumb">${icon('truck')}</div>
+    <div style="min-width:0">
+      <div class="d-name">${dev.name}</div>
+      <div class="d-type">${dev.type}</div>
+    </div>
+  </div>`;
+}
+function eventRow(e){
+  const dev = DEVICES.find(d=>d.id===e.deviceId);
+  const actions = e.status==='待处理'
+    ? `<div class="row-actions">
+        <button class="link-btn" data-detail="${e.id}">详情</button>
+        <button class="link-btn" data-handle="${e.id}">确认处理</button>
+        <button class="link-btn" data-ignore="${e.id}">忽略</button>
+      </div>`
+    : `<div class="row-actions"><button class="link-btn" data-detail="${e.id}">详情</button></div>`;
+  return `<div class="event-row" data-event="${e.id}">
+    ${devCell(dev)}
+    <div>${e.type}</div>
+    <div style="color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.summary}</div>
+    <div style="color:var(--text-2)">${e.time}</div>
+    <div>${statusTag(e.status)}</div>
+    <div>${actions}</div>
+  </div>`;
+}
+function bindEventRows(scope){
+  scope.querySelectorAll('[data-detail]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation(); openDetail(b.dataset.detail);
+  }));
+  scope.querySelectorAll('[data-handle]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation(); openHandle(b.dataset.handle);
+  }));
+  scope.querySelectorAll('[data-ignore]').forEach(b=>b.addEventListener('click',e=>{
+    e.stopPropagation(); openIgnore(b.dataset.ignore);
+  }));
+  scope.querySelectorAll('.event-row').forEach(row=>row.addEventListener('click',()=>openDetail(row.dataset.event)));
+}
+function renderGrouped(){
+  const body = document.getElementById('tableBody');
+  const list = filteredEvents();
+  const byDev = {};
+  list.forEach(e=>{ (byDev[e.deviceId] = byDev[e.deviceId]||[]).push(e); });
+  body.innerHTML = Object.entries(byDev).map(([devId, events])=>{
+    const dev = DEVICES.find(d=>d.id===devId);
+    const pending = events.filter(e=>e.status==='待处理').length;
+    return `<div class="group-row" data-dev="${devId}">
+      <span class="g-arrow">${icon('chevronRight')}</span>
+      <div class="g-name">${devCell(dev)}</div>
+      <span>${events.length} 条事件</span>
+      <span><span class="tag pending">${pending} 待处理</span></span>
+    </div>
+    <div class="event-subrows" data-subrows hidden></div>`;
+  }).join('');
+  body.querySelectorAll('.group-row').forEach(row=>{
+    row.addEventListener('click',()=>{
+      const sub = row.nextElementSibling;
+      const open = !row.classList.contains('open');
+      row.classList.toggle('open',open);
+      if(open && !sub.dataset.rendered){
+        const events = filteredEvents().filter(e=>e.deviceId===row.dataset.dev).slice(0,5);
+        sub.innerHTML = events.map(e=>eventRow(e)).join('') + `<div class="more-less" data-more>显示更多</div>`;
+        sub.hidden = false;
+        sub.dataset.rendered='1';
+        bindEventRows(sub);
+        sub.querySelector('[data-more]').addEventListener('click',()=>{
+          const all = filteredEvents().filter(e=>e.deviceId===row.dataset.dev);
+          sub.innerHTML = all.map(e=>eventRow(e)).join('');
+          bindEventRows(sub);
+        });
+      } else {
+        sub.hidden = !sub.hidden;
+      }
+    });
+  });
+}
+function renderFlat(){
+  const body = document.getElementById('tableBody');
+  const list = filteredEvents();
+  body.innerHTML = list.map(e=>eventRow(e)).join('');
+  bindEventRows(body);
+}
+function renderTable(){
+  renderHead();
+  grouped ? renderGrouped() : renderFlat();
+  document.getElementById('filterCount').textContent = `${filteredEvents().length} 条记录`;
+}
+
+/* ============ Detail ============ */
+function maskOn(){
+  document.getElementById('mask').classList.add('on');
+}
+function maskOff(){
+  document.getElementById('mask').classList.remove('on');
+}
+function showPanel(id){
+  document.querySelectorAll('.panel-view').forEach(v=>v.hidden = true);
+  document.getElementById(id).hidden = false;
+}
+function openDetail(id){
+  activeEvent = EVENTS.find(e=>e.id===id);
+  if(!activeEvent) return;
+  const panel = document.getElementById('detailPanel');
+  panel.hidden = false;
+  maskOn();
+  showPanel('panelDetail');
+  document.getElementById('detailEventType').textContent = activeEvent.type;
+  document.getElementById('detailEventSub').textContent = `${activeEvent.deviceName} · ${activeEvent.time}`;
+  renderDetailAsset();
+  renderDetailBody();
+  renderActionBar();
+}
+function closeDetail(){
+  document.getElementById('detailPanel').hidden = true;
+  maskOff();
+  activeEvent = null;
+}
+function renderDetailAsset(){
+  const dev = DEVICES.find(d=>d.id===activeEvent.deviceId);
+  document.getElementById('detailAsset').innerHTML = `
+    <div class="asset-thumb">${icon('truck')}</div>
+    <div style="flex:1;min-width:0">
+      <div class="asset-name">${dev.name}</div>
+      <div class="asset-type">${dev.type}</div>
+    </div>`;
+}
+function renderDiffArea(ev){
+  const rows = EVENT_DIFF[ev.type] || [];
+  if(!rows.length) return '';
+  return `<div class="detail-section">
+    <div class="sec-title"><span class="bar"></span>事件差异信息${ev.type==='检查需处理'?'（附加信息）':''}</div>
+    <div class="diff-grid">${rows.map(r=>`<div class="kv2"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('')}</div>
+  </div>`;
+}
+function renderDetailBody(){
+  const body = document.getElementById('detailBody');
+  const recs = activeEvent.records.slice().reverse();
+  body.innerHTML = `
+    <div class="detail-section">
+      <div class="sec-title"><span class="bar"></span>事件详情</div>
+      <div class="detail-grid">
+        <div class="kv2"><span class="k">事件类型</span><span class="v">${activeEvent.type}</span></div>
+        <div class="kv2"><span class="k">处理状态</span><span class="v">${statusTag(activeEvent.status)}</span></div>
+        <div class="kv2"><span class="k">发生时间</span><span class="v">${activeEvent.time}</span></div>
+        <div class="kv2"><span class="k">事件摘要</span><span class="v">${activeEvent.summary}</span></div>
+      </div>
+    </div>
+    ${renderDiffArea(activeEvent)}
+    <div class="detail-section">
+      <div class="sec-title"><span class="bar"></span>操作记录</div>
+      <div class="op-list">${recs.map(r=>`
+        <div class="op-item">
+          <div class="op-title">${r.text}${r.taskType?` · ${r.taskType}`:''}</div>
+          <div class="op-meta">${r.person?r.person+' · ':''}${r.time}</div>
+          ${r.detail?`<div class="op-detail">${r.detail}</div>`:''}
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+function moreActions(ev){
+  const acts = [];
+  if(CURVE_TYPES.includes(ev.type)) acts.push({key:'curve', label:'查看动态曲线', icon:'curve'});
+  if(ev.type==='油位低') acts.push({key:'oil', label:'查看油位曲线', icon:'oil'});
+  if(ev.type==='电子围栏预警') acts.push({key:'location', label:'查看位置轨迹', icon:'location'});
+  if(ev.type==='检查需处理') acts.push({key:'inspect', label:'查看完整检查结果', icon:'clipboard'});
+  if(ev.type==='设备保养通知') acts.push({key:'curve', label:'查看曲线', icon:'curve'});
+  return acts;
+}
+function renderActionBar(){
+  const bar = document.getElementById('actionBar');
+  const ev = activeEvent;
+  const pending = ev.status==='待处理';
+  const quick = ev.type==='设备保养通知'
+    ? `<button class="btn-primary" data-maint ${pending?'':'disabled'}>${icon('wrench')}保养处理</button>`
+    : `<button class="btn-primary" data-handle ${pending?'':'disabled'}>${icon('check')}确认处理</button>`;
+  const ignore = `<button class="btn-default" data-ignore ${pending?'':'disabled'}>${icon('x')}忽略</button>`;
+  const task = `<button class="btn-default" data-tasks>${icon('task')}关联任务</button>`;
+  const moreActs = moreActions(ev);
+  const more = moreActs.length
+    ? `<div class="dropdown" id="ddMore">
+        <button class="btn-default dropdown-trigger" style="min-width:auto">${icon('more')}更多<span class="caret">${icon('chevronRight')}</span></button>
+        <div class="dropdown-menu">${moreActs.map(a=>`<div class="menu-opt" data-act="${a.key}">${icon(a.icon)}${a.label}</div>`).join('')}</div>
+      </div>`
+    : '';
+  bar.innerHTML = quick + ignore + `<span class="spacer"></span>` + more + task;
+  bar.querySelectorAll('[data-handle]').forEach(b=>b.addEventListener('click',()=>openHandle(ev.id)));
+  bar.querySelectorAll('[data-ignore]').forEach(b=>b.addEventListener('click',()=>openIgnore(ev.id)));
+  bar.querySelectorAll('[data-maint]').forEach(b=>b.addEventListener('click',()=>openMaint()));
+  bar.querySelectorAll('[data-tasks]').forEach(b=>b.addEventListener('click',()=>openTasks()));
+  if(moreActs.length){
+    const dd = document.getElementById('ddMore');
+    dd.querySelector('.dropdown-trigger').addEventListener('click',e=>{
+      e.stopPropagation();
+      document.querySelectorAll('.dropdown.open').forEach(d=>{if(d!==dd)d.classList.remove('open')});
+      dd.classList.toggle('open');
+    });
+    dd.querySelectorAll('[data-act]').forEach(o=>o.addEventListener('click',()=>{
+      dd.classList.remove('open');
+      const act = o.dataset.act;
+      if(act==='curve') openJump('动态曲线','dynamicCurve','24 小时');
+      if(act==='oil') openJump('油位曲线','oilLevelCurve','48 小时');
+      if(act==='location') openJump('位置轨迹','locationTrace','24 小时');
+      if(act==='inspect') openInspect();
+    }));
+  }
+}
+
+/* ============ Tasks ============ */
+function openTasks(){
+  showPanel('panelTasks');
+  renderTasks('');
+  document.getElementById('taskSearch').value='';
+}
+function renderTasks(kw){
+  const list = TASK_SAMPLE.filter(t=>!kw || t.title.includes(kw));
+  document.getElementById('taskList').innerHTML = list.length
+    ? list.map((t,i)=>`
+        <div class="task-card" data-task="${i}">
+          <div class="t-row">
+            <span class="t-title">${t.title}</span>
+            <span class="tag ${t.status==='待处理'?'pending':t.status==='处理中'?'done':'ignored'}">${t.status}</span>
+          </div>
+          <div class="t-row">
+            <span class="t-meta">${t.type} · ${t.priority}优先级</span>
+            <span class="t-meta">接收人：${t.receive}</span>
+          </div>
+          <div class="t-row"><span class="t-meta">截止时间：${t.time}</span></div>
+        </div>`).join('')
+    : '<div class="page-sub">暂无关联任务</div>';
+  document.querySelectorAll('[data-task]').forEach(card=>card.addEventListener('click',()=>{
+    const t = TASK_SAMPLE[card.dataset.task];
+    showPanel('panelTaskDetail');
+    document.getElementById('tdTitle').textContent = t.title;
+    document.getElementById('tdBody').innerHTML = `
+      <div class="detail-section">
+        <div class="sec-title"><span class="bar"></span>任务详情（只读）</div>
+        <div class="detail-grid">
+          <div class="kv2"><span class="k">任务标题</span><span class="v">${t.title}</span></div>
+          <div class="kv2"><span class="k">状态</span><span class="v">${t.status}</span></div>
+          <div class="kv2"><span class="k">优先级</span><span class="v">${t.priority}</span></div>
+          <div class="kv2"><span class="k">任务类型</span><span class="v">${t.type}</span></div>
+          <div class="kv2"><span class="k">接收人</span><span class="v">${t.receive}</span></div>
+          <div class="kv2"><span class="k">创建人</span><span class="v">${t.create}</span></div>
+          <div class="kv2"><span class="k">创建时间</span><span class="v">2026-08-03 14:00</span></div>
+          <div class="kv2"><span class="k">截止时间</span><span class="v">${t.time}</span></div>
+          <div class="kv2 wide"><span class="k">任务描述</span><span class="v">${t.desc}</span></div>
+        </div>
+      </div>`;
+  }));
+}
+
+/* ============ Modals / Actions ============ */
+function toast(msg){
+  const el = document.getElementById('toast');
+  document.getElementById('toastText').textContent = msg;
+  el.classList.add('on');
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.remove('on'), 2200);
+}
+function openHandle(id){
+  activeEvent = EVENTS.find(e=>e.id===id);
+  document.getElementById('handleText').value='';
+  document.getElementById('handlePhrases').innerHTML = ['已核实并处理完成','已线下处理完成','已通过原业务流程处理','其他'].map(p=>`<button class="phrase-tag" data-p="${p}">${p}</button>`).join('');
+  document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{
+    document.getElementById('handleText').value = b.dataset.p;
+  }));
+  document.getElementById('modalHandle').classList.add('on');
+}
+function openIgnore(id){
+  activeEvent = EVENTS.find(e=>e.id===id);
+  document.getElementById('ignoreText').value='';
+  document.getElementById('ignorePhrases').innerHTML = ['误报','无需处理','其他'].map(p=>`<button class="phrase-tag" data-p="${p}">${p}</button>`).join('');
+  document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{
+    document.getElementById('ignoreText').value = b.dataset.p;
+  }));
+  document.getElementById('modalIgnore').classList.add('on');
+}
+function commitHandle(){
+  const text = document.getElementById('handleText').value.trim();
+  activeEvent.status = '已处理';
+  activeEvent.records.push({text:'确认处理', person:'张三', time:fmt(new Date()), detail:text||'未填写处理结果'});
+  document.getElementById('modalHandle').classList.remove('on');
+  closeDetail();
+  toast('操作成功');
+  CATEGORIES.forEach(c=>{ c.count = EVENTS.filter(e=>e.cat===c.key && e.status==='待处理').length; });
+  renderCategories();
+  renderTable();
+}
+function commitIgnore(){
+  const text = document.getElementById('ignoreText').value.trim();
+  activeEvent.status = '已忽略';
+  activeEvent.records.push({text:'忽略', person:'张三', time:fmt(new Date()), detail:text||'未填写忽略原因'});
+  document.getElementById('modalIgnore').classList.remove('on');
+  closeDetail();
+  toast('操作成功');
+  CATEGORIES.forEach(c=>{ c.count = EVENTS.filter(e=>e.cat===c.key && e.status==='待处理').length; });
+  renderCategories();
+  renderTable();
+}
+function openJump(title, tab, range){
+  document.getElementById('jumpTitle').textContent = title;
+  document.getElementById('jumpParams').innerHTML = `
+    <div class="curve-line"><span class="ck">跳转目标</span><br>设备管理-设备详情页 → ${title}（${tab}）</div>
+    <div class="curve-line"><span class="ck">deviceId</span><br>${activeEvent.deviceId}</div>
+    <div class="curve-line"><span class="ck">eventType</span><br>${activeEvent.type}</div>
+    <div class="curve-line"><span class="ck">时间范围</span><br>事件发生前后 ${range}</div>`;
+  document.getElementById('modalJump').classList.add('on');
+}
+function openInspect(){
+  document.getElementById('inspectItems').innerHTML = [
+    ['液压油位','需处理','油位低于标准线'],
+    ['轮胎气压','需处理','左前轮胎压不足']
+  ].map(r=>`
+    <div class="snapshot-row">
+      <span class="s-name">${r[0]}</span>
+      <span class="tag pending">${r[1]}</span>
+    </div>
+    <div class="curve-line" style="margin-bottom:10px"><span class="ck">说明</span><br>${r[2]}</div>
+    <div class="thumb-row"><span class="thumb">${icon('image')}</span><span class="thumb">${icon('image')}</span><span class="thumb">${icon('clock')}</span></div>`).join('');
+  document.getElementById('modalInspect').classList.add('on');
+}
+function openMaint(){
+  document.getElementById('modalMaint').classList.add('on');
+}
+
+/* ============ Settings ============ */
+function renderSettings(){
+  document.getElementById('viewList').hidden = true;
+  document.getElementById('viewSettings').hidden = false;
+  closeDetail();
+  const states = {
+    equip:{on:12, total:15, open:true},
+    maintain:{on:1, total:1, open:false},
+    location:{on:1, total:1, open:false},
+    fuel:{on:3, total:3, open:false},
+    inspect:{on:1, total:1, open:false}
+  };
+  document.getElementById('settingsAccordion').innerHTML = CATEGORIES.map(c=>{
+    const s = states[c.key];
+    return `<div class="set-group${s.open?' open':''}" data-group="${c.key}">
+      <div class="set-head">
+        ${icon(c.icon)}
+        <span>${c.name}</span>
+        <span class="set-count">已开启 ${s.on} / ${s.total}</span>
+        <span class="arrow">${icon('chevronRight')}</span>
+      </div>
+      <div class="set-body">${EVENT_TYPES[c.key].map(t=>`
+        <div class="set-row"><span class="row-name">${t}</span><div class="mini-switch on" data-toggle="${t}"></div></div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('[data-group]').forEach(g=>g.querySelector('.set-head').addEventListener('click',()=>g.classList.toggle('open')));
+  document.querySelectorAll('[data-toggle]').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('on')));
+  document.getElementById('settingsDetail').innerHTML = `
+    <div class="sec-title"><span class="bar"></span>授权人员配置</div>
+    <div class="page-sub" style="margin:10px 0 14px">企业/代理商租户可配置事件可见范围；个体户仅展示开关。</div>
+    <div class="detail-grid" style="max-width:560px">
+      <div class="kv2 wide"><span class="k">授权范围</span><span class="v">授权全部用户 <span class="tag done" style="margin-left:8px">当前生效</span></span></div>
+      <div class="kv2 wide"><span class="k">说明</span><span class="v">叠加设备权限：事件仅对同时具备该设备数据权限的用户可见。</span></div>
+    </div>`;
+}
+
+/* ============ Init ============ */
+function bindGlobal(){
+  document.getElementById('modeSwitch').addEventListener('click',()=>{
+    grouped = !grouped;
+    document.getElementById('modeSwitch').classList.toggle('on',grouped);
+    updateListTitle();
+    renderTable();
+  });
+  document.getElementById('btnSettings').addEventListener('click',renderSettings);
+  document.getElementById('btnSettingsTop').addEventListener('click',renderSettings);
+  document.getElementById('btnBackList').addEventListener('click',()=>{
+    document.getElementById('viewSettings').hidden = true;
+    document.getElementById('viewList').hidden = false;
+    renderTable();
+  });
+  document.getElementById('btnRefresh').addEventListener('click',()=>{
+    document.getElementById('boardUpdated').textContent = '数据更新：刚刚';
+    toast('数据已刷新');
+  });
+  document.getElementById('btnCloseDetail').addEventListener('click',closeDetail);
+  document.getElementById('btnBackDetail').addEventListener('click',()=>{
+    showPanel('panelDetail');
+    renderDetailBody();
+    renderActionBar();
+  });
+  document.getElementById('btnBackTasks').addEventListener('click',()=>showPanel('panelTasks'));
+  document.getElementById('taskSearch').addEventListener('input',e=>renderTasks(e.target.value.trim()));
+  document.getElementById('mask').addEventListener('click',closeDetail);
+
+  document.getElementById('closeHandle').addEventListener('click',()=>document.getElementById('modalHandle').classList.remove('on'));
+  document.getElementById('cancelHandle').addEventListener('click',()=>document.getElementById('modalHandle').classList.remove('on'));
+  document.getElementById('handleSubmit').addEventListener('click',commitHandle);
+  document.getElementById('closeIgnore').addEventListener('click',()=>document.getElementById('modalIgnore').classList.remove('on'));
+  document.getElementById('cancelIgnore').addEventListener('click',()=>document.getElementById('modalIgnore').classList.remove('on'));
+  document.getElementById('ignoreSubmit').addEventListener('click',commitIgnore);
+  document.getElementById('closeJump').addEventListener('click',()=>document.getElementById('modalJump').classList.remove('on'));
+  document.getElementById('jumpCancel').addEventListener('click',()=>document.getElementById('modalJump').classList.remove('on'));
+  document.getElementById('jumpGo').addEventListener('click',()=>{
+    document.getElementById('modalJump').classList.remove('on');
+    toast('模拟跳转设备管理-设备详情页');
+  });
+  document.getElementById('closeInspect').addEventListener('click',()=>document.getElementById('modalInspect').classList.remove('on'));
+  document.getElementById('inspectClose').addEventListener('click',()=>document.getElementById('modalInspect').classList.remove('on'));
+  document.getElementById('closeMaint').addEventListener('click',()=>document.getElementById('modalMaint').classList.remove('on'));
+  document.getElementById('maintCancel').addEventListener('click',()=>document.getElementById('modalMaint').classList.remove('on'));
+  document.getElementById('maintSelf').addEventListener('click',()=>{
+    document.getElementById('modalMaint').classList.remove('on');
+    activeEvent.status = '已处理';
+    activeEvent.records.push({text:'保养处理（自行保养）', person:'张三', time:fmt(new Date())});
+    closeDetail();
+    toast('自行保养提交成功');
+    renderCategories();
+    renderTable();
+  });
+  document.getElementById('maintBook').addEventListener('click',()=>{
+    document.getElementById('modalMaint').classList.remove('on');
+    toast('预约保养提交成功，事件保持待处理');
+  });
+}
+
+document.querySelectorAll('[data-icon]').forEach(el=>{
+  el.innerHTML = icon(el.dataset.icon);
+});
+renderSidebar();
+renderCategories();
+initFilters();
+updateListTitle();
+renderTable();
+bindGlobal();
+</script>
+</body>
+</html>

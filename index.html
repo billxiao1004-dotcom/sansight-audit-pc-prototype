@@ -1,0 +1,732 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Sansight - 审核PC端原型</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{background:#f5f6f8;color:#333;height:100vh;overflow:hidden;display:flex;font-size:13px}
+.sidebar{width:220px;background:#1a1a2e;color:#fff;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-logo{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-size:16px;font-weight:700}
+.sidebar-logo span{color:#e74c3c}.sidebar-menu{flex:1;padding:8px 0;overflow-y:auto}
+.sidebar-item{display:flex;align-items:center;padding:10px 20px;color:rgba(255,255,255,.5);cursor:pointer;gap:8px}
+.sidebar-item:hover{color:#fff}.sidebar-item.active{color:#fff;background:rgba(255,255,255,.08);border-left:3px solid #e74c3c}
+.sidebar-sub .sidebar-item{padding-left:36px;font-size:12px}
+.header{display:flex;align-items:center;padding:10px 24px;background:#fff;border-bottom:1px solid #e8e8e8}
+.header-bread{font-size:13px;color:#999}.header-bread span{color:#333;font-weight:600}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.page{display:none;flex-direction:column;height:100%}.page.active{display:flex}
+.tbl{flex:1;overflow:auto;padding:0 24px 12px}.tbl-inner{background:#fff;border-radius:6px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}th{background:#fafafa;padding:9px 10px;font-weight:600;color:#555;border-bottom:1px solid #e8e8e8;font-size:12px}
+td{padding:9px 10px;border-bottom:1px solid #f0f0f0}tr{cursor:pointer}tr:hover{background:#fafafa}
+.st{display:inline-block;padding:3px 12px;border-radius:10px;font-size:12px;font-weight:600}
+.st-p{background:#fff3e0;color:#e65100;border:1px solid #ffcc80}.st-d{background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7}.st-i{background:#f5f5f5;color:#616161;border:1px solid #e0e0e0}
+.tab-img{width:34px;height:34px;border-radius:4px;background:#e8e8e8;display:inline-flex;align-items:center;justify-content:center;font-size:10px;color:#999;vertical-align:middle;margin-right:8px}
+.empty{text-align:center;padding:50px 20px;color:#999}
+.tcard{padding:12px;border:1px solid #e8e8e8;border-radius:6px;margin-bottom:10px;cursor:pointer}
+.tcard:hover{background:#fafafa;border-color:#d0d0d0}.tcard .tt{font-weight:600;font-size:14px}.tcard .tm{font-size:12px;color:#999;margin-top:2px}
+.d-body{flex:1;display:flex;overflow:hidden}.d-left{width:300px;background:#fff;border-right:1px solid #e8e8e8;padding:20px;overflow-y:auto;flex-shrink:0}
+.d-right{flex:1;display:flex;flex-direction:column}.d-tabs{display:flex;background:#fff;border-bottom:1px solid #e8e8e8}
+.d-tab{padding:10px 20px;font-size:13px;cursor:pointer;color:#666;border-bottom:2px solid transparent}
+.d-tab.on{color:#e74c3c;border-bottom-color:#e74c3c;font-weight:600}
+.d-cnt{flex:1;padding:16px 24px;overflow-y:auto;background:#fff}.d-cnt.h{display:none}
+.dimg{width:100px;height:100px;border-radius:6px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;margin-bottom:14px;border:1px solid #ddd}
+.df{margin-bottom:10px}.df l{font-size:11px;color:#999;display:block}.df .v{font-size:14px;font-weight:500}
+.da{display:flex;align-items:center;gap:8px;padding:10px 24px;background:#fff;border-top:1px solid #e8e8e8}
+.da .sp{flex:1}.da-btn{padding:7px 18px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px;cursor:pointer;background:#fff;transition:.15s}
+.da-btn:hover{border-color:#e74c3c;color:#e74c3c}.da-btn-p{background:#e74c3c;color:#fff;border-color:#e74c3c}.da-btn-p:hover{background:#c0392b;color:#fff}
+.op{padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px}.op:last-child{border:none}
+.op .oa{font-weight:600}.op .om{font-size:12px;color:#999;margin-top:2px}
+.mo{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:1000;align-items:center;justify-content:center}.mo.show{display:flex}
+.m-box{background:#fff;border-radius:8px;width:460px;max-height:80vh;overflow-y:auto}.m-h{padding:14px 20px;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;justify-content:space-between}.m-h h3{font-size:15px}
+.m-c{font-size:20px;color:#999;cursor:padding:4px}.m-b{padding:20px}.m-f{padding:12px 20px;border-top:1px solid #e8e8e8;display:flex;justify-content:flex-end;gap:8px}
+.m-f .btn{padding:7px 18px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px;cursor:pointer;background:#fff}
+.m-f .btn-p{background:#e74c3c;color:#fff}.tl{display:inline-block;padding:4px 12px;border:1px solid #d9d9d9;border-radius:12px;font-size:12px;cursor:pointer;margin:3px}
+.tl:hover{border-color:#e74c3c;color:#e74c3c}.tl.sel{background:#e74c3c;color:#fff;border-color:#e74c3c}
+.m-b textarea{width:100%;padding:8px 10px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;min-height:70px;outline:none;font-family:inherit}
+.m-b .fg{margin-bottom:14px}.m-b .fg label{display:block;font-size:13px;font-weight:500;margin-bottom:5px}
+.m-b .warn{background:#fff8e1;padding:10px;border-radius:4px;font-size:13px;color:#f57f17;margin-bottom:14px}
+.tp{display:none;position:fixed;top:0;right:0;width:400px;height:100%;background:#fff;z-index:999;flex-direction:column;box-shadow:-4px 0 12px rgba(0,0,0,.08)}.tp.show{display:flex}
+.tp-h{padding:14px 20px;border-bottom:1px solid #e8e8e8;display:flex;align-items:center;justify-content:space-between}
+.sett{flex:1;padding:20px;overflow-y:auto}.sett-sec{background:#fff;border-radius:6px;padding:16px 20px;margin-bottom:14px}
+.acc{border:1px solid #e8e8e8;border-radius:4px;margin-bottom:6px}
+.acc-h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;background:#fafafa;font-size:14px;font-weight:500}
+.acc-h.on .ar{transform:rotate(90deg)}.acc-b{display:none;padding:6px 14px}.acc-b.on{display:block}
+.er{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.tog{position:relative;width:34px;height:18px;cursor:pointer;display:inline-block}.tog input{display:none}
+.tog-sl{position:absolute;top:0;left:0;right:0;bottom:0;background:#ccc;border-radius:9px;transition:.3s}
+.tog-sl::before{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.3s}
+.tog input:checked+.tog-sl{background:#27ae60}.tog input:checked+.tog-sl::before{transform:translateX(16px)}
+.stats{display:flex;align-items:center;gap:20px;padding:8px 24px;background:#fff;font-size:13px;border-bottom:1px solid #e8e8e8}
+.stats .n{font-size:18px;font-weight:700}.stats .r{color:#e74c3c}.stats .g{color:#27ae60}.stats .y{color:#999}.stats .d{width:1px;height:20px;background:#e8e8e8}
+.cat-tabs{display:flex;background:#fff;border-bottom:1px solid #e8e8e8;padding:0 24px}
+.cat-tab{padding:12px 18px;font-size:13px;cursor:pointer;color:#666;border-bottom:2px solid transparent;transition:.15s}
+.cat-tab.active{color:#e74c3c;border-bottom-color:#e74c3c;font-weight:600}
+.filter{display:flex;align-items:center;gap:8px;padding:8px 24px;background:#fff;flex-wrap:wrap}
+.filter input,.filter select{padding:5px 10px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px;outline:none;background:#fff}
+.filter .btn{padding:5px 14px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px;background:#fff;cursor:pointer}
+.mode-btn{padding:4px 10px;border:1px solid #d9d9d9;border-radius:3px;font-size:12px;cursor:pointer;background:#fff}
+.mode-btn.active{background:#e74c3c;color:#fff}
+.d-hdr{display:flex;align-items:center;gap:12px;padding:10px 24px;background:#fff;border-bottom:1px solid #e8e8e8}
+.d-back{display:flex;align-items:center;gap:4px;cursor:pointer;color:#666;font-size:13px}
+.d-back:hover{color:#e74c3c}.da-sep{flex:1}
+.batch{display:none;align-items:center;gap:12px;padding:8px 24px;background:#fff3e0;font-size:13px}.batch.show{display:flex}
+.batch .b{font-weight:600}.batch .btn{padding:4px 12px;border:1px solid #d9d9d9;border-radius:3px;font-size:12px;cursor:pointer;background:#fff}
+.batch .btn-p{background:#e74c3c;color:#fff}.act{padding:4px 9px;border:1px solid #d9d9d9;border-radius:3px;font-size:12px;background:#fff;cursor:pointer}
+.act-p{background:#e74c3c;color:#fff}
+.dvc-bar{margin-top:6px}.dvc-hlth{width:10px;height:10px;border-radius:50%;display:inline-block;flex-shrink:0;margin:2px 6px 0 0}.dvc-hlth-g{background:#27ae60}.dvc-hlth-y{background:#f39c12}.dvc-hlth-r{background:#e74c3c}
+.pg-l{display:flex;align-items:center;gap:4px;color:#999}
+.pg-l select{padding:3px 6px;border:1px solid #d9d9d9;border-radius:3px;font-size:12px;outline:none;background:#fff}
+.pg-r{display:flex;align-items:center;gap:4px}
+.pg-n{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;border:1px solid #e8e8e8;border-radius:3px;cursor:pointer;font-size:12px;color:#555;background:#fff}
+.pg-n:hover{border-color:#e74c3c;color:#e74c3c}
+.pg-n.on{border-color:#e74c3c;color:#fff;background:#e74c3c}
+.pg-n.pg-off{opacity:.4;cursor:default}
+.toast{position:fixed;top:20px;right:24px;z-index:2000;padding:12px 20px;border-radius:6px;font-size:13px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,.15);transform:translateX(120%);transition:transform .3s ease;max-width:360px}
+.toast.show{transform:translateX(0)}
+.toast-s{background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7}
+.toast-e{background:#fce4ec;color:#c62828;border:1px solid #ef9a9a}
+.toast-i{background:#e3f2fd;color:#0d47a1;border:1px solid #90caf9}
+.ddrop{position:relative;display:inline-block}
+.ddrop-m{display:none;position:absolute;bottom:100%;left:0;margin-bottom:4px;min-width:140px;background:#fff;border:1px solid #e8e8e8;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:500;padding:4px 0}
+.ddrop-m.show{display:block}
+.ddrop-i{padding:8px 16px;font-size:13px;cursor:pointer;color:#333}
+.ddrop-i:hover{background:#f5f5f5;color:#e74c3c}
+.ddrop-i:first-child{border-radius:6px 6px 0 0}
+.ddrop-i:last-child{border-radius:0 0 6px 6px}
+.tbl-act{display:flex;gap:4px;align-items:center}
+.tbl-act .act{padding:3px 8px;border:1px solid #d9d9d9;border-radius:3px;font-size:11px;background:#fff;cursor:pointer;white-space:nowrap}
+.tbl-act .act:hover{border-color:#e74c3c;color:#e74c3c}
+.tbl-act .act-p{background:#e74c3c;color:#fff;border-color:#e74c3c}
+.tbl-act .act-p:hover{background:#c0392b}
+.tbl-act .act-d{opacity:.5;cursor:default}
+.stp{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:1100;flex-direction:column;overflow-y:auto}
+.stp.show{display:flex}
+.stp-hdr{display:flex;align-items:center;padding:14px 24px;border-bottom:1px solid #e8e8e8;gap:10px}
+.stp-hdr .d-back{font-size:14px}
+.stp-body{flex:1;padding:24px;max-width:800px;margin:0 auto;width:100%}
+.stp-body .stp-placeholder{text-align:center;padding:60px 20px;color:#999;font-size:14px;line-height:1.6}
+.stp-body .stp-placeholder svg{width:80px;height:80px;margin-bottom:16px;opacity:.3}.ddev{padding:12px;border:1px solid #e8e8e8;border-radius:6px;margin-bottom:8px;background:#fafafa}.ddev:hover{border-color:#d0d0d0}.ddev-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}.ddev-et{font-weight:600;font-size:13px}.ddev-c{font-size:13px;color:#333;margin-bottom:4px}.ddev-t{font-size:11px;color:#999}.ddev-acts{display:flex;gap:4px;margin-top:6px}.ddev-acts .act{padding:3px 8px;border:1px solid #d9d9d9;border-radius:3px;font-size:11px;cursor:pointer;background:#fff}.ddev-acts .act:hover{border-color:#e74c3c;color:#e74c3c}.ddev-acts .act-p{background:#e74c3c;color:#fff;border-color:#e74c3c}.ddev-acts .act-p:hover{background:#c0392b}</style></head><body>
+
+<div class="sidebar"><div class="sidebar-logo"><span>S</span>ansight</div><div class="sidebar-menu">
+<div class="sidebar-item">设备管理</div><div class="sidebar-item">数据大屏</div><div class="sidebar-item">项目管理</div>
+<div class="sidebar-item" style="cursor:default;color:rgba(255,255,255,.5)">监控中心</div>
+<div class="sidebar-sub"><div class="sidebar-item">地图监控</div><div class="sidebar-item">预警中心</div><div class="sidebar-item active">审核中心</div></div>
+<div class="sidebar-item">设备保养</div><div class="sidebar-item">维修管理</div><div class="sidebar-item">费用核算</div><div class="sidebar-item">企业服务</div>
+</div></div>
+
+<div class="main">
+<div class="header"><div class="header-bread"><span>需要审核</span></div></div>
+
+<div id="listPage" class="page active">
+<div class="cat-tabs" id="catTabs">
+<div class="cat-tab active" data-cat="0">设备异常 <span class="st st-p" style="margin-left:5px">156</span></div>
+<div class="cat-tab" data-cat="1">维保事项 <span class="st st-p" style="margin-left:5px">23</span></div>
+<div class="cat-tab" data-cat="2">燃油异常 <span class="st st-p" style="margin-left:5px">45</span></div>
+<div class="cat-tab" data-cat="3">位置预警 <span class="st st-p" style="margin-left:5px">12</span></div>
+<div class="cat-tab" data-cat="4">检查异常 <span class="st st-p" style="margin-left:5px">8</span></div>
+</div>
+
+<div class="filter">
+<input id="searchBox" type="text" placeholder="搜索设备编号..." style="width:180px">
+<select id="statusFilter"><option value="">全部状态</option><option value="pending">待处理</option><option value="processed">已处理</option><option value="ignored">已忽略</option></select>
+ <select id="eventTypeFilter"><option value="">全部事件类型</option></select>
+ <select id="deviceTypeFilter"><option value="">全部设备类型</option></select>
+ <select id="brandFilter"><option value="">全部品牌</option></select>
+<input id="dateFrom" type="text" placeholder="开始日期" style="width:100px" value="2026-07-16">
+<span style="color:#bbb">-</span>
+<input id="dateTo" type="text" placeholder="结束日期" style="width:100px" value="2026-07-23">
+<button class="mode-btn" data-view="list">事件明细</button>
+<button class="mode-btn active" data-view="device">按设备分组</button>
+<button id="resetBtn" class="btn">重置</button>
+<button id="settingsBtn" class="btn">设置</button>
+</div>
+
+<div class="stats">
+统计：预警总数 <span class="n" id="statt">14</span> <span class="d"></span>
+待处理 <span class="n r" id="stats">10</span> <span class="d"></span>
+已处理 <span class="n g" id="statp">3</span> <span class="d"></span>
+已忽略 <span class="n y" id="stati">1</span>
+</div>
+
+<div id="batchBar" class="batch">
+<span>已选择 <strong id="bc">0</strong> 项</span>
+<button id="batchConfirmBtn" class="btn btn-p">批量确认处理</button>
+<button id="batchIgnoreBtn" class="btn">批量忽略</button>
+<button id="clearSelBtn" class="btn">取消选择</button>
+</div>
+
+<div class="tbl"><div class="tbl-inner">
+<table><thead><tr>
+<th style="width:36px"><input type="checkbox" id="selAll"></th>
+<th style="width:170px">设备信息</th><th style="width:110px">事件类型</th><th style="width:190px">事件内容</th><th style="width:150px">发生时间</th>
+<th style="width:95px">设备类型</th><th style="width:110px">所属项目</th><th style="width:90px">处理状态</th><th style="width:70px">处理人</th><th style="width:150px">处理时间</th><th style="width:150px">操作</th>
+</tr></thead><tbody id="tb"></tbody></table><div class="pg"><div class="pg-l">共 <strong id="pt">0</strong> 条　每页 <select id="ps"><option value="20">20</option><option value="50" selected>50</option><option value="100">100</option></select> 条</div><div class="pg-r"><span class="pg-n pg-off" id="pp">‹</span><span class="pg-n on" data-p="0">1</span><span class="pg-n pg-off" id="pn">›</span></div></div>
+
+<div id="detailPage" class="page">
+<div class="d-hdr">
+<div id="backToList" class="d-back">← 返回审核列表</div>
+<div style="font-size:14px;font-weight:600">审核事件详情</div><div style="flex:1"></div>
+<span id="dStatus" class="st st-p">待处理</span>
+</div>
+<div class="d-body">
+<div class="d-left">
+<div class="dimg"><svg viewBox="0 0 48 48" fill="none"><rect x="8" y="14" width="32" height="20" rx="3" stroke="#888" stroke-width="2" fill="#ddd"/><circle cx="18" cy="38" r="4" stroke="#888" stroke-width="2" fill="#ddd"/><circle cx="30" cy="38" r="4" stroke="#888" stroke-width="2" fill="#ddd"/><rect x="10" y="18" width="28" height="4" rx="1" stroke="#888" stroke-width="1.5" fill="#ccc"/></svg></div>
+<div class="df"><l>设备编号</l><div class="v" id="ddNo">15SR00201138</div></div>
+<div class="df"><l>设备类型</l><div class="v" id="ddType">旋挖钻机</div></div>
+<div class="df"><l>设备品牌</l><div class="v">三一</div></div>
+ <div class="df"><l>当前状态</l><div class="v" id="ddStatus">离线</div></div>
+ <div class="df"><l>所属项目</l><div class="v" id="ddProj">青山园区</div></div>
+</div>
+<div class="d-right">
+<div class="d-tabs"><div class="d-tab on" data-dtab="info">事件信息</div><div class="d-tab" data-dtab="records">操作记录</div></div>
+<div id="dCont" class="d-cnt">
+<div class="df"><l>事件类型</l><div class="v" id="deType">离线</div></div>
+<div class="df"><l>发生时间</l><div class="v" id="deTime">2026-07-23 05:38:56</div></div>
+<div class="df"><l>事件内容</l><div class="v" id="deCont">离线超过24小时</div></div>
+<div class="df"><l>事件来源</l><div class="v" id="deSrc">设备预警</div></div>
+<div style="margin-top:16px;padding-top:14px;border-top:1px solid #e8e8e8">
+<div class="df"><l>差异信息</l><div class="v" id="deDiff" style="color:#666;font-size:13px">-
+</div>
+<div id="dRec" class="d-cnt h"><div id="opList"><div class="empty">暂无操作记录
+</div></div>
+<div id="dActions" class="da"></div>
+</div>
+
+<div id="settingsPage" class="page">
+<div class="d-hdr">
+<div id="backFromSettings" class="d-back">← 返回审核列表</div>
+<div style="font-size:14px;font-weight:600">审核设置</div>
+</div>
+<div class="sett"><div class="sett-sec">
+<div class="hint" style="font-size:13px;color:#999;margin-bottom:10px">配置各事件类型是否进入审核列表。</div>
+<div id="settBody"></div>
+
+
+<div id="confirmModal" class="mo"><div class="m-box">
+<div class="m-h"><h3>确认处理</h3><span class="m-c modal-close">x</span></div>
+<div class="m-b">
+<div id="cfWarn" class="warn" style="display:none">该事件存在未完成关联任务</div>
+<div class="fg"><label>处理结果（选填）</label><textarea id="cfText" placeholder="请输入处理结果"></textarea></div>
+<div class="fg"><label>快捷短语</label><div>
+<span class="tl" data-phrase="已线下处理完毕">已线下处理完毕</span>
+<span class="tl" data-phrase="设备已恢复正常">设备已恢复正常</span>
+<span class="tl" data-phrase="已安排维修处理">已安排维修处理</span>
+
+<div class="m-f"><button class="btn modal-close" data-modal="confirm">取消</button><button id="confirmSubmit" class="btn btn-p">确认提交</button>
+
+<div id="ignoreModal" class="mo"><div class="m-box">
+<div class="m-h"><h3>忽略</h3><span class="m-c modal-close">x</span></div>
+<div class="m-b">
+<div class="fg"><label>忽略原因（选填）</label><textarea id="igText" placeholder="请输入忽略原因"></textarea></div>
+<div class="fg"><label>快捷短语</label><div>
+<span class="tl" data-phrase="误报">误报</span>
+<span class="tl" data-phrase="无需处理">无需处理</span>
+<span class="tl" data-phrase="已通过其它渠道处理">已通过其它渠道处理</span>
+
+<div class="m-f"><button class="btn modal-close" data-modal="ignore">取消</button><button id="ignoreSubmit" class="btn btn-p">确认提交</button>
+
+<div id="batchModal" class="mo"><div class="m-box">
+<div class="m-h"><h3>批量操作</h3><span class="m-c modal-close">x</span></div>
+<div class="m-b"><div style="padding:10px 0;font-size:14px">确认对已选择的 <strong id="bmCnt">0</strong> 条事件执行批量操作？</div></div>
+<div class="m-f"><button class="btn modal-close" data-modal="batch">取消</button><button id="batchSubmit" class="btn btn-p">确认提交</button>
+
+<div id="taskPanel" class="tp">
+<div class="tp-h"><h3>关联任务</h3><span id="closeTask" class="m-c">x</span></div>
+<div class="tp-b">
+<div style="margin-bottom:14px"><button id="createTask" class="act act-p">+ 创建任务</button></div>
+<div class="tcard"><div class="tt">排查 HSZX2431 蓄电池电压低</div><div class="tm">现场排查 | 接收人：王工 | 截止：2026-07-25</div></div>
+<div class="tcard"><div class="tt">检查 SY013NC 油位异常</div><div class="tm">现场排查 | 接收人：李工 | 截止：2026-07-24</div></div>
+</div></div>
+
+</div>
+<script>
+// ---- Data ----
+var events = [
+ {d:"15SR00201138",dt:"旋挖钻机",b:"三一",et:"设备离线预警",c:"离线超过24小时，设备未上报数据",t:"2026-07-23 05:38:56",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"HSZX2431001447",dt:"自装卸车",b:"三一",et:"蓄电池电压低",c:"蓄电池电压低于24V，请及时充电",t:"2026-07-22 21:23:33",p:"印尼项目B",s:"pending",h:"",ht:""},
+ {d:"HSZX4541005532",dt:"电动自卸车",b:"三一",et:"SOC过低",c:"电池SOC已降至15%，低于预警阈值20%",t:"2026-07-22 18:54:48",p:"--",s:"pending",h:"",ht:""},
+ {d:"SY013NCC00878",dt:"挖掘机",b:"卡特彼勒",et:"冷却水温高",c:"冷却液温度98°C，超过85°C预警阈值",t:"2026-07-22 17:40:15",p:"测试项目",s:"pending",h:"",ht:""},
+ {d:"KT090EE20067",dt:"矿用宽体自卸车",b:"三一",et:"超速",c:"车速92km/h，超过80km/h限制",t:"2026-07-22 16:59:01",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"HMGJ1031012452",dt:"搅拌车",b:"中联重科",et:"发动机转速",c:"发动机转速持续2300rpm，超过2000rpm阈值",t:"2026-07-22 16:06:36",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"KT090EE20068",dt:"矿用宽体自卸车",b:"三一",et:"蓄电池电压低",c:"蓄电池电压低于24V，请关注",t:"2026-07-22 15:00:23",p:"--",s:"processed",h:"张工",ht:"2026-07-22 15:30"},
+ {d:"AC0250CF0056",dt:"汽车起重机",b:"卡特彼勒",et:"冷却水温高",c:"冷却液温度96°C，超过预警阈值",t:"2026-07-22 10:12:00",p:"印尼项目A",s:"pending",h:"",ht:""},
+ {d:"BC5230CA4196",dt:"泵车",b:"三一",et:"故障码",c:"发动机故障码P0217，喷油器电路异常",t:"2026-07-22 08:30:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"YZ1212CE1141",dt:"自卸车",b:"东风",et:"高液压油温",c:"液压油温85°C，超过75°C预警阈值",t:"2026-07-21 22:15:00",p:"--",s:"pending",h:"",ht:""},
+ {d:"PY5519CB0428",dt:"平地机",b:"三一",et:"设备离线预警",c:"离线超过24小时，最后定位：青山园区东门",t:"2026-07-23 05:38:56",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"SY048CFV037C8",dt:"泵车",b:"三一",et:"故障码",c:"发动机故障码P0544，排气温度传感器异常",t:"2026-07-21 09:00:00",p:"--",s:"ignored",h:"王工",ht:"2026-07-21 14:22"},
+ {d:"ZL2314BH08921",dt:"装载机",b:"柳工",et:"危险力矩",c:"力矩百分比达88%，超过75%预警阈值",t:"2026-07-21 15:30:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"LM7890CJ1234",dt:"履带起重机",b:"三一",et:"主卷超载",c:"主卷拉力108%，超过100%额定载荷",t:"2026-07-20 13:45:00",p:"印尼项目A",s:"processed",h:"李工",ht:"2026-07-20 16:00"},
+ {d:"TG5612FK3321",dt:"堆高机",b:"三一",et:"绝缘告警",c:"绝缘电阻低于0.5MΩ，存在漏电风险",t:"2026-07-20 10:20:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"NV8823PL6677",dt:"集装箱正面吊",b:"卡尔玛",et:"长时间停机",c:"设备连续停机超过72小时",t:"2026-07-19 08:00:00",p:"--",s:"pending",h:"",ht:""},
+ {d:"ST3341RM4455",dt:"牵引车",b:"东风",et:"电机温度",c:"电机绕组温度135°C，超过120°C预警值",t:"2026-07-19 14:30:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"WD1100BR7755",dt:"挖掘机",b:"三一",et:"设备保养通知",c:"机油更换保养已逾期7天，请及时处理",t:"2026-07-23 09:15:00",p:"印尼项目B",s:"pending",h:"",ht:""},
+ {d:"WD2200CS8866",dt:"自卸车",b:"卡特彼勒",et:"设备保养通知",c:"空气滤清器保养临期，剩余3天",t:"2026-07-22 10:30:00",p:"--",s:"pending",h:"",ht:""},
+ {d:"SY048CFV037C8",dt:"泵车",b:"三一",et:"设备保养通知",c:"液压系统保养已逾期15天，请尽快安排",t:"2026-07-21 09:00:00",p:"--",s:"ignored",h:"王工",ht:"2026-07-21 14:22"},
+ {d:"WD3300DT9977",dt:"搅拌车",b:"中联重科",et:"设备保养通知",c:"发动机保养临期，剩余2天",t:"2026-07-20 16:45:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"WD4400FU1122",dt:"矿用宽体自卸车",b:"三一",et:"设备保养通知",c:"变速箱保养已逾期3天",t:"2026-07-19 11:20:00",p:"青山园区",s:"processed",h:"赵工",ht:"2026-07-20 08:30"},
+ {d:"RY0011EL5544",dt:"挖掘机",b:"卡特彼勒",et:"油位低",c:"燃油液位降至8%，低于15%预警阈值",t:"2026-07-23 06:30:00",p:"测试项目",s:"pending",h:"",ht:""},
+ {d:"RY0022GR6633",dt:"自卸车",b:"东风",et:"偷油",c:"油位在30分钟内下降12%，疑似偷油",t:"2026-07-22 23:15:00",p:"--",s:"pending",h:"",ht:""},
+ {d:"RY0033HS7744",dt:"装载机",b:"柳工",et:"漏油",c:"油量消耗速率异常，每小时下降8%",t:"2026-07-22 14:20:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"RY0044JT8855",dt:"平地机",b:"三一",et:"油位低",c:"燃油液位降至5%，已触发低油位报警",t:"2026-07-21 17:50:00",p:"--",s:"pending",h:"",ht:""},
+ {d:"RY0055KU9966",dt:"矿用宽体自卸车",b:"三一",et:"漏油",c:"发动机底部发现油迹，疑似燃油管路泄漏",t:"2026-07-20 09:40:00",p:"印尼项目A",s:"processed",h:"刘工",ht:"2026-07-20 14:15"},
+ {d:"WZ0011LT1234",dt:"挖掘机",b:"三一",et:"电子围栏预警",c:"设备驶出作业区，当前位置偏离围栏200m",t:"2026-07-23 07:45:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"WZ0022MU2345",dt:"自卸车",b:"东风",et:"电子围栏预警",c:"设备进入禁行区域，围栏类型：禁入区",t:"2026-07-22 19:30:00",p:"--",s:"pending",h:"",ht:""},
+ {d:"WZ0033NV3456",dt:"搅拌车",b:"中联重科",et:"电子围栏预警",c:"设备超出施工区域边界150m",t:"2026-07-22 08:15:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"WZ0044PW4567",dt:"泵车",b:"三一",et:"电子围栏预警",c:"设备在非工作时间进入禁区",t:"2026-07-21 22:00:00",p:"--",s:"ignored",h:"陈工",ht:"2026-07-21 23:30"},
+ {d:"WZ0055QX5678",dt:"汽车起重机",b:"卡特彼勒",et:"电子围栏预警",c:"设备未经授权驶出园区GPS围栏",t:"2026-07-20 15:30:00",p:"印尼项目A",s:"processed",h:"周工",ht:"2026-07-20 17:00"},
+ {d:"JC0011RY6789",dt:"挖掘机",b:"三一",et:"检查需处理",c:"日常检查发现液压管路存在渗油现象",t:"2026-07-23 10:00:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"JC0022SZ7890",dt:"自卸车",b:"东风",et:"检查需处理",c:"制动系统检查发现刹车片磨损超限",t:"2026-07-22 16:20:00",p:"--",s:"pending",h:"",ht:""},
+ {d:"JC0033TA8901",dt:"搅拌车",b:"中联重科",et:"检查需处理",c:"轮胎检查发现左后轮胎压不足",t:"2026-07-22 11:10:00",p:"青山园区",s:"pending",h:"",ht:""},
+ {d:"JC0044UB9012",dt:"装载机",b:"柳工",et:"检查需处理",c:"电气系统检查发现大灯线路老化",t:"2026-07-21 14:30:00",p:"--",s:"pending",h:"",ht:""},
+ {d:"JC0055VC0123",dt:"矿用宽体自卸车",b:"三一",et:"检查需处理",c:"结构件检查发现货箱底板有开裂迹象",t:"2026-07-20 08:00:00",p:"印尼项目A",s:"processed",h:"吴工",ht:"2026-07-20 13:45"}
+];
+var ops = [], selCat = 0, viewMode = "device", curIdx = -1, batchMode = "", pageIdx = 0, curDrillDev = "";
+ var catMap = {0:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],1:[17,18,19,20,21],2:[22,23,24,25,26],3:[27,28,29,30,31],4:[32,33,34,35,36]};
+ 
+ // ---- Filter Data ----
+ var eventTypesByCat = {
+   0: ["冷却水温高","故障码","SOC过低","危险力矩","蓄电池电压低","超速","发动机转速","主卷超载","设备离线预警","长时间停机","危险负载","绝缘告警","长时间驻车","电机温度","高液压油温"],
+   1: ["设备保养通知"],
+   2: ["油位低","偷油","漏油"],
+   3: ["电子围栏预警"],
+   4: ["检查需处理"]
+ };
+ var allDeviceTypes = ["汽车起重机","牵引车","自卸车","伸缩臂叉装车","挖掘机","堆高机","集卡","宽体车(油)","搅拌车-油车","旋挖钻-油车","燃油装载机","电动装载机","电动宽体车","电动搅拌车","平地机","泵车","轻卡","矿用宽体自卸车","自装卸车","电动自卸车"];
+ var allBrands = ["三一","卡特彼勒","中联重科","东风","柳工","卡尔玛","徐工","山推","临工","龙工","厦工"];
+ 
+ // ---- Filter Functions ----
+ function populateFilters() {
+   var dt = document.getElementById("deviceTypeFilter");
+   allDeviceTypes.forEach(function(v) { var o = document.createElement("option"); o.textContent = v; o.value = v; dt.appendChild(o); });
+   var bf = document.getElementById("brandFilter");
+   allBrands.forEach(function(v) { var o = document.createElement("option"); o.textContent = v; o.value = v; bf.appendChild(o); });
+   updateEventTypeFilter(0);
+ }
+ function updateEventTypeFilter(cat) {
+   var et = document.getElementById("eventTypeFilter");
+   var curVal = et.value;
+   et.innerHTML = "<option value=\"\">全部事件类型</option>";
+   (eventTypesByCat[cat] || []).forEach(function(v) {
+     var o = document.createElement("option"); o.textContent = v; o.value = v; et.appendChild(o);
+   });
+   if (curVal) et.value = curVal;
+ }
+ function getFilteredIndices() {
+   var arr = catMap[selCat] || [];
+   var sq = document.getElementById("searchBox").value.trim().toLowerCase();
+   var st = document.getElementById("statusFilter").value;
+   var et = document.getElementById("eventTypeFilter").value;
+   var dt = document.getElementById("deviceTypeFilter").value;
+   var br = document.getElementById("brandFilter").value;
+   var df = document.getElementById("dateFrom").value;
+   var dT = document.getElementById("dateTo").value;
+   return arr.filter(function(i) {
+     var e = events[i];
+     if (sq && !e.d.toLowerCase().includes(sq)) return false;
+     if (st && e.s !== st) return false;
+     if (et && e.et !== et) return false;
+     if (dt && e.dt !== dt) return false;
+     if (br && e.b !== br) return false;
+     if (df && e.t < df) return false;
+     if (dT && e.t > dT + " 23:59:59") return false;
+     return true;
+   });
+ }
+
+// ---- Render ----
+function render(c) {
+   selCat = c; var arr = getFilteredIndices(); var tb = document.getElementById("tb");
+  tb.innerHTML = "";
+  if (viewMode === "device") {
+    var devs = {};
+    arr.forEach(function(i) { var e = events[i]; if (!devs[e.d]) devs[e.d] = {d:e.d, dt:e.dt, b:e.b, p:e.p, n:0, pe:0, pd:[]}; devs[e.d].n++; devs[e.d].pd.push(e); if (e.s === "pending") devs[e.d].pe++; });
+    var dl = Object.keys(devs).map(function(k) { return devs[k]; });
+    dl.sort(function(a,b) { return b.pe - a.pe; });
+    dl.forEach(function(d) {
+      var card = document.createElement("div"); card.className = "dvc"; card.setAttribute("data-device", d.d);
+      var img = "<div class=\"dvi\"><svg viewBox=\"0 0 44 36\" fill=\"none\"><rect x=\"6\" y=\"10\" width=\"32\" height=\"16\" rx=\"2\" stroke=\"#999\" stroke-width=\"1.5\" fill=\"#e8e8e8\"/><circle cx=\"14\" cy=\"30\" r=\"4\" stroke=\"#999\" stroke-width=\"1.5\" fill=\"#e8e8e8\"/><circle cx=\"30\" cy=\"30\" r=\"4\" stroke=\"#999\" stroke-width=\"1.5\" fill=\"#e8e8e8\"/></svg></div>";
+      var hlthCls = d.pe === 0 ? "dvc-hlth-g" : (d.pe < Math.ceil(d.n/2) ? "dvc-hlth-y" : "dvc-hlth-r");
+      var badge = d.pe > 0 ? "<span class=\"dvb\">" + d.pe + "</span>" : "";
+      card.innerHTML = img + "<div class=\"dvc-body\"><div class=\"dvc-t\"><span class=\"dvc-hlth " + hlthCls + "\"></span>" + d.d + badge + "</div><div class=\"dvc-m\">" + d.dt + " | " + (d.b || "--") + "</div><div class=\"dvc-proj\">" + (d.p || "--") + " | 共" + d.n + "条事件</div><div class=\"dvc-bar\"><span class=\"st st-p\">待处理 " + d.pe + "</span></div></div>";
+    });
+    if (dl.length === 0) tb.innerHTML = "<div class=\"empty\">当前大类下暂无事件</div>";
+    return;
+  }
+   var ps = parseInt(document.getElementById("ps").value);
+   var tot = arr.length;
+   var si = pageIdx * ps;
+   var ei = Math.min(si + ps, tot);
+   var page = arr.slice(si, ei);
+   page.forEach(function(i) {
+     var e = events[i]; var sc = e.s === "pending" ? "st-p" : e.s === "processed" ? "st-d" : "st-i";
+     var st = e.s === "pending" ? "待处理" : e.s === "processed" ? "已处理" : "已忽略";
+     var tr = document.createElement("tr"); tr.setAttribute("data-idx", i);
+     var cb = "<input type=\"checkbox\" class=\"rc\"" + (e.s !== "pending" ? " disabled" : "") + ">";
+     var acts = e.s === "pending" ? "<button class=\"act\" onclick=\"event.stopPropagation();showDetail(" + i + ")\">详情</button><button class=\"act act-p\" onclick=\"event.stopPropagation();showMo('confirm');curIdx=" + i + "\">确认处理</button><button class=\"act\" onclick=\"event.stopPropagation();showMo('ignore');curIdx=" + i + "\">忽略</button>" : "<button class=\"act\" onclick=\"event.stopPropagation();showDetail(" + i + ")\">详情</button>";
+     tr.innerHTML =
+       "<td>" + cb + "</td>" +
+       "<td><span class=\"tab-img\"><svg viewBox=\"0 0 24 20\" fill=\"none\" width=\"18\" height=\"16\"><rect x=\"2\" y=\"6\" width=\"20\" height=\"10\" rx=\"1\" stroke=\"#aaa\" stroke-width=\"1.2\" fill=\"#ddd\"/><circle cx=\"8\" cy=\"18\" r=\"3\" stroke=\"#aaa\" stroke-width=\"1.2\" fill=\"#ddd\"/><circle cx=\"16\" cy=\"18\" r=\"3\" stroke=\"#aaa\" stroke-width=\"1.2\" fill=\"#ddd\"/></svg></span>" + e.d + "</td>" +
+       "<td>" + e.et + "</td>" +
+       "<td>" + e.c + "</td>" +
+       "<td>" + e.t + "</td>" +
+       "<td>" + e.dt + "</td>" +
+       "<td>" + e.p + "</td>" +
+       "<td><span class=\"st " + sc + "\">" + st + "</span></td>" +
+       "<td>" + (e.h || "--") + "</td>" +
+       "<td>" + (e.ht || "--") + "</td>" +
+       "<td><div class=\"tbl-act\">" + acts + "</div></td>";
+     tb.appendChild(tr);
+   });
+   if (page.length === 0) tb.innerHTML = "<div class=\"empty\">当前筛选条件下暂无事件</div>";
+   updPg(tot, ps); updStats();
+ }
+ function updPg(tot, ps) {
+   document.getElementById("pt").textContent = tot;
+   if (tot === 0) { document.getElementById("pp").classList.add("pg-off"); document.getElementById("pn").classList.add("pg-off"); return; }
+   var mx = Math.ceil(tot / ps) - 1;
+   document.getElementById("pp").classList.toggle("pg-off", pageIdx <= 0);
+   document.getElementById("pn").classList.toggle("pg-off", pageIdx >= mx);
+}
+function updStats() {
+   var a = [0,0,0]; getFilteredIndices().forEach(function(i) {
+    var e = events[i]; if (e.s === "pending") a[0]++; else if (e.s === "processed") a[1]++; else a[2]++;
+  });
+  document.getElementById("statt").textContent = (catMap[selCat] || []).length;
+  document.getElementById("stats").textContent = a[0];
+  document.getElementById("statp").textContent = a[1];
+  document.getElementById("stati").textContent = a[2];
+}
+
+// ---- Page Navigation ----
+function showPage(p) {
+  document.querySelectorAll(".page").forEach(function(x) { x.classList.remove("active"); });
+  document.getElementById(p + "Page").classList.add("active");
+  if (p === "list") render(selCat);
+}
+
+// ---- Show Detail ----
+ function showDetail(idx) {
+   curIdx = idx; var e = events[idx];
+   document.getElementById("ddNo").textContent = e.d;
+   document.getElementById("ddType").textContent = e.dt;
+   document.querySelector(".d-left .df:nth-child(4) .v").textContent = e.b || "--";
+   document.getElementById("ddStatus").textContent = "在线";
+   document.getElementById("ddProj").textContent = e.p || "--";
+   document.getElementById("deType").textContent = e.et;
+   document.getElementById("deTime").textContent = e.t;
+   document.getElementById("deCont").textContent = e.c;
+   document.getElementById("deSrc").textContent = e.et === "检查需处理" ? "检查" : "设备预警";
+   document.getElementById("deDiff").textContent = "-";
+
+  var ps = document.getElementById("dStatus");
+  if (e.s === "pending") { ps.className = "st st-p"; ps.textContent = "待处理"; }
+  else if (e.s === "processed") { ps.className = "st st-d"; ps.textContent = "已处理"; }
+  else { ps.className = "st st-i"; ps.textContent = "已忽略"; }
+
+  var acts = document.getElementById("dActions"); acts.innerHTML = "";
+  if (e.s === "pending") {
+    acts.innerHTML = "<span style=\"font-size:13px;color:#666\">处理动作：</span>" +
+      "<button class=\"da-btn da-btn-p\" data-action=\"confirm\">确认处理</button>" +
+      "<button class=\"da-btn\" data-action=\"ignore\">忽略</button>" +
+      "<div class=\"ddrop\"><button class=\"da-btn\" id=\"moreBtn\">更多 ▾</button><div class=\"ddrop-m\" id=\"moreMenu\"><div class=\"ddrop-i\" data-more=\"repair\">服务召请</div><div class=\"ddrop-i\" data-more=\"curve\">查看动态曲线</div><div class=\"ddrop-i\" data-more=\"oil\">查看油位曲线</div><div class=\"ddrop-i\" data-more=\"maintain\">保养处理</div></div></div>" +
+      "<div class=\"sp\"></div>" +
+      "<button class=\"da-btn da-btn-p\" data-action=\"task\">关联任务</button>";
+  } else {
+    acts.innerHTML = "<span style=\"font-size:13px;color:#999\">此事件已处理</span><div class=\"sp\"></div>" +
+      "<button class=\"da-btn da-btn-p\" data-action=\"task\">关联任务</button>";
+  }
+
+  if (ops.length === 0) {
+    document.getElementById("opList").innerHTML = "<div class=\"empty\">暂无操作记录</div>";
+  } else {
+    var h = ""; ops.forEach(function(o) { h += "<div class=\"op\"><div class=\"oa\">" + o.a + "</div><div class=\"om\">" + o.p + " | " + o.t + "</div></div>"; });
+    document.getElementById("opList").innerHTML = h;
+  }
+  showPage("detail");
+}
+
+// ---- State Changes ----
+function handleConfirm() {
+  var e = events[curIdx]; e.s = "processed"; e.h = "Angela";
+  var d = new Date(); e.ht = d.getFullYear() + "-" + (d.getMonth()+1).toString().padStart(2,"0") + "-" + d.getDate().toString().padStart(2,"0") + " " + d.getHours().toString().padStart(2,"0") + ":" + d.getMinutes().toString().padStart(2,"0");
+  ops.unshift({a:"确认处理", p:"Angela", t:e.ht});
+  render(selCat); showDetail(curIdx);
+}
+function handleIgnore() {
+  var e = events[curIdx]; e.s = "ignored"; e.h = "Angela";
+  var d = new Date(); e.ht = d.getFullYear() + "-" + (d.getMonth()+1).toString().padStart(2,"0") + "-" + d.getDate().toString().padStart(2,"0") + " " + d.getHours().toString().padStart(2,"0") + ":" + d.getMinutes().toString().padStart(2,"0");
+  ops.unshift({a:"忽略", p:"Angela", t:e.ht});
+  render(selCat); showDetail(curIdx);
+}
+
+// ---- Settings ----
+function renderSettings() {
+  var cats = [
+    {n:"设备异常",t:15,o:8,items:["冷却水温高","故障码","SOC过低","危险力矩","蓄电池电压低","超速","发动机转速","主卷超载","设备离线预警","长时间停机","危险负载","绝缘告警","长时间驻车","电机温度","高液压油温"]},
+    {n:"维保事项",t:1,o:1,items:["设备保养通知"]},
+    {n:"燃油异常",t:3,o:2,items:["油位低","偷油","漏油"]},
+    {n:"位置预警",t:1,o:1,items:["电子围栏预警"]},
+    {n:"检查异常",t:1,o:1,items:["检查需处理"]}
+  ];
+  var h = "";
+  cats.forEach(function(c, ci) {
+    h += "<div class=\"acc\"><div class=\"acc-h on\" data-acc=\"\"><span>" + c.n + " (" + c.o + "/" + c.t + " 已开启)</span><span class=\"ar\">?</span></div><div class=\"acc-b on\">";
+    c.items.forEach(function(it) { h += "<div class=\"er\"><span>" + it + "</span><div style=\"display:flex;align-items:center;gap:8px\"><span style=\"font-size:12px;color:#999\">授权人员：全部用户</span><label class=\"tog\"><input type=\"checkbox\" checked><span class=\"tog-sl\"></span></label></div></div>"; });
+    h += "</div></div>";
+  });
+  document.getElementById("settBody").innerHTML = h;
+}
+
+// ---- Device Drill ----
+function showDeviceDrill(devId) {
+  document.getElementById("ddTitle").textContent = "设备 " + devId + " 事件列表";
+  var body = document.getElementById("ddBody"); body.innerHTML = "";
+  var arr = getFilteredIndices();
+  var devEvents = arr.filter(function(i) { return events[i].d === devId; });
+  devEvents.forEach(function(i) {
+    var e = events[i];
+    var sc = e.s === "pending" ? "st-p" : e.s === "processed" ? "st-d" : "st-i";
+    var st = e.s === "pending" ? "待处理" : e.s === "processed" ? "已处理" : "已忽略";
+    var acts = e.s === "pending" ? "<button class=\"act act-p\" onclick=\"event.stopPropagation();curIdx=" + i + ";showMo('confirm')\">确认处理</button><button class=\"act\" onclick=\"event.stopPropagation();curIdx=" + i + ";showMo('ignore')\">忽略</button>" : "";
+    var card = document.createElement("div"); card.className = "ddev";
+    card.setAttribute("data-ddev-idx", i);
+    card.onclick = function(ev){ if(!ev.target.closest(".ddev-acts")&&!ev.target.closest(".act")){ showDetail(parseInt(this.getAttribute("data-ddev-idx"))); } };
+    card.innerHTML = "<div class=\"ddev-h\"><span class=\"ddev-et\">" + e.et + "</span><span class=\"st " + sc + "\">" + st + "</span></div><div class=\"ddev-c\">" + e.c + "</div><div class=\"ddev-t\">" + e.t + " | " + e.dt + " | " + (e.p || "--") + "</div>" + (acts ? "<div class=\"ddev-acts\">" + acts + "</div>" : "<div style=\"margin-top:6px\"><button class=\"act\" onclick=\"event.stopPropagation();showDetail(" + i + ")\">详情</button></div>");
+    body.appendChild(card);
+  });
+  if (devEvents.length === 0) body.innerHTML = "该筛选条件下该设备无事件";
+  document.getElementById("deviceDrillPanel").classList.add("show");
+}
+function refreshDrill() { if (curDrillDev) showDeviceDrill(curDrillDev); }
+// ---- Toast ----
+function showToast(msg, type) {
+  var t = document.getElementById("toast");
+  t.className = "toast toast-" + (type || "s");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove("show"); }, 2500);
+}
+
+// ---- Pagination Handlers ----
+function goPage(dir) {
+  var ps = parseInt(document.getElementById("ps").value);
+  var tot = parseInt(document.getElementById("pt").textContent);
+  var mx = Math.ceil(tot / ps) - 1;
+  var np = pageIdx + dir;
+  if (np < 0 || np > mx) return;
+  pageIdx = np; render(selCat);
+}
+
+// ---- Standalone Page ----
+function showStandalone(title, placeholder) {
+  document.getElementById("saTitle").textContent = title;
+  document.getElementById("saPlaceholder").textContent = placeholder + " - [占位页面] 后续迭代实现完整展示";
+  document.getElementById("standalonePage").classList.add("show");
+}// ---- Modals ----
+function showMo(id) { document.getElementById(id + "Modal").classList.add("show"); }
+function hideMo(id) { document.getElementById(id + "Modal").classList.remove("show"); }
+
+// ---- Event Delegation ----
+document.addEventListener("click", function(e) {
+  var el = e.target;
+
+  // Modal close
+  if (el.classList.contains("modal-close") || el.classList.contains("m-c")) {
+    var mo = el.closest(".mo"); if (mo) mo.classList.remove("show"); return;
+  }
+
+  // Category tabs
+  var cat = el.closest("[data-cat]");
+  if (cat) {
+    document.querySelectorAll("[data-cat]").forEach(function(t) { t.classList.remove("active"); });
+    cat.classList.add("active");
+     var newCat = parseInt(cat.getAttribute("data-cat"));
+     updateEventTypeFilter(newCat);
+     render(newCat);
+    return;
+  }
+
+  // View mode switch
+  var view = el.closest("[data-view]");
+  if (view) {
+    viewMode = view.getAttribute("data-view");
+    document.querySelectorAll("[data-view]").forEach(function(b) { b.classList.remove("active"); });
+    view.classList.add("active");
+    render(selCat);
+    return;
+  }
+
+  // Settings button
+  if (el.id === "settingsBtn") { renderSettings(); showPage("settings"); return; }
+
+  // Back buttons
+  if (el.id === "backFromStandalone") { document.getElementById("standalonePage").classList.remove("show"); return; }
+  if (el.id === "backToList" || el.id === "backFromSettings") { showPage("list"); return; }
+
+  // Table row click
+  var row = el.closest("tr[data-idx]");
+  if (row && !el.classList.contains("rc")) {
+    if (el.tagName !== "INPUT") { showDetail(parseInt(row.getAttribute("data-idx"))); }
+    return;
+  }
+
+  // Device card click
+  var card = el.closest("[data-device]");
+  if (card) { var devId = card.getAttribute("data-device"); curDrillDev = devId; showDeviceDrill(devId); return; }
+
+
+  // Detail tab
+  var dtab = el.closest("[data-dtab]");
+  if (dtab) {
+    var t = dtab.getAttribute("data-dtab");
+    document.querySelectorAll("[data-dtab]").forEach(function(x) { x.classList.remove("on"); });
+    dtab.classList.add("on");
+    document.getElementById("dCont").classList.toggle("h", t !== "info");
+    document.getElementById("dRec").classList.toggle("h", t !== "records");
+    return;
+  }
+
+  // Dropdown toggle (more)
+  if (el.id === "moreBtn") { document.getElementById("moreMenu").classList.toggle("show"); return; }
+  var more = el.closest("[data-more]");
+  if (more) {
+    document.getElementById("moreMenu").classList.remove("show");
+    var a = more.getAttribute("data-more");
+    if (a === "repair") { alert("服务召请跳转（外部系统）"); }
+    else if (a === "curve") { showStandalone("查看动态曲线", "设备运行参数动态曲线图"); }
+    else if (a === "oil") { showStandalone("查看油位曲线", "燃油/液压油液位趋势图"); }
+    else if (a === "maintain") { showStandalone("保养处理", "设备保养信息与保养记录"); }
+    return;
+  }
+
+  // Detail action buttons
+  var act = el.closest("[data-action]");
+  if (act) {
+    var a = act.getAttribute("data-action");
+    if (a === "confirm") showMo("confirm");
+    else if (a === "ignore") showMo("ignore");
+    else if (a === "repair") alert("服务召请跳转");
+    else if (a === "task") document.getElementById("taskPanel").classList.add("show");
+    return;
+  }
+
+  // Modal submits
+  if (el.id === "confirmSubmit") { hideMo("confirm"); handleConfirm(); showToast("确认处理成功","s"); refreshDrill(); return; }
+  if (el.id === "ignoreSubmit") { hideMo("ignore"); handleIgnore(); showToast("已忽略","s"); refreshDrill(); return; }
+  if (el.id === "batchSubmit") {
+    hideMo("batch");
+    showToast("批量操作成功！共处理 " + document.getElementById("bmCnt").textContent + " 条事件");
+    clearSel(); return;
+  }
+
+  // Quick phrase tags
+  var tl = el.closest("[data-phrase]");
+  if (tl) {
+    document.querySelectorAll("[data-phrase]").forEach(function(x) { x.classList.remove("sel"); });
+    tl.classList.add("sel");
+    var ta = tl.closest(".m-b").querySelector("textarea");
+    if (ta) ta.value = tl.getAttribute("data-phrase");
+    return;
+  }
+
+  // Accordion toggle
+  var acc = el.closest("[data-acc]");
+  if (acc) {
+    acc.classList.toggle("on");
+    acc.nextElementSibling.classList.toggle("on");
+    return;
+  }
+
+  // Task panel
+  if (el.id === "createTaskSubmit") {
+    var dev = document.getElementById("ctDevice").value;
+    hideMo("createTask");
+    showToast("关联任务创建成功：" + (dev || "无设备"), "s");
+    return;
+  }
+  
+
+  if (el.id === "closeDrill") { document.getElementById("deviceDrillPanel").classList.remove("show"); return; }
+  if (el.id === "closeTask" || el.classList.contains("tp-c")) { document.getElementById("taskPanel").classList.remove("show"); return; }
+  if (el.id === "createTask") { var dev = curIdx >= 0 ? events[curIdx].d : ""; document.getElementById("ctDevice").value = dev; showMo("createTask"); return; }
+
+  // Batch operations
+  if (el.id === "batchConfirmBtn") { batchMode = "confirm"; doBatch(); return; }
+  if (el.id === "batchIgnoreBtn") { batchMode = "ignore"; doBatch(); return; }
+  if (el.id === "clearSelBtn") { clearSel(); return; }
+
+  // Reset button
+   if (el.id === "pp") { goPage(-1); return; }
+  if (el.id === "pn") { goPage(1); return; }
+  document.getElementById("ps").addEventListener("change", function(){ pageIdx = 0; render(selCat); });
+
+  if (el.id === "resetBtn") {
+     document.getElementById("searchBox").value = "";
+     document.getElementById("statusFilter").value = "";
+     document.getElementById("eventTypeFilter").value = "";
+     document.getElementById("deviceTypeFilter").value = "";
+     document.getElementById("brandFilter").value = "";
+     render(selCat); return;
+   }
+
+  // Select all
+  if (el.id === "selAll") {
+    var c = el.checked;
+    document.querySelectorAll(".rc:not(:disabled)").forEach(function(x) { x.checked = c; });
+    updBatch(); return;
+  }
+
+  // Individual checkbox (click)
+  if (el.classList.contains("rc")) { updBatch(); return; }
+});
+
+// ---- Batch Functions ----
+function updBatch() {
+  var n = document.querySelectorAll(".rc:checked").length;
+  document.getElementById("batchBar").classList.toggle("show", n > 0);
+  document.getElementById("bc").textContent = n;
+}
+function clearSel() {
+  document.querySelectorAll(".rc").forEach(function(c) { c.checked = false; });
+  document.getElementById("selAll").checked = false;
+  updBatch();
+}
+function doBatch() {
+  var n = document.querySelectorAll(".rc:checked").length;
+  if (n === 0) { alert("请先选择事件"); return; }
+  document.getElementById("bmCnt").textContent = n;
+  showMo("batch");
+}
+
+// ---- Init ----
+ populateFilters(); render(0);
+document.getElementById("ps").addEventListener("change", function(){ pageIdx = 0; render(selCat); });
+</script>
+<div id="toast" class="toast"></div>
+<div id="createTaskModal" class="mo"><div class="m-box">
+<div class="m-h"><h3>创建关联任务</h3><span class="m-c modal-close">x</span></div>
+<div class="m-b">
+<div class="fg"><label>任务类型</label><select id="ctType" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px"><option>现场排查</option><option>巡检确认</option><option>维修处理</option><option>更换配件</option></select></div>
+<div class="fg"><label>关联设备</label><input id="ctDevice" type="text" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px" readonly></div>
+<div class="fg" style="display:flex;gap:10px"><div style="flex:1"><label>计划开始时间</label><input id="ctStart" type="text" placeholder="YYYY-MM-DD" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px" value="2026-07-25"></div><div style="flex:1"><label>截止时间</label><input id="ctEnd" type="text" placeholder="YYYY-MM-DD" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px" value="2026-07-28"></div></div>
+<div class="fg"><label>接收人</label><select id="ctPerson" style="width:100%;padding:6px 10px;border:1px solid #d9d9d9;border-radius:3px;font-size:13px"><option>王工</option><option>李工</option><option>赵工</option><option>刘工</option><option>吴工</option></select></div>
+<div class="fg"><label>任务说明（选填）</label><textarea id="ctNote" placeholder="请输入任务说明" style="min-height:50px"></textarea></div>
+</div>
+<div class="m-f"><button class="btn modal-close">取消</button><button id="createTaskSubmit" class="btn btn-p">确认创建</button></div></div></div>
+<div id="standalonePage" class="stp">
+<div class="stp-hdr"><div id="backFromStandalone" class="d-back">← 返回</div><div id="saTitle" style="font-size:14px;font-weight:600">查看动态曲线</div></div>
+<div class="stp-body"><div class="stp-placeholder"><svg viewBox="0 0 80 60" fill="none"><path d="M5 50 L20 35 L35 40 L50 20 L65 30 L75 10" stroke="#ccc" stroke-width="2" fill="none"/><circle cx="20" cy="35" r="3" fill="#ddd"/><circle cx="35" cy="40" r="3" fill="#ddd"/><circle cx="50" cy="20" r="3" fill="#ddd"/><circle cx="65" cy="30" r="3" fill="#ddd"/><circle cx="75" cy="10" r="3" fill="#ddd"/></svg><br><span id="saPlaceholder">曲线图占位 - 后续迭代实现完整展示</span></div></div>
+</div>
+</body></html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
