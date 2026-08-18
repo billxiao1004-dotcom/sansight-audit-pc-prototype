@@ -1262,6 +1262,7 @@ EVENTS.forEach(e=>{ e.unread = e.status==='待处理' && (parseInt(e.id.slice(4)
 CATEGORIES.forEach(c=>{ c.count = EVENTS.filter(e=>e.cat===c.key && e.status==='待处理').length; });
 let currentCat = 'equip';
 let grouped = true;
+let openGroups = new Set(); // 记录已展开的分组（大类:设备），重绘后保持展开
 let activeEvent = null;
 let activeEventIndex = -1;
 let filters = { status:['待处理'], type:[], deviceType:[], kw:'', startDate:'2026-07-26', endDate:'2026-08-02' };
@@ -1632,7 +1633,8 @@ function renderGrouped(){
     const dev = DEVICES.find(d=>d.id===devId);
     const first = evs[0];
     const unread = evs.filter(x=>x.status==='待处理'&&x.unread).length;
-    return `<div class="group-row" data-dev="${devId}">
+    const openCls = openGroups.has(currentCat + ':' + devId) ? ' open' : '';
+    return `<div class="group-row${openCls}" data-dev="${devId}">
         <span class="chev">${icon('chevronRight')}</span>
         <div class="asset-cell"><div class="asset-thumb">${icon('truck')}</div><div class="asset-info"><div class="asset-name">${dev.name}</div><div class="asset-type">${dev.type}</div></div></div>
         <div class="event-count"><b>${evs.length}</b>条事件${unread?`<span class="unread-tag">新${unread}</span>`:''}</div>
@@ -1642,12 +1644,20 @@ function renderGrouped(){
       </div>
       <div class="event-subrows" data-subrows hidden></div>`;
   }).join('');
+  body.querySelectorAll('.group-row.open').forEach(row=>{
+    const id = row.dataset.dev;
+    const sub = row.nextElementSibling;
+    if(!sub.dataset.rendered){ renderSubRows(sub, id, 5); sub.dataset.rendered = '1'; }
+    sub.hidden = false;
+  });
   body.querySelectorAll('.group-row').forEach(row=>{
     row.addEventListener('click',()=>{
       const id = row.dataset.dev;
+      const key = currentCat + ':' + id;
       const sub = row.nextElementSibling;
       const open = !row.classList.contains('open');
       row.classList.toggle('open',open);
+      if(open) openGroups.add(key); else openGroups.delete(key);
       if(open && !sub.dataset.rendered){
         renderSubRows(sub, id, 5);
         sub.dataset.rendered = '1';
@@ -3055,6 +3065,12 @@ function confirmUnfinished(ev){
 }
 function openModal(id){
   document.getElementById(id).classList.add('show');
+  if(id==='modalHandle' || id==='modalIgnore'){
+    const box = document.getElementById(id).querySelector('.modal');
+    box.querySelectorAll('.phrase.on').forEach(b=>b.classList.remove('on'));
+    const ta = box.querySelector('textarea');
+    if(ta) ta.value = '';
+  }
 }
 function openMaint(){ openModal('modalMaint'); }
 function closeModals(){
