@@ -251,10 +251,10 @@
   /* table */
   .table-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
   .table-head,.group-row,.event-row{display:grid;align-items:center}
-  .grid-cols{grid-template-columns:36px 180px 130px minmax(220px,1fr) 150px 110px 110px 92px 84px 150px 150px}
-  .grid-cols.simple{grid-template-columns:36px 200px 130px minmax(220px,1fr) 150px 110px 110px 92px 84px 150px 150px}
+  .grid-cols{grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px}
+  .grid-cols.simple{grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px}
   .table-head{
-    grid-template-columns:36px 200px 130px minmax(220px,1fr) 150px 110px 110px 92px 84px 150px 150px;
+    grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px;
     background:var(--head);font-size:12.5px;color:var(--text-2);height:42px;padding:0 12px;border-bottom:1px solid var(--border);
   }
   .table-head .th{display:flex;align-items:center;gap:5px;white-space:nowrap}
@@ -281,14 +281,19 @@
   .event-count b{color:var(--primary);font-size:15px;margin-right:4px}
   .meter{font-size:12.5px;color:var(--text-2)}
   .event-row{
-    grid-template-columns:36px 200px 130px minmax(220px,1fr) 150px 110px 110px 92px 84px 150px 150px;
+    grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px;
     min-height:54px;padding:8px 12px;border-bottom:1px solid #F5F6F8;cursor:pointer;transition:background .12s;
   }
   .event-row:hover{background:#FAFBFC}
+  .event-subrows{margin:0 0 0 24px;border-left:2px solid #EDEFF2;padding:2px 0 2px 14px}
   .event-row .cell{min-width:0;font-size:13px}
   .event-row .cell.sub{color:var(--text-2)}
   .event-type{font-weight:500}
   .event-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-2)}
+  .ev-name{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ev-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-2);font-size:12.5px;margin-top:2px}
+  .ev-time{white-space:nowrap}
+  .ev-dev{color:var(--text-2);font-size:12.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;font-size:12px;font-weight:500}
   .tag.pending{background:#FFF1E8;color:var(--orange)}
   .tag.done{background:#E8F7EE;color:var(--green)}
@@ -300,6 +305,7 @@
   .status-text.ignored{color:var(--gray)}
   .unread-tag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;background:#e6f4ff;border:1px solid #91caff;color:#0958d9;font-size:11px;font-weight:600;margin-left:8px}
   .unread-tag.sm{height:18px;padding:0 6px;font-size:11px}
+  .unread-mini{display:inline-flex;align-items:center;height:14px;padding:0 5px;border-radius:7px;background:#1677ff;color:#fff;font-size:10px;font-weight:600;line-height:1;margin-left:6px;vertical-align:1px}
   .row-actions{display:flex;align-items:center;gap:4px}
   .row-drop{position:relative}
   .row-dots{width:28px;height:28px}
@@ -1283,7 +1289,7 @@ function updateAuditBadge(){
   b.style.display = n>0 ? 'inline-flex' : 'none';
 }
 function markRowRead(id){
-  document.querySelectorAll(`.event-row[data-event="${id}"] .unread-tag`).forEach(n=>n.remove());
+  document.querySelectorAll(`.event-row[data-event="${id}"] .unread-mini`).forEach(n=>n.remove());
 }
 function refreshGroupUnread(){
   document.querySelectorAll('.group-row').forEach(row=>{
@@ -1610,7 +1616,7 @@ function renderHead(){
     head.innerHTML = `<div class="th"><span class="icon sm" data-icon="list"></span></div>
       <div class="th">设备信息</div><div class="th">事件条数</div><div class="th">最近事件时间</div><div class="th">设备类型</div><div class="th"></div>`;
   } else {
-    head.innerHTML = `<div class="th"></div><div class="th">设备信息</div><div class="th">事件类型</div><div class="th">事件内容</div><div class="th">发生时间</div><div class="th">设备类型</div><div class="th">所属项目</div><div class="th">处理状态</div><div class="th">处理人</div><div class="th">处理时间</div><div class="th">操作</div>`;
+    head.innerHTML = `<div class="th"></div><div class="th">事件内容</div><div class="th">发生时间</div><div class="th">设备类型</div><div class="th">所属项目</div><div class="th">处理状态</div><div class="th">处理人</div><div class="th">处理时间</div><div class="th">操作</div>`;
   }
   head.querySelectorAll('[data-icon]').forEach(n=>{n.innerHTML=icon(n.dataset.icon);});
 }
@@ -1650,6 +1656,8 @@ function renderGrouped(){
     if(!sub.dataset.rendered){ renderSubRows(sub, id, 5); sub.dataset.rendered = '1'; }
     sub.hidden = false;
   });
+  const firstOpen = body.querySelector('.group-row.open');
+  if(firstOpen) firstOpen.scrollIntoView({ block: 'nearest' });
   body.querySelectorAll('.group-row').forEach(row=>{
     row.addEventListener('click',()=>{
       const id = row.dataset.dev;
@@ -1692,7 +1700,7 @@ function renderSubRows(container, devId, showCount){
 function eventRow(e){
   const tag = e.status==='待处理'?'<span class="status-text pending">待处理</span>'
     :e.status==='已处理'?'<span class="status-text done">已处理</span>':'<span class="status-text ignored">已忽略</span>';
-  const unreadMark = (e.status==='待处理' && e.unread) ? '<span class="unread-tag sm">新</span>' : '';
+  const unreadMark = (e.status==='待处理' && e.unread) ? '<span class="unread-mini">新</span>' : '';
   const actions = `<div class="dropdown row-drop">
       <button class="icon-btn row-dots" data-dots="${e.id}" title="操作">${icon('more')}</button>
       <div class="dropdown-menu row-menu">
@@ -1706,11 +1714,15 @@ function eventRow(e){
       </div>
     </div>`;
   return `<div class="event-row" data-event="${e.id}">
-      <div class="cell">${unreadMark}</div>
-      <div class="asset-cell"><div class="asset-thumb">${icon('truck')}</div><div class="asset-info"><div class="asset-name">${e.deviceName}</div><div class="asset-type">${e.deviceType}</div></div></div>
-      <div class="cell event-type">${e.type}</div>
-      <div class="cell event-content" title="${e.content}">${e.content}</div>
-      <div class="cell sub">${e.time}</div>
+      <div class="cell"></div>
+      <div class="cell event-block">
+        <div class="ev-name">${e.type}${unreadMark}</div>
+        <div class="ev-content" title="${e.content}">${e.content}</div>
+      </div>
+      <div class="cell time-block">
+        <div class="ev-time">${e.time}</div>
+        <div class="ev-dev">${e.deviceName}</div>
+      </div>
       <div class="cell sub">${e.deviceType}</div>
       <div class="cell sub">${e.project}</div>
       <div class="cell">${tag}</div>
