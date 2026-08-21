@@ -155,9 +155,9 @@
   }
   .filter-item{display:flex;align-items:center;gap:8px}
   .filter-item .f-label{font-size:13px;color:var(--text-2);flex:none}
-  .filter-search{position:relative;width:200px}
-  .filter-search .icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3)}
-  .filter-search input{width:100%;height:34px;border:1px solid var(--border);border-radius:var(--radius);padding:0 10px 0 32px;background:#fff}
+  .filter-search{position:relative;width:260px}
+  .filter-search .icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-3)}
+  .filter-search input{width:100%;height:34px;border:1px solid var(--border);border-radius:var(--radius);padding:0 12px 0 40px;font-size:13px;background:#fff}
   .dropdown{position:relative}
   .dropdown-trigger{
     display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 10px;border:1px solid var(--border);
@@ -179,6 +179,10 @@
   .menu-opt .check{width:16px;height:16px;border:1px solid #C7CBD4;border-radius:3px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:#fff}
   .menu-opt.on .check{background:var(--primary);border-color:var(--primary)}
   .menu-opt.on{color:var(--primary)}
+  .menu-search{display:flex;align-items:center;gap:6px;padding:6px 8px 4px}
+  .menu-search > .icon{color:var(--text-3);flex:none}
+  .menu-search input{flex:1;min-width:0;height:28px;border:1px solid var(--border);border-radius:4px;padding:0 8px;font-size:12.5px;outline:none;background:#fff}
+  .menu-search input:focus{border-color:var(--primary)}
   .menu-sep{height:1px;background:var(--border);margin:5px 4px}
   .menu-clear{display:flex;align-items:center;justify-content:center;gap:6px;height:30px;margin:0 4px 6px;border:1px dashed var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text-2);cursor:pointer}
   .menu-clear:hover{color:var(--primary);border-color:var(--primary);background:var(--primary-bg)}
@@ -250,17 +254,18 @@
 
   /* table */
   .table-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-  .table-head,.group-row,.event-row{display:grid;align-items:center}
-  .grid-cols{grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px}
-  .grid-cols.simple{grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px}
+  .table-head,.group-row,.event-row{display:grid;align-items:center;column-gap:12px}
+  .grid-cols{grid-template-columns:56px minmax(220px,1fr) 160px 130px 110px 92px 84px 150px 48px}
+  .grid-cols.simple{grid-template-columns:56px minmax(220px,1fr) 160px 130px 110px 92px 84px 150px 48px}
   .table-head{
-    grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px;
+    grid-template-columns:56px minmax(220px,1fr) 160px 130px 110px 92px 84px 150px 48px;
     background:var(--head);font-size:12.5px;color:var(--text-2);height:42px;padding:0 12px;border-bottom:1px solid var(--border);
   }
+  .table-head.grouped{grid-template-columns:36px minmax(180px,1.3fr) minmax(110px,1fr) minmax(120px,1fr) minmax(120px,1fr)}
   .table-head .th{display:flex;align-items:center;gap:5px;white-space:nowrap}
   .table-body{max-height:calc(100vh - 330px);overflow-y:auto}
   .group-row{
-    grid-template-columns:36px 200px minmax(120px,1fr) 120px 120px 60px;
+    grid-template-columns:36px minmax(180px,1.3fr) minmax(110px,1fr) minmax(120px,1fr) minmax(120px,1fr);
     height:58px;padding:0 12px;border-bottom:1px solid #F0F1F4;cursor:pointer;transition:background .12s;
   }
   .group-row:hover{background:#FAFBFC}
@@ -281,8 +286,8 @@
   .event-count b{color:var(--primary);font-size:15px;margin-right:4px}
   .meter{font-size:12.5px;color:var(--text-2)}
   .event-row{
-    grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px;
-    min-height:54px;padding:8px 12px;border-bottom:1px solid #F5F6F8;cursor:pointer;transition:background .12s;
+    grid-template-columns:56px minmax(220px,1fr) 160px 130px 110px 92px 84px 150px 48px;
+    min-height:72px;padding:8px 12px;border-bottom:1px solid #F5F6F8;cursor:pointer;transition:background .12s;
   }
   .event-row:hover{background:#FAFBFC}
   .event-subrows{margin:0 0 0 24px;border-left:2px solid #EDEFF2;padding:2px 0 2px 14px}
@@ -294,6 +299,9 @@
   .ev-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-2);font-size:12.5px;margin-top:2px}
   .ev-time{white-space:nowrap}
   .ev-dev{color:var(--text-2);font-size:12.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row-thumb{width:46px;height:46px;border-radius:var(--radius);background:var(--head);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-3);margin:0 auto}
+  .dev-block .ev-dev{font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dev-block .ev-type{color:var(--text-2);font-size:12.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;font-size:12px;font-weight:500}
   .tag.pending{background:#FFF1E8;color:var(--orange)}
   .tag.done{background:#E8F7EE;color:var(--green)}
@@ -305,7 +313,7 @@
   .status-text.ignored{color:var(--gray)}
   .unread-tag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;background:#e6f4ff;border:1px solid #91caff;color:#0958d9;font-size:11px;font-weight:600;margin-left:8px}
   .unread-tag.sm{height:18px;padding:0 6px;font-size:11px}
-  .unread-mini{display:inline-flex;align-items:center;height:14px;padding:0 5px;border-radius:7px;background:#1677ff;color:#fff;font-size:10px;font-weight:600;line-height:1;margin-left:6px;vertical-align:1px}
+  .unread-mini{display:inline-flex;align-items:center;height:14px;padding:0 5px;border-radius:7px;background:#e6f4ff;border:1px solid #91caff;color:#0958d9;font-size:10px;font-weight:600;line-height:1;margin-left:6px;vertical-align:1px}
   .row-actions{display:flex;align-items:center;gap:4px}
   .row-drop{position:relative}
   .row-dots{width:28px;height:28px}
@@ -353,6 +361,7 @@
   .op-item{display:flex;gap:10px;font-size:13px;color:var(--text-2);position:relative;padding-left:16px}
   .op-item::before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:50%;background:var(--head);border:1px solid #C7CBD4}
   .op-item .op-time{flex:none;color:var(--text-3)}
+  .op-empty{padding:12px 0;font-size:12.5px;color:var(--text-3);text-align:center}
   .action-bar{
     display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);background:#FAFBFC;box-shadow:0 2px 6px rgba(5,12,50,.05);flex:none;
   }
@@ -757,7 +766,7 @@
         <div class="filter-row">
           <div class="filter-search">
             <span class="icon" data-icon="search"></span>
-            <input id="searchInput" placeholder="搜索设备编号/序列号/昵称">
+            <input id="searchInput" placeholder="搜索设备编号 / 序列号 / 昵称">
           </div>
           <div class="filter-item">
             <span class="f-label">处理状态</span>
@@ -776,6 +785,7 @@
             <div class="dropdown" id="ddRange"></div>
           </div>
           <span class="filter-count" id="filterCount"></span>
+          <button class="link-btn ghost" id="btnResetFilter">清空筛选</button>
         </div>
         <div class="table-wrap">
           <div class="table-head" id="tableHead"></div>
@@ -1294,14 +1304,14 @@ function markRowRead(id){
 function refreshGroupUnread(){
   document.querySelectorAll('.group-row').forEach(row=>{
     const devId = row.dataset.dev;
-    const evs = filteredEvents().filter(e=>e.deviceId===devId && e.status==='待处理' && e.unread);
+    const evs = pendingUnreadFor(devId);
     let tag = row.querySelector('.unread-tag');
-    if(evs.length){
+    if(evs){
       if(!tag){
         const countEl = row.querySelector('.event-count');
-        if(countEl) countEl.insertAdjacentHTML('beforeend', `<span class="unread-tag">新${evs.length}</span>`);
+        if(countEl) countEl.insertAdjacentHTML('beforeend', `<span class="unread-tag">新${evs}</span>`);
       } else {
-        tag.textContent = '新'+evs.length;
+        tag.textContent = '新'+evs;
       }
     } else if(tag){
       tag.remove();
@@ -1311,7 +1321,7 @@ function refreshGroupUnread(){
 function refreshCategoryUnread(){
   document.querySelectorAll('.category-item').forEach(item=>{
     const key = item.dataset.cat;
-    const unread = EVENTS.filter(e=>e.cat===key && e.status==='待处理' && e.unread).length;
+    const unread = pendingUnreadInCat(key);
     let b = item.querySelector('.badge-new');
     if(unread>0){
       if(!b){
@@ -1401,12 +1411,13 @@ function renderSidebar(){
 function renderCategories(){
   const el = document.getElementById('categoryList');
   el.innerHTML = CATEGORIES.map(c=>{
-    const unread = EVENTS.filter(e=>e.cat===c.key && e.status==='待处理' && e.unread).length;
+    const cnt = pendingInCat(c.key);
+    const unread = pendingUnreadInCat(c.key);
     return `
     <div class="category-item${c.key===currentCat?' active':''}" data-cat="${c.key}">
       <span class="icon" data-icon="${c.icon}"></span>
       <span>${c.name}</span>
-      <span class="count">${c.count>0?`<span class="badge">${c.count}</span>`:''}${unread>0?`<span class="badge-new">新${unread}</span>`:''}</span>
+      <span class="count">${cnt>0?`<span class="badge">${cnt}</span>`:''}${unread>0?`<span class="badge-new">新${unread}</span>`:''}</span>
     </div>`;
   }).join('');
   el.querySelectorAll('[data-icon]').forEach(n=>{n.innerHTML=icon(n.dataset.icon);});
@@ -1433,7 +1444,7 @@ function makeDropdown(containerId, opts){
   wrap.className = 'dropdown';
   wrap.innerHTML = `<button class="dropdown-trigger"><span class="d-label">${opts.label}</span><span class="caret">${icon('chevronDown')}</span></button>
     <div class="dropdown-menu">${opts.render()}</div>`;
-  const d = { wrap, menu: wrap.querySelector('.dropdown-menu'), opts, label: wrap.querySelector('.d-label') };
+  const d = { wrap, menu: wrap.querySelector('.dropdown-menu'), opts, label: wrap.querySelector('.d-label'), id: containerId, searchText:'' };
   DD[containerId] = d;
   bindMenu(d);
   wrap.querySelector('.dropdown-trigger').addEventListener('click', e=>{
@@ -1443,6 +1454,14 @@ function makeDropdown(containerId, opts){
     if(!was){ wrap.classList.add('open'); refreshMenu(containerId); }
   });
   wrap.querySelector('.dropdown-menu').addEventListener('click', e=>{ e.stopPropagation(); });
+  wrap.addEventListener('input', e=>{
+    if(e.target.classList && e.target.classList.contains('menu-search-input')){
+      d.searchText = e.target.value;
+      refreshMenu(d.id);
+      const ni = wrap.querySelector('.menu-search-input');
+      if(ni){ ni.focus(); const len = ni.value.length; ni.setSelectionRange(len,len); }
+    }
+  });
   document.getElementById(containerId).appendChild(wrap);
   return d;
 }
@@ -1452,6 +1471,7 @@ function bindMenu(d){
       d.opts.onClick(o.dataset.opt);
       d.label.textContent = d.opts.labelText();
       d.opts.onPick && d.opts.onPick();
+      refreshMenu(d.id);
     });
   });
   d.menu.querySelectorAll('[data-clear]').forEach(o=>{
@@ -1459,6 +1479,7 @@ function bindMenu(d){
       d.opts.onClear && d.opts.onClear();
       d.label.textContent = d.opts.labelText();
       d.opts.onPick && d.opts.onPick();
+      refreshMenu(d.id);
     });
   });
   if(d.opts.onApply){
@@ -1482,6 +1503,9 @@ function clearRow(){
 function optRow(v, selected){
   return `<div class="menu-opt${selected?' on':''}" data-opt="${v}"><span class="check">${selected?icon('check'):''}</span>${v}</div>`;
 }
+function searchRow(v){
+  return `<div class="menu-search"><span class="icon" data-icon="search"></span><input class="menu-search-input" placeholder="搜索" value="${v||''}"></div>`;
+}
 function deviceTypeOptions(){
   return [...new Set(EVENTS.filter(e=>e.cat===currentCat).map(e=>e.deviceType))];
 }
@@ -1494,13 +1518,16 @@ function initFilters(){
     labelText:()=>filters.status.length?`已选 ${filters.status.length}`:'全部',
     render:()=>clearRow()+STATUS.map(s=>optRow(s, filters.status.includes(s))).join(''),
     onClick:s=>{ filters.status.includes(s)?filters.status=filters.status.filter(x=>x!==s):filters.status.push(s); },
-    onClear:()=>{ filters.status=['待处理']; },
+    onClear:()=>{ filters.status=[]; },
     onPick:applyFilters
   });
   makeDropdown('ddType',{
     label:'全部类型',
     labelText:()=>filters.type.length?`已选 ${filters.type.length}`:'全部类型',
-    render:()=>clearRow()+EVENT_TYPES[currentCat].map(s=>optRow(s, filters.type.includes(s))).join(''),
+    render:()=>{
+      const q = (DD.ddType?DD.ddType.searchText:'').trim();
+      return searchRow(DD.ddType?DD.ddType.searchText:'')+clearRow()+EVENT_TYPES[currentCat].filter(s=>!q||s.includes(q)).map(s=>optRow(s, filters.type.includes(s))).join('');
+    },
     onClick:s=>{ filters.type.includes(s)?filters.type=filters.type.filter(x=>x!==s):filters.type.push(s); },
     onClear:()=>{ filters.type=[]; },
     onPick:applyFilters
@@ -1508,7 +1535,10 @@ function initFilters(){
   makeDropdown('ddDeviceType',{
     label:'全部设备',
     labelText:()=>filters.deviceType.length?`已选 ${filters.deviceType.length}`:'全部设备',
-    render:()=>clearRow()+deviceTypeOptions().map(s=>optRow(s, filters.deviceType.includes(s))).join(''),
+    render:()=>{
+      const q = (DD.ddDeviceType?DD.ddDeviceType.searchText:'').trim();
+      return searchRow(DD.ddDeviceType?DD.ddDeviceType.searchText:'')+clearRow()+deviceTypeOptions().filter(s=>!q||s.includes(q)).map(s=>optRow(s, filters.deviceType.includes(s))).join('');
+    },
     onClick:s=>{ filters.deviceType.includes(s)?filters.deviceType=filters.deviceType.filter(x=>x!==s):filters.deviceType.push(s); },
     onClear:()=>{ filters.deviceType=[]; },
     onPick:applyFilters
@@ -1583,26 +1613,49 @@ function renderCalMonth(month, title, s, e){
 
 /* ============ Filtering ============ */
 function filteredEvents(){
-  return EVENTS.filter(e=>{
-    if(e.cat!==currentCat) return false;
-    if(filters.status.length && !filters.status.includes(e.status)) return false;
-    if(filters.type.length && !filters.type.includes(e.type)) return false;
-    if(filters.deviceType.length && !filters.deviceType.includes(e.deviceType)) return false;
-    const day = e.time.slice(0,10);
-    if(filters.startDate && day < filters.startDate) return false;
-    if(filters.endDate && day > filters.endDate) return false;
-    const kw = filters.kw.trim();
-    if(kw){
-      const dev = DEVICES.find(d=>d.id===e.deviceId);
-      const hit = (dev && (dev.name.includes(kw) || (dev.plate||'').includes(kw))) || e.deviceName.includes(kw);
-      if(!hit) return false;
-    }
-    return true;
-  }).sort((a,b)=> b.time.localeCompare(a.time) || b.id.localeCompare(a.id));
+  return EVENTS.filter(e=> e.cat===currentCat && matchesFilters(e)).sort((a,b)=> b.time.localeCompare(a.time) || b.id.localeCompare(a.id));
+}
+function matchesFilters(e, opts){
+  opts = opts || {type:true, status:true};
+  if(opts.status && filters.status.length && !filters.status.includes(e.status)) return false;
+  if(opts.type && filters.type.length && !filters.type.includes(e.type)) return false;
+  if(filters.deviceType.length && !filters.deviceType.includes(e.deviceType)) return false;
+  const day = e.time.slice(0,10);
+  if(filters.startDate && day < filters.startDate) return false;
+  if(filters.endDate && day > filters.endDate) return false;
+  const kw = filters.kw.trim().toLowerCase();
+  if(kw){
+    const dev = DEVICES.find(d=>d.id===e.deviceId);
+    const hit = (dev && ((dev.name||'').toLowerCase().includes(kw) || (dev.plate||'').toLowerCase().includes(kw))) || (e.deviceName||'').toLowerCase().includes(kw);
+    if(!hit) return false;
+  }
+  return true;
+}
+function pendingInCat(key){
+  return EVENTS.filter(e=> e.cat===key && e.status==='待处理' && matchesFilters(e,{type:key===currentCat, status:false})).length;
+}
+function pendingCountFor(devId){
+  return EVENTS.filter(e=> e.deviceId===devId && e.status==='待处理' && matchesFilters(e,{type:true, status:false})).length;
+}
+function pendingUnreadInCat(key){
+  return EVENTS.filter(e=> e.cat===key && e.status==='待处理' && e.unread && matchesFilters(e,{type:key===currentCat, status:false})).length;
+}
+function pendingUnreadFor(devId){
+  return EVENTS.filter(e=> e.deviceId===devId && e.status==='待处理' && e.unread && matchesFilters(e,{type:true, status:false})).length;
 }
 function applyFilters(){
   document.getElementById('filterCount').textContent = `${filteredEvents().length} 条`;
   renderTable();
+  renderCategories();
+}
+function resetAllFilters(){
+  filters.status=['待处理'];
+  filters.type=[]; filters.deviceType=[]; filters.kw='';
+  filters.startDate='2026-07-26'; filters.endDate='2026-08-02';
+  Object.values(DD).forEach(d=>{ d.searchText=''; if(d.label) d.label.textContent=d.opts.labelText(); });
+  const si = document.getElementById('searchInput'); if(si) si.value='';
+  flatPage=1;
+  applyFilters();
 }
 
 /* ============ Table ============ */
@@ -1612,11 +1665,12 @@ function updateListTitle(){
 }
 function renderHead(){
   const head = document.getElementById('tableHead');
+  head.classList.toggle('grouped', grouped);
   if(grouped){
     head.innerHTML = `<div class="th"><span class="icon sm" data-icon="list"></span></div>
-      <div class="th">设备信息</div><div class="th">事件条数</div><div class="th">最近事件时间</div><div class="th">设备类型</div><div class="th"></div>`;
+      <div class="th">设备信息</div><div class="th">事件条数</div><div class="th">最近事件时间</div><div class="th">设备类型</div>`;
   } else {
-    head.innerHTML = `<div class="th"></div><div class="th">事件内容</div><div class="th">发生时间</div><div class="th">设备类型</div><div class="th">所属项目</div><div class="th">处理状态</div><div class="th">处理人</div><div class="th">处理时间</div><div class="th">操作</div>`;
+    head.innerHTML = `<div class="th"></div><div class="th">事件内容</div><div class="th">发生时间</div><div class="th">设备</div><div class="th">所属项目</div><div class="th">处理状态</div><div class="th">处理人</div><div class="th">处理时间</div><div class="th"></div>`;
   }
   head.querySelectorAll('[data-icon]').forEach(n=>{n.innerHTML=icon(n.dataset.icon);});
 }
@@ -1627,26 +1681,27 @@ function renderGrouped(){
   const byDev = {};
   list.forEach(e=>{ (byDev[e.deviceId] = byDev[e.deviceId]||[]).push(e); });
   const devs = Object.entries(byDev).sort((a,b)=>{
-    const pa = a[1].filter(e=>e.status==='待处理').length;
-    const pb = b[1].filter(e=>e.status==='待处理').length;
+    const pa = pendingCountFor(a[0]);
+    const pb = pendingCountFor(b[0]);
     return pb - pa || a[0].localeCompare(b[0]);
   });
   if(!devs.length){
-    body.innerHTML = `<div class="empty">${icon('search')}<span>无匹配数据</span></div>`;
+    body.innerHTML = `<div class="empty">${icon('search')}<span>无匹配数据</span><button class="btn-more" id="btnEmptyReset">重置筛选</button></div>`;
+    const rb = body.querySelector('#btnEmptyReset'); if(rb) rb.addEventListener('click',resetAllFilters);
     return;
   }
   body.innerHTML = devs.map(([devId, evs])=>{
     const dev = DEVICES.find(d=>d.id===devId);
     const first = evs[0];
-    const unread = evs.filter(x=>x.status==='待处理'&&x.unread).length;
+    const pending = pendingCountFor(devId);
+    const unread = pendingUnreadFor(devId);
     const openCls = openGroups.has(currentCat + ':' + devId) ? ' open' : '';
     return `<div class="group-row${openCls}" data-dev="${devId}">
         <span class="chev">${icon('chevronRight')}</span>
         <div class="asset-cell"><div class="asset-thumb">${icon('truck')}</div><div class="asset-info"><div class="asset-name">${dev.name}</div><div class="asset-type">${dev.type}</div></div></div>
-        <div class="event-count"><b>${evs.length}</b>条事件${unread?`<span class="unread-tag">新${unread}</span>`:''}</div>
+        <div class="event-count"><b>${pending}</b>条事件${unread?`<span class="unread-tag">新${unread}</span>`:''}</div>
         <div class="meter">${first.time}</div>
         <div class="meter">${dev.type}</div>
-        <div></div>
       </div>
       <div class="event-subrows" data-subrows hidden></div>`;
   }).join('');
@@ -1714,16 +1769,13 @@ function eventRow(e){
       </div>
     </div>`;
   return `<div class="event-row" data-event="${e.id}">
-      <div class="cell"></div>
+      <div class="cell"><div class="row-thumb">${icon('truck')}</div></div>
       <div class="cell event-block">
         <div class="ev-name">${e.type}${unreadMark}</div>
         <div class="ev-content" title="${e.content}">${e.content}</div>
       </div>
-      <div class="cell time-block">
-        <div class="ev-time">${e.time}</div>
-        <div class="ev-dev">${e.deviceName}</div>
-      </div>
-      <div class="cell sub">${e.deviceType}</div>
+      <div class="cell time-block"><div class="ev-time">${e.time}</div></div>
+      <div class="cell dev-block"><div class="ev-dev">${e.deviceName}</div><div class="ev-type">${e.deviceType}</div></div>
       <div class="cell sub">${e.project}</div>
       <div class="cell">${tag}</div>
       <div class="cell sub">${e.handler||''}</div>
@@ -1735,7 +1787,11 @@ function eventRow(e){
 function renderFlat(){
   const body = document.getElementById('tableBody');
   const list = filteredEvents();
-  if(!list.length){ body.innerHTML = `<div class="empty">${icon('search')}<span>无匹配数据</span></div>`; return; }
+  if(!list.length){
+    body.innerHTML = `<div class="empty">${icon('search')}<span>无匹配数据</span><button class="btn-more" id="btnEmptyReset">重置筛选</button></div>`;
+    const rb = body.querySelector('#btnEmptyReset'); if(rb) rb.addEventListener('click',resetAllFilters);
+    return;
+  }
   flatPage = 1;
   renderFlatPage(list);
 }
@@ -1862,7 +1918,6 @@ function renderDetailAsset(){
 function renderDetailBody(){
   const body = document.getElementById('detailBody');
   const recs = [];
-  recs.push({text:'事件进入审核池', time:activeEvent.time});
   if(tasksOf(activeEvent.deviceId).length){
     recs.push({text:'创建关联任务', person:'张三', time:fmt(new Date(parseTime(activeEvent.time).getTime()+3600*1000)), taskType:'现场巡检'});
   }
@@ -1886,8 +1941,8 @@ function renderDetailBody(){
     </div>` : ''}
     <div class="detail-section">
       <div class="sec-title">${icon('doc')}操作记录</div>
-      <div class="op-list">${recs.reverse().map(r=>`
-        <div class="op-item"><span>${r.text}${r.taskType?' · '+r.taskType:''}</span><span class="op-time">${r.person?r.person+' · ':''}${r.time}</span></div>`).join('')}
+      <div class="op-list">${recs.length ? recs.reverse().map(r=>`
+        <div class="op-item"><span>${r.text}${r.taskType?' · '+r.taskType:''}</span><span class="op-time">${r.person?r.person+' · ':''}${r.time}</span></div>`).join('') : '<div class="op-empty">暂无操作记录</div>'}</div>
       </div>
     </div>`;
 }
@@ -2894,6 +2949,11 @@ function bindSettingsRight(eventTypeName, state, authState){
   if(save) save.addEventListener('click',()=>{
     // 保存当前状态到 authState
     if(eventTypeName && state && authState){
+      const cur = authState[eventTypeName];
+      if(cur.mode !== 'all' && selectedUsers.length === 0){
+        toast('请至少选择一位授权人员');
+        return;
+      }
       authState[eventTypeName].users = [...selectedUsers];
       const authValEl = document.getElementById('authVal-'+eventTypeName.replace(/\s/g,''));
       if(authValEl){
@@ -3139,6 +3199,7 @@ document.getElementById('btnRefresh').addEventListener('click',()=>{
   document.getElementById('lastUpdated').textContent = `最后更新 ${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   toast('已刷新当前大类数据');
 });
+document.getElementById('btnResetFilter').addEventListener('click',resetAllFilters);
 document.getElementById('modeSwitch').addEventListener('click',()=>{
   grouped = !grouped;
   document.getElementById('modeSwitch').classList.toggle('on',grouped);
