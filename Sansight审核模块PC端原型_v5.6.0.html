@@ -39,7 +39,7 @@
   .icon{width:18px;height:18px;flex:none}
   .icon.sm{width:15px;height:15px}
   .icon.lg{width:20px;height:20px}
-  .app{display:flex;flex-direction:column;height:100vh;min-width:1280px}
+  .app{display:flex;flex-direction:column;height:100vh;min-width:0}
 
   /* ---------- Top bar ---------- */
   .topbar{
@@ -155,9 +155,9 @@
   }
   .filter-item{display:flex;align-items:center;gap:8px}
   .filter-item .f-label{font-size:13px;color:var(--text-2);flex:none}
-  .filter-search{position:relative;width:200px}
-  .filter-search .icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text-3)}
-  .filter-search input{width:100%;height:34px;border:1px solid var(--border);border-radius:var(--radius);padding:0 10px 0 32px;background:#fff}
+  .filter-search{position:relative;width:260px}
+  .filter-search .icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-3)}
+  .filter-search input{width:100%;height:34px;border:1px solid var(--border);border-radius:var(--radius);padding:0 12px 0 40px;font-size:13px;background:#fff}
   .dropdown{position:relative}
   .dropdown-trigger{
     display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 10px;border:1px solid var(--border);
@@ -179,6 +179,10 @@
   .menu-opt .check{width:16px;height:16px;border:1px solid #C7CBD4;border-radius:3px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:#fff}
   .menu-opt.on .check{background:var(--primary);border-color:var(--primary)}
   .menu-opt.on{color:var(--primary)}
+  .menu-search{display:flex;align-items:center;gap:6px;padding:6px 8px 4px}
+  .menu-search > .icon{color:var(--text-3);flex:none}
+  .menu-search input{flex:1;min-width:0;height:28px;border:1px solid var(--border);border-radius:4px;padding:0 8px;font-size:12.5px;outline:none;background:#fff}
+  .menu-search input:focus{border-color:var(--primary)}
   .menu-sep{height:1px;background:var(--border);margin:5px 4px}
   .menu-clear{display:flex;align-items:center;justify-content:center;gap:6px;height:30px;margin:0 4px 6px;border:1px dashed var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text-2);cursor:pointer}
   .menu-clear:hover{color:var(--primary);border-color:var(--primary);background:var(--primary-bg)}
@@ -249,18 +253,19 @@
   #viewDeviceList .btn-primary:hover{background:#a60d25}
 
   /* table */
-  .table-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-  .table-head,.group-row,.event-row{display:grid;align-items:center}
-  .grid-cols{grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px}
-  .grid-cols.simple{grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px}
+  .table-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto}
+  .table-head,.group-row,.event-row{display:grid;align-items:center;column-gap:12px}
+  .grid-cols{grid-template-columns:56px minmax(220px,1fr) 160px 130px 92px 84px 150px 48px}
+  .grid-cols.simple{grid-template-columns:56px minmax(220px,1fr) 160px 130px 92px 84px 150px 48px}
   .table-head{
-    grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px;
+    grid-template-columns:56px minmax(220px,1fr) 160px 130px 92px 84px 150px 48px;
     background:var(--head);font-size:12.5px;color:var(--text-2);height:42px;padding:0 12px;border-bottom:1px solid var(--border);
   }
+  .table-head.grouped{grid-template-columns:36px minmax(180px,1.3fr) minmax(110px,1fr) minmax(120px,1fr) minmax(120px,1fr)}
   .table-head .th{display:flex;align-items:center;gap:5px;white-space:nowrap}
   .table-body{max-height:calc(100vh - 330px);overflow-y:auto}
   .group-row{
-    grid-template-columns:36px 200px minmax(120px,1fr) 120px 120px 60px;
+    grid-template-columns:36px minmax(180px,1.3fr) minmax(110px,1fr) minmax(120px,1fr) minmax(120px,1fr);
     height:58px;padding:0 12px;border-bottom:1px solid #F0F1F4;cursor:pointer;transition:background .12s;
   }
   .group-row:hover{background:#FAFBFC}
@@ -281,11 +286,15 @@
   .event-count b{color:var(--primary);font-size:15px;margin-right:4px}
   .meter{font-size:12.5px;color:var(--text-2)}
   .event-row{
-    grid-template-columns:36px minmax(220px,1fr) 160px 110px 110px 92px 84px 150px 150px;
-    min-height:54px;padding:8px 12px;border-bottom:1px solid #F5F6F8;cursor:pointer;transition:background .12s;
+    grid-template-columns:56px minmax(220px,1fr) 160px 130px 92px 84px 150px 48px;
+    min-height:72px;padding:8px 12px;border-bottom:1px solid #F5F6F8;cursor:pointer;transition:background .12s;
   }
   .event-row:hover{background:#FAFBFC}
   .event-subrows{margin:0 0 0 24px;border-left:2px solid #EDEFF2;padding:2px 0 2px 14px}
+  .event-subrows .event-row{grid-template-columns:minmax(220px,1fr) 160px 92px 84px 150px 48px}
+  .event-subrows .event-row > :nth-child(1),
+  .event-subrows .event-row > :nth-child(4){display:none}
+  .cell-label{font-size:11px;color:var(--text-3);margin-bottom:2px}
   .event-row .cell{min-width:0;font-size:13px}
   .event-row .cell.sub{color:var(--text-2)}
   .event-type{font-weight:500}
@@ -294,6 +303,9 @@
   .ev-content{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text-2);font-size:12.5px;margin-top:2px}
   .ev-time{white-space:nowrap}
   .ev-dev{color:var(--text-2);font-size:12.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row-thumb{width:46px;height:46px;border-radius:var(--radius);background:var(--head);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-3);margin:0 auto}
+  .dev-block .ev-dev{font-weight:500;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dev-block .ev-type{color:var(--text-2);font-size:12.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:11px;font-size:12px;font-weight:500}
   .tag.pending{background:#FFF1E8;color:var(--orange)}
   .tag.done{background:#E8F7EE;color:var(--green)}
@@ -305,7 +317,7 @@
   .status-text.ignored{color:var(--gray)}
   .unread-tag{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:10px;background:#e6f4ff;border:1px solid #91caff;color:#0958d9;font-size:11px;font-weight:600;margin-left:8px}
   .unread-tag.sm{height:18px;padding:0 6px;font-size:11px}
-  .unread-mini{display:inline-flex;align-items:center;height:14px;padding:0 5px;border-radius:7px;background:#1677ff;color:#fff;font-size:10px;font-weight:600;line-height:1;margin-left:6px;vertical-align:1px}
+  .unread-mini{display:inline-flex;align-items:center;height:14px;padding:0 5px;border-radius:7px;background:#e6f4ff;border:1px solid #91caff;color:#0958d9;font-size:10px;font-weight:600;line-height:1;margin-left:6px;vertical-align:1px}
   .row-actions{display:flex;align-items:center;gap:4px}
   .row-drop{position:relative}
   .row-dots{width:28px;height:28px}
@@ -345,6 +357,9 @@
   .detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 24px;background:#FAFBFC;border:1px solid #F0F1F4;border-radius:var(--radius);padding:6px 16px}
   .kv2{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed #E8EAEE;font-size:13px}
   .kv2:nth-last-child(-n+2){border-bottom:none}
+  .detail-grid.kv-col{grid-template-columns:1fr}
+  .detail-grid.kv-col .kv2:nth-last-child(-n+2){border-bottom:1px dashed #E8EAEE}
+  .detail-grid.kv-col .kv2:last-child{border-bottom:none}
   .kv2 .k{color:var(--text-2);flex:none}
   .kv2 .v{text-align:right}
   .alert-box{display:flex;gap:10px;background:#FFF7E6;border:1px solid #FFE3A6;border-radius:var(--radius);padding:12px 14px;font-size:13px;color:#AD6800}
@@ -353,14 +368,15 @@
   .op-item{display:flex;gap:10px;font-size:13px;color:var(--text-2);position:relative;padding-left:16px}
   .op-item::before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:50%;background:var(--head);border:1px solid #C7CBD4}
   .op-item .op-time{flex:none;color:var(--text-3)}
+  .op-empty{padding:12px 0;font-size:12.5px;color:var(--text-3);text-align:center}
   .action-bar{
     display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--border);background:#FAFBFC;box-shadow:0 2px 6px rgba(5,12,50,.05);flex:none;
   }
   .action-bar .btn-primary,
-  .action-bar .btn-default{width:32px;height:32px;padding:0;justify-content:center;font-size:0;gap:0}
+  .action-bar .btn-default{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 14px;border-radius:16px;font-size:13px}
   .action-bar .btn-primary .icon,
-  .action-bar .btn-default .icon{width:18px;height:18px}
-  .action-bar .dropdown-trigger{min-width:0;padding:0}
+  .action-bar .btn-default .icon{width:16px;height:16px;flex:none}
+  .action-bar .dropdown-trigger{min-width:0;padding:0 14px}
   .action-bar .dropdown-trigger .caret{display:none}
   .detail-nav{display:flex;align-items:center;justify-content:center;padding:10px 18px;border-top:1px solid var(--border);flex:none;background:#fff}
   .detail-nav .nav-pair{display:inline-flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(5,12,50,.04)}
@@ -391,18 +407,21 @@
   .prio.low{background:#E8F7EE;color:var(--green)}
   .task-main{flex:1;min-width:0}
   .task-title{font-weight:600;font-size:14px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .task-title{cursor:pointer}
+  .task-title:hover{color:var(--primary)}
   .task-meta{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--text-2)}
   .task-meta span{display:inline-flex;align-items:center;gap:5px}
   .task-meta .icon{width:13px;height:13px;color:var(--text-3)}
   .task-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none}
 
   /* settings */
-  .settings-layout{display:grid;grid-template-columns:340px 1fr;gap:14px;flex:1;min-height:0}
-  .settings-layout.user-view{grid-template-columns:1fr}
-  .settings-layout.user-view .settings-left{width:100%;border:none}
+  .settings-layout{display:grid;grid-template-columns:1fr;gap:14px;flex:1;min-height:0}
   .settings-layout.user-view .settings-right{display:none}
-  .settings-left{width:340px;flex:none;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow-y:auto}
+  .settings-left{width:100%;flex:none;background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow-y:auto}
   .settings-right{flex:1;min-width:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;overflow-y:auto}
+  .settings-config-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .settings-config-head .d-title{font-size:16px;font-weight:600;margin:0}
+  .settings-accordion{display:flex;flex-direction:column;flex:1;min-height:0;overflow-y:auto;background:#fff;border:1px solid var(--border);border-radius:var(--radius)}
   .settings-right .kv{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F0F1F4;font-size:13px}
   .settings-right .kv .k{color:var(--text-1);flex:none;font-weight:500}
   .settings-right .kv .v{color:var(--text-2)}
@@ -410,32 +429,31 @@
   .settings-right .d-title{font-size:15px;font-weight:600;margin-bottom:4px}
   .settings-right .settings-foot{display:flex;gap:12px;margin-top:24px;padding-top:16px;border-top:1px solid #F0F1F4}
   .accordion{border-bottom:1px solid #F0F1F4}
-  .accordion-head{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;font-size:14px;font-weight:600}
+  .accordion-head{display:flex;align-items:center;gap:10px;padding:16px 18px;cursor:pointer;font-size:14px;font-weight:600}
   .accordion-head:hover{background:#FAFBFC}
   .accordion-head .count{font-size:12px;color:var(--text-2);font-weight:400}
-  .accordion-head .arrow{margin-left:auto;color:var(--text-3);transition:transform .15s}
+  .accordion-head .arrow{color:var(--text-3);transition:transform .15s}
   .accordion.open .accordion-head .arrow{transform:rotate(90deg)}
-  .accordion-body{display:none;padding:0 16px 12px}
+  .accordion-body{display:none;padding:4px 18px 16px}
   .accordion.open .accordion-body{display:block}
   .setting-row{
-    display:flex;flex-direction:column;gap:6px;padding:12px 4px;border-top:1px solid #F5F6F8;font-size:13px;cursor:pointer;
+    display:flex;flex-direction:column;gap:6px;padding:14px 6px;border-top:1px solid #F5F6F8;font-size:13px;cursor:pointer;transition:background .12s;
   }
+  .setting-row.individual{min-height:78px;justify-content:center}
   .setting-row:hover{background:#FAFBFC}
   .setting-row-main{
     display:flex;align-items:center;gap:12px;width:100%;
   }
   .setting-row-main .s-name{flex:1}
-  .setting-row-sub-label{
-    display:flex;align-items:center;gap:4px;width:100%;padding-left:0;
-    color:#8c8c8c;font-size:13px;
-  }
-  .setting-row-sub-value{
-    display:flex;align-items:center;justify-content:flex-end;gap:6px;width:100%;padding-left:0;
-    color:#262626;font-size:13px;font-weight:400;
-  }
-  .setting-row-sub-value::after{
+  .setting-row-auth{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+  .setting-row-auth .auth-label{color:#8c8c8c;font-size:13px}
+  .setting-row-auth .auth-value{display:flex;align-items:center;gap:6px;color:#262626;font-size:13px}
+  .setting-row-auth .auth-value::after{
     content:"›";color:#bfbfbf;font-size:16px;font-weight:400;line-height:1;
   }
+  .tenant-demo{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:var(--radius);padding:2px;background:#FAFBFC}
+  .td-opt{height:26px;padding:0 10px;display:inline-flex;align-items:center;font-size:12.5px;color:var(--text-2);border-radius:5px;cursor:pointer}
+  .td-opt.on{background:var(--primary);color:#fff}
   .accordion.open .accordion-body{display:block}
   .mini-switch{display:inline-block;width:32px;height:18px;border-radius:9px;background:#C7CBD4;position:relative;flex:none;cursor:pointer}
   .mini-switch::after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .15s}
@@ -463,6 +481,48 @@
   .modal{
     width:440px;background:#fff;border-radius:6px;box-shadow:0 16px 48px rgba(5,12,50,.20);overflow:hidden;
   }
+  .detail-task-list{display:flex;flex-direction:column;gap:8px}
+  .detail-task-item{border:1px solid var(--border);border-radius:var(--radius);background:#fff;padding:12px 14px}
+  .form-field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+  .form-field label{font-size:12.5px;color:var(--text-2)}
+  .form-field input,.form-field textarea{width:100%;box-sizing:border-box;height:34px;padding:0 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;outline:none}
+  .form-field textarea{height:64px;padding:8px 10px;resize:none}
+  .form-field .req{color:#D7001D;margin-left:2px}
+  .maint-device{display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:var(--radius);background:#FAFBFC;margin-bottom:14px}
+  .maint-device .asset-thumb{width:64px;height:64px;border-radius:var(--radius);background:var(--head);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text-3);flex:none}
+  .maint-device .maint-device-id{flex:1;min-width:0}
+  .maint-device .kv2{margin:0}
+  .form-section-title{font-size:13px;font-weight:600;color:var(--text);margin:2px 0 12px}
+  .input-unit{display:flex;align-items:center;gap:8px}
+  .input-unit input{flex:1;min-width:0}
+  .input-unit .input-unit-label{font-size:13px;color:var(--text-2);flex:none}
+  .maint-sync{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:#FAFBFC;font-size:13px;cursor:pointer;margin-top:2px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+  .upload-area{display:flex;align-items:center;justify-content:center;gap:8px;height:72px;border:1px dashed #B6BBC5;border-radius:var(--radius);background:#FAFBFC;color:var(--text-2);font-size:13px;cursor:pointer;margin-bottom:14px}
+  .maint-table{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:14px}
+  .maint-table th,.maint-table td{border:1px solid var(--border);padding:8px 10px;text-align:left}
+  .maint-table th{background:#F5F6F8;color:var(--text-2);font-weight:600}
+  .maint-table .maint-empty{text-align:center;color:var(--text-3);height:56px}
+  .task-title-row{border:1px solid var(--border);border-radius:var(--radius);background:#FAFBFC;padding:10px 16px}
+  .task-title-row .v{font-weight:600}
+  .task-dev-type{margin-top:2px;color:var(--text-3);font-size:12px}
+  .maint-cost{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:4px}
+  .maint-cost>div{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:#FAFBFC}
+  .maint-cost span{font-size:12px;color:var(--text-2)}
+  .maint-cost b{font-size:14px;color:var(--text)}
+  .maint-check{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;margin-bottom:6px}
+  .maint-check input{width:16px;height:16px;accent-color:var(--primary);cursor:pointer}
+  .maint-hint{font-size:12px;color:var(--text-3);margin-bottom:14px}
+  .maint-parts-head{display:flex;align-items:center;justify-content:space-between}
+  .btn-link{background:none;border:none;color:var(--primary);font-size:13px;cursor:pointer;padding:0;font-weight:600}
+  .maint-cell-input{width:100%;box-sizing:border-box;height:28px;padding:0 6px;border:1px solid var(--border);border-radius:4px;font-size:12px;outline:none}
+  .maint-cell-input:focus{border-color:var(--primary)}
+  .maint-part-row .icon-btn{width:24px;height:24px}
+  .maint-subtotal{color:var(--text-2)}
+  .detail-task-item .dt-title{font-weight:600;font-size:13px;cursor:pointer;color:var(--text)}
+  .detail-task-item .dt-title:hover{color:var(--primary)}
+  .detail-task-item .detail-grid{margin-top:8px}
+  #modalTaskDetail .modal{width:640px}
   .modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border)}
   .modal-title{font-size:15px;font-weight:600}
   .modal-body{padding:16px 18px}
@@ -471,6 +531,8 @@
   .phrase{height:28px;padding:0 10px;border:1px solid var(--border);border-radius:14px;font-size:12.5px;background:#fff;color:var(--text-2)}
   .phrase:hover{border-color:var(--primary);color:var(--primary)}
   .phrase.on{background:var(--primary-bg);border-color:var(--primary);color:var(--primary)}
+  .unfinish-warn{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:6px;background:#FFF4E5;border:1px solid #FFD591;color:#B25E09;font-size:12.5px;margin-bottom:10px}
+  .unfinish-warn[hidden]{display:none}
   .modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 18px;border-top:1px solid var(--border)}
 
   /* toast */
@@ -627,9 +689,6 @@
   .sd-curve-legend .legend-item{display:inline-flex;align-items:center;gap:4px}
   .sd-curve-legend .legend-item i{width:16px;height:2px;display:inline-block;border-radius:1px}
 
-  /* 油位曲线填充样式 */
-  .sd-oil-curve svg{height:160px}
-
   /* 核心参数曲线 */
   .sd-param-curve svg{height:160px}
   .sd-param-curve .param-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
@@ -695,6 +754,47 @@
   .sd-table th{background:var(--head);font-size:12.5px;color:var(--text-2);font-weight:500;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
   .sd-table td{font-size:13px;padding:10px 12px;border-bottom:1px solid #F5F6F8}
   .sd-table tr:hover td{background:#FAFBFC}
+  /* 保养管理三卡片 */
+  .maint-top-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+  .main-card{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+  .main-card.purple{background:#FAFAFE;border-color:#D7D4FB}
+  .main-card.orange{background:#FFFBF5;border-color:#FBE2C3}
+  .main-card-title{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2);margin-bottom:10px}
+  .main-card-title .icon{width:16px;height:16px;color:var(--primary)}
+  .main-card.purple .main-card-title .icon{color:#7b61ff}
+  .main-card.orange .main-card-title .icon{color:#F28A22}
+  .main-empty{font-size:12px;color:var(--text-3);margin-top:4px;padding-left:2px}
+  .main-center-grid{display:flex;justify-content:center;align-items:center;min-height:60px}
+  .mc-big{font-size:28px;font-weight:700;color:#16181D;line-height:1}
+  .mc-big sub{font-size:13px;font-weight:500;color:var(--text-2);margin-left:2px;bottom:0}
+  .mc-label{font-size:12px;color:var(--text-3);margin-top:4px;text-align:center}
+  /* 保养筛选行 */
+  .maint-filter-row{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+  .mf-input{height:30px;border:1px solid var(--border);border-radius:4px;padding:0 8px;font-size:12.5px;background:#fff;color:var(--text)}
+  .mf-sep{color:var(--text-3)}
+  .mf-dd{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border:1px solid var(--border);border-radius:4px;background:#fff;font-size:12.5px;cursor:pointer;color:var(--text)}
+  .mf-dd-label{margin-right:auto}
+  .caret-mini{color:var(--text-3);width:12px;height:12px;display:inline-flex}
+  .mf-btn{height:30px;padding:0 14px;border-radius:4px;font-size:12.5px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center}
+  .mf-btn-query{background:#fff;border-color:var(--border);color:var(--text)}
+  .mf-btn-query:hover{border-color:var(--primary);color:var(--primary)}
+  .mf-btn-ghost{background:#fff;border-color:var(--border);color:var(--text)}
+  .mf-btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
+  .mf-btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:500}
+  .mf-btn-primary:hover{filter:brightness(0.95)}
+  /* 保养标签 */
+  .mtag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500}
+  .mtag-official{background:#e6f4ff;color:#0958d9;border:1px solid #91caff}
+  .link-primary{color:var(--primary);font-size:12.5px;text-decoration:none}
+  .link-primary:hover{text-decoration:underline}
+  /* 分页 */
+  .mf-pagination{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:8px 4px}
+  .mf-total{font-size:12.5px;color:var(--text-2)}
+  .mf-pager{display:flex;align-items:center;gap:4px}
+  .pg-btn{min-width:30px;height:30px;padding:0 8px;border:1px solid var(--border);background:#fff;border-radius:4px;font-size:12.5px;cursor:pointer;color:var(--text)}
+  .pg-btn:hover{border-color:var(--primary);color:var(--primary)}
+  .pg-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}
+  .pg-size{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 8px;margin-left:6px;font-size:12.5px;color:var(--text-2);cursor:pointer;border:1px solid var(--border);border-radius:4px;background:#fff}
 
   /* 实时状态Tab */
   .sd-realtime{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
@@ -730,7 +830,7 @@
     <!-- Middle dashboard (审核专属) -->
     <section class="middle" id="middleDashboard">
       <div class="middle-head">
-        <div class="middle-title">审核事件</div>
+        <div class="middle-title">审核</div>
         <button class="icon-btn" id="btnSettings" title="审核设置"><span class="icon" data-icon="gear"></span></button>
       </div>
       <div class="board-meta">
@@ -746,7 +846,7 @@
       <!-- List view -->
       <section class="view" id="viewList">
         <div class="page-head">
-          <div class="page-title" id="listTitle">设备异常 · 审核事件列表</div>
+          <div class="page-title" id="listTitle">设备异常 · 审核列表</div>
           <div class="page-actions">
             <div class="mode-switch">
               <span>按设备分组</span>
@@ -757,7 +857,7 @@
         <div class="filter-row">
           <div class="filter-search">
             <span class="icon" data-icon="search"></span>
-            <input id="searchInput" placeholder="搜索设备编号/序列号/昵称">
+            <input id="searchInput" placeholder="搜索设备编号 / 序列号 / 昵称">
           </div>
           <div class="filter-item">
             <span class="f-label">处理状态</span>
@@ -776,6 +876,7 @@
             <div class="dropdown" id="ddRange"></div>
           </div>
           <span class="filter-count" id="filterCount"></span>
+          <button class="link-btn ghost" id="btnResetFilter">清空筛选</button>
         </div>
         <div class="table-wrap">
           <div class="table-head" id="tableHead"></div>
@@ -836,18 +937,30 @@
         </div>
       </section>
 
-      <!-- Settings view -->
+      <!-- Settings view (事件类型手风琴整页保留) -->
       <section class="view" id="viewSettings" hidden>
         <div class="page-head">
           <button class="btn-back" id="btnBackList2"><span class="icon" data-icon="back"></span>返回列表</button>
-          <div style="flex:1">
+          <div style="flex:1;display:flex;align-items:center;gap:14px">
             <div class="page-title">审核设置</div>
-            <div class="page-sub">事件类型开关 · 授权人员配置</div>
+            <div class="tenant-demo" id="tenantDemo">
+              <span class="td-opt on" data-tenant="enterprise">企业/代理商</span>
+              <span class="td-opt" data-tenant="individual">个体户</span>
+            </div>
           </div>
         </div>
-        <div class="settings-layout" id="settingsLayout">
-          <div class="settings-left" id="settingsAccordion"></div>
-          <div class="settings-right" id="settingsDetail"></div>
+        <div class="settings-accordion" id="settingsAccordion"></div>
+      </section>
+
+      <!-- 授权人员配置侧栏 (点事件类型后滑出) -->
+      <section class="detail-panel" id="settingsConfigPanel" hidden>
+        <div class="panel-view">
+          <div class="detail-head">
+            <button class="btn-back" id="btnCloseConfig"><span class="icon" data-icon="back"></span>返回事件类型</button>
+            <div class="detail-title" id="settingsConfigTitle"></div>
+            <button class="icon-btn detail-close" id="btnCloseConfigX" title="关闭"><span class="icon" data-icon="x"></span></button>
+          </div>
+          <div class="detail-body" id="settingsDetail"></div>
         </div>
       </section>
 
@@ -906,9 +1019,9 @@
       </div>
       <div class="detail-asset" id="detailAsset"></div>
       <div class="action-bar">
-        <button class="btn-primary" id="btnHandle" title="确认处理"><span class="icon" data-icon="check"></span></button>
-        <div class="dropdown" id="ddMore" style="margin-left:auto"></div>
-        <button class="btn-default" id="btnTasks" title="关联任务"><span class="icon" data-icon="task"></span></button>
+        <button class="btn-primary" id="btnHandle" title="确认处理"><span class="icon" data-icon="check"></span><span id="btnHandleLabel">确认处理</span></button>
+        <button class="btn-default" id="btnCurve" style="display:none" title="查看动态曲线"><span class="icon" data-icon="chart"></span><span>查看动态曲线</span></button>
+        <div class="dropdown" id="ddMore"></div>
       </div>
       <div class="detail-body" id="detailBody"></div>
       <div class="detail-nav" id="detailNav">
@@ -951,6 +1064,7 @@
   <div class="modal">
     <div class="modal-head"><div class="modal-title">确认处理</div><button class="icon-btn" data-close><span class="icon" data-icon="x"></span></button></div>
     <div class="modal-body">
+      <div class="unfinish-warn" id="handleWarn" hidden>该事件仍有未完成关联任务，请确认后继续执行。</div>
       <textarea id="handleText" placeholder="处理结果（选填）"></textarea>
       <div class="phrase-row" id="handlePhrases"></div>
     </div>
@@ -966,6 +1080,7 @@
   <div class="modal">
     <div class="modal-head"><div class="modal-title">忽略</div><button class="icon-btn" data-close><span class="icon" data-icon="x"></span></button></div>
     <div class="modal-body">
+      <div class="unfinish-warn" id="ignoreWarn" hidden>该事件仍有未完成关联任务，请确认后继续执行。</div>
       <textarea id="ignoreText" placeholder="忽略原因（选填）"></textarea>
       <div class="phrase-row" id="ignorePhrases"></div>
     </div>
@@ -976,40 +1091,59 @@
   </div>
 </div>
 
-<!-- User picker modal -->
-<div class="modal-mask" id="modalUsers">
-  <div class="modal" style="width:520px">
-    <div class="modal-head"><div class="modal-title">选择授权人员</div><button class="icon-btn" data-close><span class="icon" data-icon="x"></span></button></div>
-    <div class="modal-body">
-      <div class="filter-search" style="width:100%">
-        <span class="icon" data-icon="search"></span>
-        <input id="userSearch" placeholder="搜索姓名 / 手机号 / 邮箱">
+<div class="modal-mask" id="modalMaint">
+  <div class="modal" style="width:640px">
+    <div class="modal-head"><div class="modal-title">新增自行保养记录</div><button class="icon-btn" data-close><span class="icon" data-icon="x"></span></button></div>
+    <div class="modal-body" style="max-height:64vh;overflow-y:auto">
+      <div class="form-section-title">基本信息</div>
+      <div class="form-grid">
+        <div class="form-field">
+          <label>保养日期<span class="req">*</span></label>
+          <input id="maintDate" type="date" style="cursor:pointer">
+        </div>
+        <div class="form-field">
+          <label>保养人<span class="req">*</span></label>
+          <input id="maintPerson" type="text" placeholder="请输入保养人">
+        </div>
       </div>
-      <div class="user-list" id="userList"></div>
+      <div class="form-field">
+        <label>保养项目</label>
+        <textarea id="maintItems" placeholder="请输入保养项目"></textarea>
+      </div>
+      <div class="form-field">
+        <label>执行总里程</label>
+        <div class="input-unit"><input id="maintMileage" type="number" min="0" step="1" value="0"><span class="input-unit-label">公里</span></div>
+      </div>
+      <label class="maint-check"><input type="checkbox" id="maintSync" checked><span>同步更新上次保养信息</span></label>
+      <div class="maint-hint">勾选后，此次保养记录将同步更新“上次保养”卡片，并重新计算下次保养周期。</div>
+      <div class="form-section-title">附件上传</div>
+      <div class="upload-area" id="maintUpload"><span class="icon" data-icon="upload"></span><span>点击或拖拽文件到此处上传</span></div>
+      <div class="form-section-title maint-parts-head">配件清单<button class="btn-link" id="btnAddPart">+ 新增配件行</button></div>
+      <table class="maint-table">
+        <thead><tr><th>配件名称</th><th>规格型号</th><th>数量</th><th>单价</th><th>小计</th><th>操作</th></tr></thead>
+        <tbody id="maintPartsBody"><tr class="maint-empty"><td colspan="6">无结果</td></tr></tbody>
+      </table>
+      <div class="form-section-title">费用结算</div>
+      <div class="maint-cost">
+        <div><span>配件总费用</span><b>-</b></div>
+        <div><span>工时费</span><b>-</b></div>
+        <div><span>总费用</span><b>-</b></div>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn-default" data-close>取消</button>
-      <button class="btn-primary" id="userConfirm">确定</button>
+      <button class="btn-primary" id="maintSubmit">提交</button>
     </div>
   </div>
 </div>
 
-<div class="modal-mask" id="modalMaint">
-  <div class="modal">
-    <div class="modal-head"><div class="modal-title">保养处理</div><button class="icon-btn" data-close><span class="icon" data-icon="x"></span></button></div>
-    <div class="modal-body">
-      <div style="font-size:12.5px;color:var(--text-2);margin-bottom:12px">原型模拟：Web 端设备保养详情页</div>
-      <div class="detail-grid">
-        <div class="kv2"><span class="k">超期 / 剩余</span><span class="v">超期 120 小时</span></div>
-        <div class="kv2"><span class="k">上次保养时间</span><span class="v">2026-05-02 10:00:00</span></div>
-        <div class="kv2" style="grid-column:1/-1"><span class="k">上次保养里程 / 小时</span><span class="v">12,400 km</span></div>
-      </div>
+<div class="modal-mask" id="modalTaskDetail">
+  <div class="modal" style="max-height:86vh;display:flex;flex-direction:column">
+    <div class="modal-head">
+      <div class="modal-title" id="taskDetailModalTitle">任务详情</div>
+      <button class="icon-btn" data-close><span class="icon" data-icon="x"></span></button>
     </div>
-    <div class="modal-foot">
-      <button class="btn-default" id="maintCancel">取消</button>
-      <button class="btn-default" id="maintSelf">自行保养</button>
-      <button class="btn-primary" id="maintBook">预约保养</button>
-    </div>
+    <div class="modal-body" id="taskDetailModalBody" style="overflow-y:auto"></div>
   </div>
 </div>
 
@@ -1021,6 +1155,7 @@ const ICONS = {
   home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/>',
   audit:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
   book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  upload:'<path d="M12 16V4m0 0 4 4m-4-4L8 8"/><path d="M4 16v4h16v-4"/>',
   screen:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
   folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
   camera:'<path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>',
@@ -1078,21 +1213,21 @@ const CATEGORIES = [
 ];
 
 const DEVICES = [
-  {id:'D001', name:'沪D·77K30', type:'燃油自卸车', status:'在线', project:'印尼雅万项目', plate:'沪D·77K30', oilData:true, trackData:true},
-  {id:'D002', name:'15SR00201138', type:'燃油挖掘机', status:'离线', project:'—', plate:'15SR00201138', oilData:true, trackData:true},
+  {id:'D001', name:'沪D·77K30', type:'燃油自卸车', status:'在线', project:'印尼雅万项目', plate:'沪D·77K30', trackData:true},
+  {id:'D002', name:'15SR00201138', type:'燃油挖掘机', status:'离线', project:'—', plate:'15SR00201138', trackData:true},
   {id:'D003', name:'AC0250CF0056', type:'汽车起重机', status:'离线', project:'中欧班列场站', plate:'AC0250CF0056'},
-  {id:'D004', name:'BC5230CA4196', type:'燃油伸缩臂叉车', status:'在线', project:'印尼雅万项目', plate:'BC5230CA4196', oilData:true, trackData:true},
-  {id:'D005', name:'SY215-8888', type:'燃油挖掘机', status:'在线', project:'港区堆场', plate:'SY215-8888', oilData:true, trackData:true},
-  {id:'D006', name:'X3000-6621', type:'燃油堆高机', status:'在线', project:'印尼雅万项目', plate:'X3000-6621', oilData:true, trackData:true},
+  {id:'D004', name:'BC5230CA4196', type:'燃油伸缩臂叉车', status:'在线', project:'印尼雅万项目', plate:'BC5230CA4196', trackData:true},
+  {id:'D005', name:'SY215-8888', type:'燃油挖掘机', status:'在线', project:'港区堆场', plate:'SY215-8888', trackData:true},
+  {id:'D006', name:'X3000-6621', type:'燃油堆高机', status:'在线', project:'印尼雅万项目', plate:'X3000-6621', trackData:true},
   {id:'D007', name:'EQ5180-2234', type:'电动自卸车', status:'在线', project:'上海临港项目', plate:'EQ5180-2234', trackData:true},
   {id:'D008', name:'CDD30-8890', type:'电动堆高机', status:'离线', project:'深圳前海项目', plate:'CDD30-8890', trackData:true},
-  {id:'D009', name:'QY50K-7781', type:'汽车起重机', status:'在线', project:'昆明地铁站', plate:'QY50K-7781', oilData:true, trackData:true},
-  {id:'D010', name:'L958F-3342', type:'燃油自卸车', status:'离线', project:'中欧班列场站', plate:'L958F-3342', oilData:true, trackData:true},
+  {id:'D009', name:'QY50K-7781', type:'汽车起重机', status:'在线', project:'昆明地铁站', plate:'QY50K-7781', trackData:true},
+  {id:'D010', name:'L958F-3342', type:'燃油自卸车', status:'离线', project:'中欧班列场站', plate:'L958F-3342', trackData:true},
   {id:'D011', name:'XG90-5566', type:'电动集卡', status:'在线', project:'上海临港项目', plate:'XG90-5566', trackData:true},
-  {id:'D012', name:'Pump-4478', type:'履带吊', status:'在线', project:'深圳前海项目', plate:'Pump-4478', oilData:true, trackData:true},
-  {id:'D013', name:'CAT336-1122', type:'燃油挖掘机', status:'在线', project:'昆明地铁站', plate:'CAT336-1122', oilData:true, trackData:true},
-  {id:'D014', name:'DR50-9900', type:'履带吊', status:'在线', project:'港区堆场', plate:'DR50-9900', oilData:true, trackData:true},
-  {id:'D015', name:'HT300-5521', type:'燃油伸缩臂叉车', status:'离线', project:'上海临港项目', plate:'HT300-5521', oilData:true, trackData:true}
+  {id:'D012', name:'Pump-4478', type:'履带吊', status:'在线', project:'深圳前海项目', plate:'Pump-4478', trackData:true},
+  {id:'D013', name:'CAT336-1122', type:'燃油挖掘机', status:'在线', project:'昆明地铁站', plate:'CAT336-1122', trackData:true},
+  {id:'D014', name:'DR50-9900', type:'履带吊', status:'在线', project:'港区堆场', plate:'DR50-9900', trackData:true},
+  {id:'D015', name:'HT300-5521', type:'燃油伸缩臂叉车', status:'离线', project:'上海临港项目', plate:'HT300-5521', trackData:true}
 ];
 
 const EVENT_TYPES = {
@@ -1165,21 +1300,19 @@ const EVENT_DIFF = {
 const MORE_ACTIONS = {
   ignore:{icon:'x', label:'忽略'},
   curve:{icon:'target', label:'查看动态曲线'},
-  oil:{icon:'oil', label:'查看油位曲线'},
   location:{icon:'target', label:'查看历史轨迹'},
   maint:{icon:'wrench', label:'保养处理'}
 };
 const EVENT_ACTIONS = {
   '冷却水温高':[], '故障码':[], 'SOC过低':[], '危险力矩':[], '蓄电池电压低':[], '超速':[],
   '发动机转速':[], '主卷超载':[], '设备离线预警':[], '长时间停机':[], '危险负载':[], '绝缘告警':[],
-  '长时间驻车':[], '电机温度':[], '高液压油温':[], '设备保养通知':[], '电子围栏预警':['location'],
-  '油位低':['oil'], '偷油':[], '漏油':[], '检查需处理':[]
+  '长时间驻车':[], '电机温度':[], '高液压油温':[], '设备保养通知':[], '电子围栏预警':[],
+  '油位低':[], '偷油':[], '漏油':[], '检查需处理':[]
 };
 
 /* v5.4：查看曲线详情页面（§4.6.1） */
 const CURVE_MODES = {
   dynamic:{title:'核心参数动态曲线', tab:'dynamicCurve'},
-  oil:{title:'油位曲线', tab:'oilLevelCurve'},
   location:{title:'历史轨迹', tab:'locationTrace'}
 };
 const DEVICE_CURVE_METRICS = {
@@ -1195,7 +1328,7 @@ const DEVICE_CURVE_METRICS = {
 };
 const METRIC_UNIT = {
   '发动机水温（最高值）':'℃','蓄电池电压（最低值）':'V','整车电压（最低值）':'V','发动机转速':'r/min',
-  '主钩载荷':'t','副钩载荷':'t','油位（%）':'%','绝缘阻值（最低值）':'MΩ','负载百分比（最高值）':'%','电机温度（最高值）':'℃'
+  '主钩载荷':'t','副钩载荷':'t','绝缘阻值（最低值）':'MΩ','负载百分比（最高值）':'%','电机温度（最高值）':'℃'
 };
 const EVENT_DEVICE_METRIC = {
   '冷却水温高':{
@@ -1275,8 +1408,34 @@ let filters = { status:['待处理'], type:[], deviceType:[], kw:'', startDate:'
 let flatPage = 1;
 const FLAT_PAGE_SIZE = 20;
 let selectedUsers = ['张三','李四','王五'];
-let pickTemp = [];
+let demoTenant = 'enterprise';
 let settingsDirty = false;
+
+// 事件类型开关状态：初始全部开启，与审核设置mini-switch UI保持同步
+const eventSwState = (function(){
+  const map = {};
+  CATEGORIES.forEach(c => { EVENT_TYPES[c.key].forEach(t => { map[t] = true; }); });
+  return map;
+})();
+
+// 个体户允许查看的事件大类：仅维保事项和检查异常
+const INDIVIDUAL_ALLOWED_CATS = new Set(['maintain', 'inspect']);
+
+/**
+ * 当前用户是否有权查看/处理该事件
+ * 规则：
+ * 1) 事件类型开关必须开启（eventSwState[type]=true）
+ * 2) 若为个体户租户，大类必须在 INDIVIDUAL_ALLOWED_CATS 中
+ * 3) 企业/代理商租户默认通过（授权人员范围原型中视为全部用户）
+ */
+function canViewEvent(ev){
+  if(!ev) return false;
+  // 规则1：事件类型开关
+  if(eventSwState[ev.type] === false) return false;
+  // 规则2：个体户大类限制
+  if(demoTenant === 'individual' && !INDIVIDUAL_ALLOWED_CATS.has(ev.cat)) return false;
+  return true;
+}
 
 function unreadCount(){
   return EVENTS.filter(e=>e.status==='待处理' && e.unread).length;
@@ -1294,14 +1453,14 @@ function markRowRead(id){
 function refreshGroupUnread(){
   document.querySelectorAll('.group-row').forEach(row=>{
     const devId = row.dataset.dev;
-    const evs = filteredEvents().filter(e=>e.deviceId===devId && e.status==='待处理' && e.unread);
+    const evs = pendingUnreadFor(devId);
     let tag = row.querySelector('.unread-tag');
-    if(evs.length){
+    if(evs){
       if(!tag){
         const countEl = row.querySelector('.event-count');
-        if(countEl) countEl.insertAdjacentHTML('beforeend', `<span class="unread-tag">新${evs.length}</span>`);
+        if(countEl) countEl.insertAdjacentHTML('beforeend', `<span class="unread-tag">新${evs}</span>`);
       } else {
-        tag.textContent = '新'+evs.length;
+        tag.textContent = '新'+evs;
       }
     } else if(tag){
       tag.remove();
@@ -1311,7 +1470,7 @@ function refreshGroupUnread(){
 function refreshCategoryUnread(){
   document.querySelectorAll('.category-item').forEach(item=>{
     const key = item.dataset.cat;
-    const unread = EVENTS.filter(e=>e.cat===key && e.status==='待处理' && e.unread).length;
+    const unread = pendingUnreadInCat(key);
     let b = item.querySelector('.badge-new');
     if(unread>0){
       if(!b){
@@ -1401,12 +1560,13 @@ function renderSidebar(){
 function renderCategories(){
   const el = document.getElementById('categoryList');
   el.innerHTML = CATEGORIES.map(c=>{
-    const unread = EVENTS.filter(e=>e.cat===c.key && e.status==='待处理' && e.unread).length;
+    const cnt = pendingInCat(c.key);
+    const unread = pendingUnreadInCat(c.key);
     return `
     <div class="category-item${c.key===currentCat?' active':''}" data-cat="${c.key}">
       <span class="icon" data-icon="${c.icon}"></span>
       <span>${c.name}</span>
-      <span class="count">${c.count>0?`<span class="badge">${c.count}</span>`:''}${unread>0?`<span class="badge-new">新${unread}</span>`:''}</span>
+      <span class="count">${cnt>0?`<span class="badge">${cnt}</span>`:''}${unread>0?`<span class="badge-new">新${unread}</span>`:''}</span>
     </div>`;
   }).join('');
   el.querySelectorAll('[data-icon]').forEach(n=>{n.innerHTML=icon(n.dataset.icon);});
@@ -1433,7 +1593,7 @@ function makeDropdown(containerId, opts){
   wrap.className = 'dropdown';
   wrap.innerHTML = `<button class="dropdown-trigger"><span class="d-label">${opts.label}</span><span class="caret">${icon('chevronDown')}</span></button>
     <div class="dropdown-menu">${opts.render()}</div>`;
-  const d = { wrap, menu: wrap.querySelector('.dropdown-menu'), opts, label: wrap.querySelector('.d-label') };
+  const d = { wrap, menu: wrap.querySelector('.dropdown-menu'), opts, label: wrap.querySelector('.d-label'), id: containerId, searchText:'' };
   DD[containerId] = d;
   bindMenu(d);
   wrap.querySelector('.dropdown-trigger').addEventListener('click', e=>{
@@ -1443,6 +1603,14 @@ function makeDropdown(containerId, opts){
     if(!was){ wrap.classList.add('open'); refreshMenu(containerId); }
   });
   wrap.querySelector('.dropdown-menu').addEventListener('click', e=>{ e.stopPropagation(); });
+  wrap.addEventListener('input', e=>{
+    if(e.target.classList && e.target.classList.contains('menu-search-input')){
+      d.searchText = e.target.value;
+      refreshMenu(d.id);
+      const ni = wrap.querySelector('.menu-search-input');
+      if(ni){ ni.focus(); const len = ni.value.length; ni.setSelectionRange(len,len); }
+    }
+  });
   document.getElementById(containerId).appendChild(wrap);
   return d;
 }
@@ -1452,6 +1620,7 @@ function bindMenu(d){
       d.opts.onClick(o.dataset.opt);
       d.label.textContent = d.opts.labelText();
       d.opts.onPick && d.opts.onPick();
+      refreshMenu(d.id);
     });
   });
   d.menu.querySelectorAll('[data-clear]').forEach(o=>{
@@ -1459,6 +1628,7 @@ function bindMenu(d){
       d.opts.onClear && d.opts.onClear();
       d.label.textContent = d.opts.labelText();
       d.opts.onPick && d.opts.onPick();
+      refreshMenu(d.id);
     });
   });
   if(d.opts.onApply){
@@ -1482,6 +1652,9 @@ function clearRow(){
 function optRow(v, selected){
   return `<div class="menu-opt${selected?' on':''}" data-opt="${v}"><span class="check">${selected?icon('check'):''}</span>${v}</div>`;
 }
+function searchRow(v){
+  return `<div class="menu-search"><span class="icon" data-icon="search"></span><input class="menu-search-input" placeholder="搜索" value="${v||''}"></div>`;
+}
 function deviceTypeOptions(){
   return [...new Set(EVENTS.filter(e=>e.cat===currentCat).map(e=>e.deviceType))];
 }
@@ -1494,13 +1667,16 @@ function initFilters(){
     labelText:()=>filters.status.length?`已选 ${filters.status.length}`:'全部',
     render:()=>clearRow()+STATUS.map(s=>optRow(s, filters.status.includes(s))).join(''),
     onClick:s=>{ filters.status.includes(s)?filters.status=filters.status.filter(x=>x!==s):filters.status.push(s); },
-    onClear:()=>{ filters.status=['待处理']; },
+    onClear:()=>{ filters.status=[]; },
     onPick:applyFilters
   });
   makeDropdown('ddType',{
     label:'全部类型',
     labelText:()=>filters.type.length?`已选 ${filters.type.length}`:'全部类型',
-    render:()=>clearRow()+EVENT_TYPES[currentCat].map(s=>optRow(s, filters.type.includes(s))).join(''),
+    render:()=>{
+      const q = (DD.ddType?DD.ddType.searchText:'').trim();
+      return searchRow(DD.ddType?DD.ddType.searchText:'')+clearRow()+EVENT_TYPES[currentCat].filter(s=>!q||s.includes(q)).map(s=>optRow(s, filters.type.includes(s))).join('');
+    },
     onClick:s=>{ filters.type.includes(s)?filters.type=filters.type.filter(x=>x!==s):filters.type.push(s); },
     onClear:()=>{ filters.type=[]; },
     onPick:applyFilters
@@ -1508,7 +1684,10 @@ function initFilters(){
   makeDropdown('ddDeviceType',{
     label:'全部设备',
     labelText:()=>filters.deviceType.length?`已选 ${filters.deviceType.length}`:'全部设备',
-    render:()=>clearRow()+deviceTypeOptions().map(s=>optRow(s, filters.deviceType.includes(s))).join(''),
+    render:()=>{
+      const q = (DD.ddDeviceType?DD.ddDeviceType.searchText:'').trim();
+      return searchRow(DD.ddDeviceType?DD.ddDeviceType.searchText:'')+clearRow()+deviceTypeOptions().filter(s=>!q||s.includes(q)).map(s=>optRow(s, filters.deviceType.includes(s))).join('');
+    },
     onClick:s=>{ filters.deviceType.includes(s)?filters.deviceType=filters.deviceType.filter(x=>x!==s):filters.deviceType.push(s); },
     onClear:()=>{ filters.deviceType=[]; },
     onPick:applyFilters
@@ -1583,40 +1762,64 @@ function renderCalMonth(month, title, s, e){
 
 /* ============ Filtering ============ */
 function filteredEvents(){
-  return EVENTS.filter(e=>{
-    if(e.cat!==currentCat) return false;
-    if(filters.status.length && !filters.status.includes(e.status)) return false;
-    if(filters.type.length && !filters.type.includes(e.type)) return false;
-    if(filters.deviceType.length && !filters.deviceType.includes(e.deviceType)) return false;
-    const day = e.time.slice(0,10);
-    if(filters.startDate && day < filters.startDate) return false;
-    if(filters.endDate && day > filters.endDate) return false;
-    const kw = filters.kw.trim();
-    if(kw){
-      const dev = DEVICES.find(d=>d.id===e.deviceId);
-      const hit = (dev && (dev.name.includes(kw) || (dev.plate||'').includes(kw))) || e.deviceName.includes(kw);
-      if(!hit) return false;
-    }
-    return true;
-  }).sort((a,b)=> b.time.localeCompare(a.time) || b.id.localeCompare(a.id));
+  return EVENTS.filter(e=> e.cat===currentCat && matchesFilters(e)).sort((a,b)=> b.time.localeCompare(a.time) || b.id.localeCompare(a.id));
+}
+function matchesFilters(e, opts){
+  opts = opts || {type:true, status:true};
+  if(opts.status && filters.status.length && !filters.status.includes(e.status)) return false;
+  if(opts.type && filters.type.length && !filters.type.includes(e.type)) return false;
+  if(filters.deviceType.length && !filters.deviceType.includes(e.deviceType)) return false;
+  const day = e.time.slice(0,10);
+  if(filters.startDate && day < filters.startDate) return false;
+  if(filters.endDate && day > filters.endDate) return false;
+  const kw = filters.kw.trim().toLowerCase();
+  if(kw){
+    const dev = DEVICES.find(d=>d.id===e.deviceId);
+    const hit = (dev && ((dev.name||'').toLowerCase().includes(kw) || (dev.plate||'').toLowerCase().includes(kw))) || (e.deviceName||'').toLowerCase().includes(kw);
+    if(!hit) return false;
+  }
+  return true;
+}
+function pendingInCat(key){
+  return EVENTS.filter(e=> e.cat===key && e.status==='待处理' && matchesFilters(e,{type:key===currentCat, status:false})).length;
+}
+function pendingCountFor(devId){
+  return EVENTS.filter(e=> e.deviceId===devId && e.status==='待处理' && matchesFilters(e,{type:true, status:false})).length;
+}
+function pendingUnreadInCat(key){
+  return EVENTS.filter(e=> e.cat===key && e.status==='待处理' && e.unread && matchesFilters(e,{type:key===currentCat, status:false})).length;
+}
+function pendingUnreadFor(devId){
+  return EVENTS.filter(e=> e.deviceId===devId && e.status==='待处理' && e.unread && matchesFilters(e,{type:true, status:false})).length;
 }
 function applyFilters(){
   document.getElementById('filterCount').textContent = `${filteredEvents().length} 条`;
   renderTable();
+  renderCategories();
+}
+function resetAllFilters(){
+  filters.status=['待处理'];
+  filters.type=[]; filters.deviceType=[]; filters.kw='';
+  filters.startDate='2026-07-26'; filters.endDate='2026-08-02';
+  Object.values(DD).forEach(d=>{ d.searchText=''; if(d.label) d.label.textContent=d.opts.labelText(); });
+  const si = document.getElementById('searchInput'); if(si) si.value='';
+  flatPage=1;
+  applyFilters();
 }
 
 /* ============ Table ============ */
 function updateListTitle(){
   const c = CATEGORIES.find(x=>x.key===currentCat);
-  document.getElementById('listTitle').textContent = `${c.name} · 审核事件列表`;
+  document.getElementById('listTitle').textContent = `${c.name} · 审核列表`;
 }
 function renderHead(){
   const head = document.getElementById('tableHead');
+  head.classList.toggle('grouped', grouped);
   if(grouped){
     head.innerHTML = `<div class="th"><span class="icon sm" data-icon="list"></span></div>
-      <div class="th">设备信息</div><div class="th">事件条数</div><div class="th">最近事件时间</div><div class="th">设备类型</div><div class="th"></div>`;
+      <div class="th">设备信息</div><div class="th">条数</div><div class="th">设备类型</div>`;
   } else {
-    head.innerHTML = `<div class="th"></div><div class="th">事件内容</div><div class="th">发生时间</div><div class="th">设备类型</div><div class="th">所属项目</div><div class="th">处理状态</div><div class="th">处理人</div><div class="th">处理时间</div><div class="th">操作</div>`;
+    head.innerHTML = `<div class="th"></div><div class="th">事件内容</div><div class="th">发生时间</div><div class="th">设备</div><div class="th">处理状态</div><div class="th">处理人</div><div class="th">处理时间</div><div class="th"></div>`;
   }
   head.querySelectorAll('[data-icon]').forEach(n=>{n.innerHTML=icon(n.dataset.icon);});
 }
@@ -1627,26 +1830,25 @@ function renderGrouped(){
   const byDev = {};
   list.forEach(e=>{ (byDev[e.deviceId] = byDev[e.deviceId]||[]).push(e); });
   const devs = Object.entries(byDev).sort((a,b)=>{
-    const pa = a[1].filter(e=>e.status==='待处理').length;
-    const pb = b[1].filter(e=>e.status==='待处理').length;
+    const pa = pendingCountFor(a[0]);
+    const pb = pendingCountFor(b[0]);
     return pb - pa || a[0].localeCompare(b[0]);
   });
   if(!devs.length){
-    body.innerHTML = `<div class="empty">${icon('search')}<span>无匹配数据</span></div>`;
+    body.innerHTML = `<div class="empty">${icon('search')}<span>无匹配数据</span><button class="btn-more" id="btnEmptyReset">重置筛选</button></div>`;
+    const rb = body.querySelector('#btnEmptyReset'); if(rb) rb.addEventListener('click',resetAllFilters);
     return;
   }
   body.innerHTML = devs.map(([devId, evs])=>{
     const dev = DEVICES.find(d=>d.id===devId);
-    const first = evs[0];
-    const unread = evs.filter(x=>x.status==='待处理'&&x.unread).length;
+    const pending = pendingCountFor(devId);
+    const unread = pendingUnreadFor(devId);
     const openCls = openGroups.has(currentCat + ':' + devId) ? ' open' : '';
     return `<div class="group-row${openCls}" data-dev="${devId}">
         <span class="chev">${icon('chevronRight')}</span>
         <div class="asset-cell"><div class="asset-thumb">${icon('truck')}</div><div class="asset-info"><div class="asset-name">${dev.name}</div><div class="asset-type">${dev.type}</div></div></div>
-        <div class="event-count"><b>${evs.length}</b>条事件${unread?`<span class="unread-tag">新${unread}</span>`:''}</div>
-        <div class="meter">${first.time}</div>
+        <div class="event-count"><b>${pending}</b>条${unread?`<span class="unread-tag">新${unread}</span>`:''}</div>
         <div class="meter">${dev.type}</div>
-        <div></div>
       </div>
       <div class="event-subrows" data-subrows hidden></div>`;
   }).join('');
@@ -1714,20 +1916,16 @@ function eventRow(e){
       </div>
     </div>`;
   return `<div class="event-row" data-event="${e.id}">
-      <div class="cell"></div>
+      <div class="cell"><div class="row-thumb">${icon('truck')}</div></div>
       <div class="cell event-block">
         <div class="ev-name">${e.type}${unreadMark}</div>
         <div class="ev-content" title="${e.content}">${e.content}</div>
       </div>
-      <div class="cell time-block">
-        <div class="ev-time">${e.time}</div>
-        <div class="ev-dev">${e.deviceName}</div>
-      </div>
-      <div class="cell sub">${e.deviceType}</div>
-      <div class="cell sub">${e.project}</div>
+      <div class="cell time-block">${grouped?'<div class="cell-label">发生时间</div>':''}<div class="ev-time">${e.time}</div></div>
+      <div class="cell dev-block"><div class="ev-dev">${e.deviceName}</div><div class="ev-type">${e.deviceType}</div></div>
       <div class="cell">${tag}</div>
       <div class="cell sub">${e.handler||''}</div>
-      <div class="cell sub">${e.handleTime||''}</div>
+      <div class="cell sub">${grouped?'<div class="cell-label">处理时间</div>':''}${e.handleTime||''}</div>
       <div class="cell">${actions}</div>
     </div>`;
 }
@@ -1735,7 +1933,11 @@ function eventRow(e){
 function renderFlat(){
   const body = document.getElementById('tableBody');
   const list = filteredEvents();
-  if(!list.length){ body.innerHTML = `<div class="empty">${icon('search')}<span>无匹配数据</span></div>`; return; }
+  if(!list.length){
+    body.innerHTML = `<div class="empty">${icon('search')}<span>无匹配数据</span><button class="btn-more" id="btnEmptyReset">重置筛选</button></div>`;
+    const rb = body.querySelector('#btnEmptyReset'); if(rb) rb.addEventListener('click',resetAllFilters);
+    return;
+  }
   flatPage = 1;
   renderFlatPage(list);
 }
@@ -1759,21 +1961,21 @@ function bindEventRows(scope){
       ev.stopPropagation();
       const wrap=b.closest('.row-drop'); if(wrap) wrap.classList.remove('open');
       activeEvent = EVENTS.find(e=>e.id===b.dataset.handle);
-      if(activeEvent && activeEvent.cat==='maintain'){
-        sdMaintParams = {
-          deviceNo: activeEvent.deviceName || activeEvent.deviceId,
-          maintTime: activeEvent.maintTime || activeEvent.time,
-          lastMaintTime: activeEvent.lastMaintTime || ''
-        };
-        jumpToDeviceDetail(activeEvent.deviceId, 'maint');
-        return;
-      }
+      // 无权限事件静默忽略
+      if(!canViewEvent(activeEvent)) return;
+      if(activeEvent && activeEvent.cat==='maintain'){ openMaintRecord(); return; }
       if(!confirmUnfinished(activeEvent)) return;
       openModal('modalHandle');
     });
   });
   scope.querySelectorAll('[data-ignore]').forEach(b=>{
-    b.addEventListener('click',ev=>{ev.stopPropagation(); const wrap=b.closest('.row-drop'); if(wrap) wrap.classList.remove('open'); activeEvent = EVENTS.find(e=>e.id===b.dataset.ignore); if(!confirmUnfinished(activeEvent)) return; openModal('modalIgnore');});
+    b.addEventListener('click',ev=>{
+      ev.stopPropagation(); const wrap=b.closest('.row-drop'); if(wrap) wrap.classList.remove('open');
+      activeEvent = EVENTS.find(e=>e.id===b.dataset.ignore);
+      // 无权限事件静默忽略
+      if(!canViewEvent(activeEvent)) return;
+      if(!confirmUnfinished(activeEvent)) return; openModal('modalIgnore');
+    });
   });
   scope.querySelectorAll('[data-dots]').forEach(b=>{
     b.addEventListener('click',ev=>{
@@ -1805,9 +2007,15 @@ function hideDetailPanel(){
   document.getElementById('detailPanel').hidden = true;
   document.getElementById('panelMask').hidden = true;
 }
+function closeSettingsConfig(){
+  document.getElementById('settingsConfigPanel').hidden = true;
+  document.getElementById('panelMask').hidden = true;
+}
 function openDetail(id){
   activeEvent = EVENTS.find(e=>e.id===id);
   if(!activeEvent) return;
+  // 权限校验：无权限事件静默忽略（用户感知为"没反应"）
+  if(!canViewEvent(activeEvent)) return;
   if(activeEvent.unread){
     activeEvent.unread = false;
     updateAuditBadge();
@@ -1820,7 +2028,7 @@ function openDetail(id){
   showDetailPanel();
   showPanel('panelDetail');
   document.getElementById('detailEventType').textContent = activeEvent.type;
-  document.getElementById('detailEventSub').textContent = `${activeEvent.deviceName} · ${activeEvent.time}`;
+  document.getElementById('detailEventSub').textContent = `${activeEvent.deviceName}`;
   renderDetailAsset();
   renderDetailBody();
   refreshActionBar();
@@ -1862,23 +2070,43 @@ function renderDetailAsset(){
 function renderDetailBody(){
   const body = document.getElementById('detailBody');
   const recs = [];
-  recs.push({text:'事件进入审核池', time:activeEvent.time});
   if(tasksOf(activeEvent.deviceId).length){
     recs.push({text:'创建关联任务', person:'张三', time:fmt(new Date(parseTime(activeEvent.time).getTime()+3600*1000)), taskType:'现场巡检'});
   }
   if(activeEvent.status!=='待处理'){
-    recs.push({text:activeEvent.status==='已处理'?'确认处理':'忽略', person:activeEvent.handler, time:activeEvent.handleTime});
+    if(activeEvent.maintDone){
+      recs.push({text:'自行保养', person:activeEvent.handler, time:activeEvent.maintDoneTime});
+    } else {
+      recs.push({text:activeEvent.status==='已处理'?'确认处理':'忽略', person:activeEvent.handler, time:activeEvent.handleTime});
+    }
   }
   body.innerHTML = `
     <div class="detail-section">
       <div class="sec-title">${icon('info')}事件详情</div>
-      <div class="detail-grid">
+      <div class="detail-grid kv-col">
         <div class="kv2"><span class="k">事件类型</span><span class="v">${activeEvent.type}</span></div>
         <div class="kv2"><span class="k">处理状态</span><span class="v">${statusTag(activeEvent.status)}</span></div>
         <div class="kv2"><span class="k">发生时间</span><span class="v">${activeEvent.time}</span></div>
         <div class="kv2"><span class="k">事件摘要</span><span class="v">${EVENT_SUMMARY[activeEvent.type] || activeEvent.content}</span></div>
       </div>
     </div>
+    ${tasksOf(activeEvent.deviceId).length ? `
+    <div class="detail-section">
+      <div class="sec-title">${icon('task')}关联任务</div>
+      <div class="detail-task-list">
+        ${tasksOf(activeEvent.deviceId).map(t=>`
+        <div class="detail-task-item">
+          <div class="dt-title" data-task-modal="${t.id}">${t.title}</div>
+          <div class="detail-grid kv-col">
+            <div class="kv2"><span class="k">处理状态</span><span class="v">${t.status}</span></div>
+            <div class="kv2"><span class="k">任务类型</span><span class="v">${t.type}</span></div>
+            <div class="kv2"><span class="k">关联设备</span><span class="v">${t.device}</span></div>
+            <div class="kv2"><span class="k">计划时间</span><span class="v">${t.range}</span></div>
+            <div class="kv2"><span class="k">接收人 / 创建人</span><span class="v">${t.receiver}、${t.creator}</span></div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
     ${(EVENT_DIFF[activeEvent.type]||[]).length ? `
     <div class="detail-section">
       <div class="sec-title">${icon('alert')}事件差异信息</div>
@@ -1886,10 +2114,16 @@ function renderDetailBody(){
     </div>` : ''}
     <div class="detail-section">
       <div class="sec-title">${icon('doc')}操作记录</div>
-      <div class="op-list">${recs.reverse().map(r=>`
-        <div class="op-item"><span>${r.text}${r.taskType?' · '+r.taskType:''}</span><span class="op-time">${r.person?r.person+' · ':''}${r.time}</span></div>`).join('')}
+      <div class="op-list">${recs.length ? recs.reverse().map(r=>`
+        <div class="op-item"><span>${r.text}${r.taskType?' · '+r.taskType:''}</span><span class="op-time">${r.person?r.person+' · ':''}${r.time}</span></div>`).join('') : '<div class="op-empty">暂无操作记录</div>'}</div>
       </div>
     </div>`;
+  body.querySelectorAll('[data-task-modal]').forEach(el=>{
+    el.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      openTaskDetailModal(el.dataset.taskModal);
+    });
+  });
 }
 function statusTag(s){
   return s==='待处理'?'<span class="status-text pending">待处理</span>':s==='已处理'?'<span class="status-text done">已处理</span>':'<span class="status-text ignored">已忽略</span>';
@@ -1904,8 +2138,7 @@ function initMore(){
   const wrap = document.createElement('div');
   wrap.className='dropdown';
   wrap.style.display='none';
-  wrap.style.marginLeft='auto';
-  wrap.innerHTML=`<button class="btn-default dropdown-trigger" style="margin-left:auto" title="更多">${icon('more')}</button><div class="dropdown-menu" style="right:0;left:auto;min-width:200px"></div>`;
+  wrap.innerHTML=`<button class="btn-default dropdown-trigger" title="更多">${icon('more')}<span>更多</span></button><div class="dropdown-menu" style="right:0;left:auto;min-width:200px"></div>`;
   wrap.querySelector('.dropdown-trigger').addEventListener('click',e=>{
     e.stopPropagation();
     document.querySelectorAll('.dropdown.open').forEach(d=>{if(d!==wrap)d.classList.remove('open')});
@@ -1917,12 +2150,12 @@ function refreshActionBar(){
   const h = document.getElementById('btnHandle');
   if(!activeEvent || !h) return;
   const maintain = activeEvent.cat==='maintain';
-  h.innerHTML = icon(maintain?'wrench':'check');
+  h.innerHTML = `${icon(maintain?'wrench':'check')}<span>${maintain?'保养处理':'确认处理'}</span>`;
   h.title = maintain?'保养处理':'确认处理';
   h.disabled = activeEvent.status!=='待处理';
   h.classList.toggle('disabled', activeEvent.status!=='待处理');
-  const taskBtn = document.getElementById('btnTasks');
-  if(taskBtn) taskBtn.style.display = '';
+  const curveBtn = document.getElementById('btnCurve');
+  if(curveBtn) curveBtn.style.display = actionsForEvent(activeEvent).includes('curve') ? '' : 'none';
 }
 function actionsForEvent(ev){
   if(!ev) return [];
@@ -1930,7 +2163,6 @@ function actionsForEvent(ev){
   const list = [...(EVENT_ACTIONS[ev.type] || [])];
   if(dynamicMetricFor(ev)) list.push('curve');
   return list.filter(a=>{
-    if(a==='oil') return !!dev?.oilData;
     if(a==='location') return !!dev?.trackData;
     return true;
   });
@@ -1940,10 +2172,6 @@ function renderMoreMenu(){
   if(!wrap || !activeEvent) return;
   const list = [];
   if(activeEvent.status==='待处理') list.push({act:'ignore', label:'忽略', icon:'x'});
-  actionsForEvent(activeEvent).forEach(a=>{
-    const def = MORE_ACTIONS[a];
-    if(def) list.push({act:a, label:def.label, icon:def.icon});
-  });
   const menu = wrap.querySelector('.dropdown-menu');
   if(!list.length){ wrap.style.display='none'; menu.innerHTML=''; return; }
   wrap.style.display='';
@@ -1951,12 +2179,10 @@ function renderMoreMenu(){
   menu.querySelectorAll('.menu-opt').forEach(o=>{
     o.addEventListener('click',()=>{
       wrap.classList.remove('open');
+      // 无权限事件静默忽略
+      if(!canViewEvent(activeEvent)) return;
       const act = o.dataset.act;
       if(act==='ignore'){ if(confirmUnfinished(activeEvent)) openModal('modalIgnore'); }
-      else if(act==='curve') openCurve('dynamic');
-      else if(act==='oil') openCurve('oil');
-      else if(act==='location') openCurve('location');
-      else if(act==='maint') openMaint();
     });
   });
 }
@@ -1965,16 +2191,15 @@ function renderMoreMenu(){
 /* 审核事件中的查看曲线跳转：先进入设备管理模块，再跳转到对应设备的统计报表 */
 function openCurve(mode){
   if(!activeEvent) return;
+  if(!canViewEvent(activeEvent)) return;
   if(mode==='dynamic'){
     const metric = dynamicMetricFor(activeEvent);
     if(!metric){ toast('当前设备暂无该事件对应的动态曲线'); return; }
     activeMetric = metric;
-  } else if(mode==='oil'){
-    activeMetric = '油位（%）';
   }
   sdEventDate = activeEvent.time.slice(0,10);
   sdTargetMetric = activeMetric;
-  const tabMap = {dynamic:'report', oil:'report', location:'track'};
+  const tabMap = {dynamic:'report', location:'track'};
   hideDetailPanel();
   // 先跳转到设备列表，再跳转到设备详情页
   jumpToDeviceDetail(activeEvent.deviceId, tabMap[mode] || 'report');
@@ -1988,8 +2213,8 @@ function closeCurve(){
 function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){ h=(h*31 + s.charCodeAt(i))|0; } return Math.abs(h); }
 function curveSeries(points){
   const seed = hashStr(activeEvent.id + activeMetric);
-  const base = activeCurveMode==='oil' ? 55 + (seed%20) : 65 + (seed%30);
-  const amp = activeCurveMode==='oil' ? 6 + (seed%8) : 8 + (seed%12);
+  const base = 65 + (seed%30);
+  const amp = 8 + (seed%12);
   return Array.from({length:points},(_,i)=>{
     const wave = Math.sin(i/3 + (seed%7)) * amp;
     const spike = (seed % 5 === i % 5) ? amp*1.5 : 0;
@@ -1997,7 +2222,6 @@ function curveSeries(points){
   });
 }
 function curveThreshold(){
-  if(activeMetric==='油位（%）') return 15;
   if(activeMetric.includes('电压')) return 24;
   if(activeMetric.includes('转速')) return 2200;
   if(activeMetric.includes('载荷')) return 30;
@@ -2054,7 +2278,7 @@ function renderCurvePage(){
   const max = Math.max(...series, thr) * 1.08;
   const min = Math.min(...series) * 0.9;
   const unit = METRIC_UNIT[activeMetric] || '';
-  const metrics = activeCurveMode==='oil' ? ['油位（%）'] : (DEVICE_CURVE_METRICS[dev.type]||[]);
+  const metrics = (DEVICE_CURVE_METRICS[dev.type]||[]);
   const maxVal = Math.max(...series);
   const minVal = Math.min(...series);
   const last = series[series.length-1];
@@ -2166,7 +2390,7 @@ function renderDeviceDetail(deviceId, tabKey){
   sdDeviceIdx = sdDeviceList.indexOf(deviceId);
   
   sdTab = tabKey || 'report';
-  if(sdTab === 'dynamicCurve' || sdTab === 'oilLevelCurve'){
+  if(sdTab === 'dynamicCurve'){
     sdTab = 'report';
   } else if(sdTab === 'locationTrace'){
     sdTab = 'track';
@@ -2390,14 +2614,7 @@ function renderReportTab(dev){
         </div>
       </div>
     </div>
-    <div class="sd-row r2">
-      <div class="sd-card sd-oil-curve">
-        <div class="sc-head">
-          <span class="icon sc-icon" data-icon="oil"></span>
-          <span class="sc-title">油位曲线</span>
-        </div>
-        ${renderOilCurve()}
-      </div>
+    <div class="sd-row r1">
       <div class="sd-card sd-param-curve">
         <div class="sc-head">
           <span class="icon sc-icon" data-icon="chart"></span>
@@ -2464,35 +2681,6 @@ function renderDonutChart(){
     <text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="16" font-weight="600" fill="#050C32">77</text>
     <text x="${cx}" y="${cy+20}" text-anchor="middle" font-size="10" fill="rgba(5,12,50,.38)">总预警</text>
   </svg>`;
-}
-
-function renderOilCurve(){
-  const w = 280, h = 140;
-  const pts = [];
-  const fillPts = [];
-  const base = h*0.5;
-  for(let i=0;i<=40;i++){
-    const x = (i/40)*w;
-    const y = base + Math.sin(i*0.3)*h*0.25 + Math.sin(i*0.8)*h*0.1 + (Math.random()-0.5)*h*0.08;
-    pts.push(`${x.toFixed(0)},${y.toFixed(0)}`);
-    fillPts.push(`${x.toFixed(0)},${h}`);
-  }
-  const fillPath = `M${pts[0]} L${fillPts.join(' L')} Z`;
-  const linePath = `M${pts.join(' L')}`;
-  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-    <defs>
-      <linearGradient id="oilGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#FA8C16" stop-opacity="0.5"/>
-        <stop offset="100%" stop-color="#FA8C16" stop-opacity="0.05"/>
-      </linearGradient>
-    </defs>
-    ${[0,1,2,3].map(i=>`<line x1="0" y1="${(i+1)*h/4}" x2="${w}" y2="${(i+1)*h/4}" stroke="#F0F1F4" stroke-width="1"/>`).join('')}
-    <path d="${fillPath}" fill="url(#oilGrad)"/>
-    <path d="${linePath}" fill="none" stroke="#FA8C16" stroke-width="2" stroke-linejoin="round"/>
-  </svg>
-  <div class="sd-curve-legend">
-    <span class="legend-item"><i style="background:#FA8C16"></i>油位 (%)</span>
-  </div>`;
 }
 
 function renderParamCurve(dev, metric){
@@ -2588,22 +2776,97 @@ function renderRealtimeTab(dev){
 }
 
 function renderMaintTab(dev){
-  const p = sdMaintParams || {};
-  const bar = p.deviceNo ? `<div class="sd-maint-params">
-      <span><b>设备编号</b>${p.deviceNo}</span>
-      <span><b>保养时间</b>${p.maintTime || '-'}</span>
-      <span><b>上次保养时间</b>${p.lastMaintTime || '-'}</span>
-    </div>` : '';
-  const rows = [
-    ['日常保养', p.lastMaintTime || '--', '已完成', '张三'],
-    ['定期保养', p.maintTime || new Date().toISOString().slice(0,10), '待保养', '--']
+  const lastTime = '2026-06-30';
+  const totalHours = '12,400';
+  const lastRecords = `
+    <div class="main-card">
+      <div class="main-card-title"><span class="icon" data-icon="wrench"></span>上次保养</div>
+      <div class="main-empty">暂无有效保养记录，请及时录入首次保养信息。</div>
+    </div>`;
+  const conditionCard = `
+    <div class="main-card purple">
+      <div class="main-card-title"><span class="icon" data-icon="alert"></span>保养工况</div>
+      <div class="main-center-grid">
+        <div><div class="mc-big">0<sub>h</sub></div><div class="mc-label">工时</div></div>
+      </div>
+    </div>`;
+  const nextMaintCard = `
+    <div class="main-card orange">
+      <div class="main-card-title"><span class="icon" data-icon="calendar"></span>下次保养</div>
+      <div class="main-empty">暂无有效保养记录，请及时录入首次保养信息。</div>
+    </div>`;
+
+  const filterRow = `
+    <div class="maint-filter-row">
+      <input type="date" class="mf-input" value="2026-06-01">
+      <span class="mf-sep">~</span>
+      <input type="date" class="mf-input" value="2026-06-30">
+      <div class="mf-dd"><span class="mf-dd-label">保养类型</span><span class="caret-mini" data-icon="chevronDown"></span></div>
+      <button class="mf-btn mf-btn-query">查询</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button class="mf-btn mf-btn-ghost" id="btnCfgStrategy">配置策略</button>
+        <button class="mf-btn mf-btn-primary" id="btnSelfMaint">自行保养</button>
+      </div>
+    </div>`;
+
+  const records = [
+    ['2026-06-30', '官方保养', 'PM 60,000 KM', '-', '总工时: -h', '-', '详情'],
+    ['2026-06-30', '官方保养', 'PM 60,000 KM', '-', '总工时: -h', '-', '详情'],
+    ['2026-06-30', '官方保养', 'PM 60,000 KM', '-', '总工时: -h', '-', '详情'],
+    ['2026-06-30', '官方保养', 'PM 60,000 KM', '-', '总工时: -h', '-', '详情'],
+    ['2026-06-30', '官方保养', 'PM 60,000 KM', '-', '总工时: -h', '-', '详情'],
+    ['2026-06-30', '官方保养', 'PM 60,000 KM', '-', '总工时: -h', '-', '详情']
   ];
-  return bar + `<div class="sd-card" style="padding:0">
-    <table class="sd-table">
-      <thead><tr><th>保养项目</th><th>计划时间</th><th>状态</th><th>负责人</th></tr></thead>
-      <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
-    </table>
-  </div>`;
+
+  const table = `
+    <div class="sd-card" style="padding:0;margin-top:12px">
+      <table class="sd-table">
+        <thead><tr>
+          <th style="width:120px">保养日期</th>
+          <th style="width:110px">保养类型</th>
+          <th>保养项目摘要</th>
+          <th style="width:90px">保养人</th>
+          <th style="width:140px">保养时工况</th>
+          <th style="width:110px">总费用</th>
+          <th style="width:90px">操作</th>
+        </tr></thead>
+        <tbody>${records.map(r=>`<tr>
+          <td>${r[0]}</td>
+          <td><span class="mtag mtag-official">${r[1]}</span></td>
+          <td>${r[2]}</td>
+          <td>${r[3]}</td>
+          <td>${r[4]}</td>
+          <td>${r[5]}</td>
+          <td><a href="javascript:;" class="link-primary" data-mdetail>详情</a></td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+
+  const pagination = `
+    <div class="mf-pagination">
+      <div class="mf-total">6 条记录</div>
+      <div class="mf-pager">
+        <button class="pg-btn">‹</button>
+        <button class="pg-btn active">1</button>
+        <div class="pg-size"><span>10 条/页</span><span class="caret-mini" data-icon="chevronDown"></span></div>
+      </div>
+    </div>`;
+
+  setTimeout(()=>{
+    const cfg = document.getElementById('btnCfgStrategy');
+    if(cfg) cfg.addEventListener('click', ()=>toast('已跳转：配置策略'));
+    const sm = document.getElementById('btnSelfMaint');
+    if(sm) sm.addEventListener('click', ()=>{ openMaintRecordModal(); });
+    document.querySelectorAll('[data-mdetail]').forEach(a=>{
+      a.addEventListener('click', ()=>toast('查看保养详情'));
+    });
+  },0);
+
+  return `
+    <div class="maint-top-grid">
+      ${lastRecords}${conditionCard}${nextMaintCard}
+    </div>
+    ${filterRow}${table}${pagination}`;
 }
 
 function renderTableTab(title, cols){
@@ -2657,7 +2920,13 @@ document.getElementById('btnNextDev').addEventListener('click', ()=>{
 /* ============ Tasks ============ */
 const TASKS = [
   {id:'T-1001', prio:'中', title:'油位低现场勘察任务', status:'待处理', type:'现场勘察', device:'沪D·77K30 · 燃油自卸车', range:'2026-08-02 ~ 2026-08-02', receiver:'张三', creator:'张三', start:'2026-08-02 09:30', due:'2026-08-02 23:59', desc:'现场核查油位低原因', created:'2026-08-02 09:31', notice:'张三'},
-  {id:'T-1002', prio:'高', title:'冷却水温高检修任务', status:'处理中', type:'吊装任务', device:'SY215-8888 · 燃油挖掘机', range:'2026-08-01 ~ 2026-08-03', receiver:'李四', creator:'李四', start:'2026-08-01 14:00', due:'2026-08-03 18:00', desc:'检查冷却系统并维修', created:'2026-08-01 14:05', notice:'李四'}
+  {id:'T-1002', prio:'高', title:'冷却水温高检修任务', status:'处理中', type:'吊装任务', device:'SY215-8888 · 燃油挖掘机', range:'2026-08-01 ~ 2026-08-03', receiver:'李四', creator:'李四', start:'2026-08-01 14:00', due:'2026-08-03 18:00', desc:'检查冷却系统并维修', created:'2026-08-01 14:05', notice:'李四'},
+  {id:'T-1003', prio:'中', title:'油位低复核任务', status:'处理中', type:'现场勘察', device:'沪D·77K30 · 燃油自卸车', range:'2026-08-02 ~ 2026-08-03', receiver:'王五', creator:'张三', start:'2026-08-02 10:00', due:'2026-08-03 18:00', desc:'复核油位低是否已线下处理', created:'2026-08-02 09:40', notice:'王五'},
+  {id:'T-1004', prio:'低', title:'油位传感器校准任务', status:'已完成', type:'检测任务', device:'沪D·77K30 · 燃油自卸车', range:'2026-08-01 ~ 2026-08-02', receiver:'赵六', creator:'张三', start:'2026-08-01 09:00', due:'2026-08-02 18:00', desc:'校准油位传感器并验证数据', created:'2026-08-01 09:10', notice:'赵六'},
+  {id:'T-1005', prio:'中', title:'燃油管路巡检任务', status:'待处理', type:'现场勘察', device:'沪D·77K30 · 燃油自卸车', range:'2026-08-03 ~ 2026-08-04', receiver:'周刚', creator:'张三', start:'2026-08-03 08:30', due:'2026-08-04 18:00', desc:'巡检燃油管路并排查渗漏', created:'2026-08-02 11:00', notice:'周刚'},
+  {id:'T-1006', prio:'中', title:'冷却系统清洗任务', status:'已完成', type:'保养任务', device:'SY215-8888 · 燃油挖掘机', range:'2026-07-30 ~ 2026-08-01', receiver:'陈七', creator:'李四', start:'2026-07-30 09:00', due:'2026-08-01 18:00', desc:'清洗散热器及冷却系统', created:'2026-07-30 09:15', notice:'陈七'},
+  {id:'T-1007', prio:'高', title:'发动机冷却液补充任务', status:'待处理', type:'现场勘察', device:'SY215-8888 · 燃油挖掘机', range:'2026-08-03 ~ 2026-08-04', receiver:'孙敏', creator:'李四', start:'2026-08-03 10:00', due:'2026-08-04 18:00', desc:'补充冷却液并检查泄漏点', created:'2026-08-02 15:20', notice:'孙敏'},
+  {id:'T-1008', prio:'低', title:'吊装点检查任务', status:'待处理', type:'检测任务', device:'QY50K-7781 · 汽车起重机', range:'2026-08-04 ~ 2026-08-05', receiver:'刘八', creator:'赵六', start:'2026-08-04 09:00', due:'2026-08-05 18:00', desc:'检查吊装点及钢丝绳状态', created:'2026-08-02 16:10', notice:'刘八'}
 ];
 function tasksOf(deviceId){
   const dev = DEVICES.find(d=>d.id===deviceId);
@@ -2688,45 +2957,53 @@ function renderTasks(){
   list.querySelectorAll('.task-card').forEach(c=>{
     c.addEventListener('click',()=>openTaskDetail(c.dataset.task));
   });
+  list.querySelectorAll('.task-title').forEach(el=>{
+    el.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      const card = el.closest('.task-card');
+      if(card) openTaskDetailModal(card.dataset.task);
+    });
+  });
 }
-function openTaskDetail(id){
-  const t = TASKS.find(x=>x.id===id); if(!t) return;
-  showPanel('panelTaskDetail');
-  document.getElementById('tdTitle').textContent = t.title;
-  document.getElementById('tdBody').innerHTML = `
+function renderTaskDetailHtml(t){
+  const devParts = (t.device || '').split(' · ');
+  return `
     <div class="detail-section">
-      <div class="sec-title">${icon('truck')}关联设备</div>
-      <div class="asset-cell"><div class="asset-thumb">${icon('truck')}</div><div><div class="asset-name">${t.device.split(' · ')[0]}</div><div class="asset-type">${t.device.split(' · ')[1]||''}</div></div></div>
-      <div class="kv"><span class="k">接收人</span><span class="v">${t.receiver}</span></div>
-      <div class="kv"><span class="k">创建人</span><span class="v">${t.creator}</span></div>
-      <div class="kv"><span class="k">创建时间</span><span class="v">${t.created}</span></div>
+      <div class="kv2 task-title-row"><span class="k">任务标题</span><span class="v">${t.title}</span></div>
     </div>
     <div class="detail-section">
       <div class="sec-title">${icon('info')}基本信息</div>
-      <div class="detail-grid">
-        <div class="kv2"><span class="k">状态</span><span class="v">${statusTag(t.status==='待处理'?'待处理':t.status==='处理中'?'待处理':'已处理')}</span></div>
+      <div class="detail-grid kv-col">
+        <div class="kv2"><span class="k">状态</span><span class="v">${t.status}</span></div>
         <div class="kv2"><span class="k">优先级</span><span class="v">${t.prio}</span></div>
         <div class="kv2"><span class="k">计划开始时间</span><span class="v">${t.start}</span></div>
         <div class="kv2"><span class="k">截止时间</span><span class="v">${t.due}</span></div>
         <div class="kv2"><span class="k">任务类型</span><span class="v">${t.type}</span></div>
-        <div class="kv2"><span class="k">任务描述</span><span class="v">${t.desc}</span></div>
-      </div>
-    </div>
-    <div class="detail-section">
-      <div class="sec-title">${icon('task')}关联审核事件</div>
-      <div class="detail-grid">
-        <div class="kv2"><span class="k">事件类型</span><span class="v">${activeEvent?activeEvent.type:'油位低'}</span></div>
-        <div class="kv2"><span class="k">关联设备</span><span class="v">${t.device.split(' · ')[0]}</span></div>
-        <div class="kv2"><span class="k">发生时间</span><span class="v">${activeEvent?activeEvent.time:'2026-08-02 03:12:45'}</span></div>
+        <div class="kv2"><span class="k">接收人</span><span class="v">${t.receiver}</span></div>
+        <div class="kv2"><span class="k">创建人</span><span class="v">${t.creator}</span></div>
+        <div class="kv2"><span class="k">创建时间</span><span class="v">${t.created}</span></div>
+        <div class="kv2"><span class="k">说明/备注</span><span class="v">${t.desc || '无'}</span></div>
+        <div class="kv2"><span class="k">关联设备</span><span class="v">${devParts[0] || t.device || '-'}${devParts[1]?`<div class="task-dev-type">${devParts[1]}</div>`:''}</span></div>
       </div>
     </div>
     <div class="detail-section">
       <div class="sec-title">${icon('doc')}任务动态</div>
       <div class="op-list">
-        <div class="op-item"><span>${t.creator} 创建任务</span><span class="op-time">${t.created}</span></div>
-        <div class="op-item"><span>通知人员：${t.notice}</span></div>
+        <div class="op-item"><span>${t.creator}创建任务</span><span class="op-time">${t.created}</span></div>
       </div>
     </div>`;
+}
+function openTaskDetail(id){
+  const t = TASKS.find(x=>x.id===id); if(!t) return;
+  showPanel('panelTaskDetail');
+  document.getElementById('tdTitle').textContent = t.title;
+  document.getElementById('tdBody').innerHTML = renderTaskDetailHtml(t);
+}
+function openTaskDetailModal(id){
+  const t = TASKS.find(x=>x.id===id); if(!t) return;
+  document.getElementById('taskDetailModalTitle').textContent = '任务详情';
+  document.getElementById('taskDetailModalBody').innerHTML = renderTaskDetailHtml(t);
+  openModal('modalTaskDetail');
 }
 
 /* ============ Settings ============ */
@@ -2738,15 +3015,10 @@ const SETTING_DATA = {
   inspect:{on:2, total:1, types:EVENT_TYPES.inspect}
 };
 function renderSettings(){
+  // 先关闭可能残留的配置面板（切换租户/重进设置时避免面板还开着）
+  try { closeSettingsConfig(); } catch(_) {}
   const acc = document.getElementById('settingsAccordion');
-  const right = document.getElementById('settingsDetail');
-  const layout = document.getElementById('settingsLayout');
   const d = SETTING_DATA;
-  right.style.display = '';
-  layout.classList.add('admin-view');
-  layout.classList.remove('user-view');
-  const leftBox = document.querySelector('.settings-left');
-  if(leftBox) leftBox.style.width = '340px';
   
   // 追踪每个事件类型的授权状态
   const authState = {};
@@ -2764,13 +3036,12 @@ function renderSettings(){
         ${s.types.map(t=>{
           const state = authState[t];
           const authDisplay = state.mode === 'all' ? '全部用户' : `已选 ${state.users.length} 人`;
-          return `<div class="setting-row" data-type="${t}">
+          return `<div class="setting-row${demoTenant==='individual'?' individual':''}" data-type="${t}">
           <div class="setting-row-main">
             <span class="s-name">${t}</span>
             <span class="mini-switch on" data-sw="${t}"></span>
           </div>
-          <div class="setting-row-sub-label">授权人员</div>
-          <div class="setting-row-sub-value" id="authVal-${t.replace(/\s/g,'')}">${authDisplay}</div>
+          ${demoTenant==='enterprise'?`<div class="setting-row-auth"><span class="auth-label">授权人员</span><span class="auth-value" id="authVal-${t.replace(/\s/g,'')}">${authDisplay}</span></div>`:''}
         </div>`;
         }).join('')}
       </div>
@@ -2787,28 +3058,64 @@ function renderSettings(){
   });
   acc.querySelectorAll('.setting-row').forEach(r=>{
     r.addEventListener('click',()=>{
-      const name = r.querySelector('.s-name').textContent;
-      const state = authState[name] || { mode: 'all', users: [] };
-      document.getElementById('settingsDetail').innerHTML = `
-        <div class="d-title">${name}</div>
-        <div style="font-size:12.5px;color:var(--text-2);margin-bottom:18px">企业/代理商租户 · 授权人员配置</div>
-        <div class="kv"><span class="k">授权范围</span><span class="v"></span></div>
-        <div class="kv" style="border-bottom:none"><span class="k" style="padding-left:20px">授权全部用户</span><span class="v"><span class="mini-switch ${state.mode==='all'?'on':''}" data-sw="all"></span></span></div>
-        <div id="specUserBlock" ${state.mode==='all'?'hidden':''}>
-          <div class="kv" style="border-bottom:none"><span class="k" style="padding-left:20px">指定用户</span><span class="v">已选 <span id="authCount">${state.users.length}</span> 人</span></div>
-          <div class="auth-grid" id="authGrid"></div>
-          <div style="margin-top:10px"><button class="link-btn" id="btnPickUsers"><span class="icon sm" data-icon="plus"></span>选择人员</button></div>
-        </div>
-        <div class="kv" style="margin-top:18px"><span class="k">保存生效</span><span class="v">保存后立即生效，对未来新事件生效</span></div>
-        <div style="margin-top:10px;font-size:12px;color:var(--text-3)">可见计算：事件类型开关 → 授权人员范围 → 设备权限，同时满足后事件可见。</div>
-        <div class="settings-foot">
-          <button class="btn-primary" data-save>保存</button>
-          <button class="btn-default" data-cancel>取消</button>
-        </div>`;
-      // 恢复选中用户
-      selectedUsers = [...(state.users)];
-      renderAuthGrid();
-      bindSettingsRight(name, state, authState);
+      try {
+        // 个体户：无需配置授权人员，点击事件类型行没反应
+        if(demoTenant==='individual') return;
+
+        const nameEl = r.querySelector('.s-name');
+        if(!nameEl) return;
+        const name = nameEl.textContent;
+        if(!name) return;
+        const state = (authState && authState[name]) || { mode: 'all', users: [] };
+
+        const titleEl = document.getElementById('settingsConfigTitle');
+        const detailEl = document.getElementById('settingsDetail');
+        const panelEl = document.getElementById('settingsConfigPanel');
+        const maskEl = document.getElementById('panelMask');
+        if(!titleEl || !detailEl || !panelEl || !maskEl) return;
+
+        // 先清空旧内容，避免残留
+        titleEl.textContent = '';
+        detailEl.innerHTML = '';
+
+        titleEl.textContent = name;
+        detailEl.innerHTML = `
+          <div style="font-size:12.5px;color:var(--text-2);margin-bottom:18px">企业/代理商租户 · 授权人员配置</div>
+          <div class="kv"><span class="k">授权范围</span><span class="v"></span></div>
+          <div class="kv" style="border-bottom:none"><span class="k" style="padding-left:20px">授权全部用户</span><span class="v"><span class="mini-switch ${state.mode==='all'?'on':''}" data-sw="all"></span></span></div>
+          <div id="specUserBlock" ${state.mode==='all'?'hidden':''}>
+            <div class="kv" style="border-bottom:none"><span class="k" style="padding-left:20px">指定用户</span><span class="v">已选 <span id="authCount">${state.users.length}</span> 人</span></div>
+            <div class="auth-grid" id="authGrid"></div>
+            <div class="inline-user-picker">
+              <div class="filter-search" style="width:100%;margin-top:12px">
+                <span class="icon" data-icon="search"></span>
+                <input id="userSearch" placeholder="搜索姓名 / 手机号 / 邮箱">
+              </div>
+              <div class="user-list" id="userList"></div>
+            </div>
+          </div>
+          <div class="kv" style="margin-top:18px"><span class="k">保存生效</span><span class="v">保存后立即生效，对未来新事件生效</span></div>
+          <div style="margin-top:10px;font-size:12px;color:var(--text-3)">可见计算：事件类型开关 → 授权人员范围 → 设备权限，同时满足后事件可见。</div>
+          <div class="settings-foot">
+            <button class="btn-primary" data-save>保存</button>
+            <button class="btn-default" data-cancel>取消</button>
+          </div>`;
+
+        // 恢复选中用户
+        selectedUsers = [...(state.users || [])];
+        try { renderAuthGrid(); } catch(_) {}
+        try { bindSettingsRight(name, state, authState); } catch(_) {}
+        try { renderUserList(); } catch(_) {}
+        try {
+          const us = document.getElementById('userSearch');
+          if(us) us.addEventListener('input',renderUserList);
+        } catch(_) {}
+
+        panelEl.hidden = false;
+        maskEl.hidden = false;
+      } catch(err) {
+        toast('加载失败：' + (err && err.message ? err.message : '未知错误'));
+      }
     });
   });
   bindSwitchToggles();
@@ -2831,27 +3138,23 @@ function updateAuthCount(){
   const countEl = document.getElementById('authCount');
   if(countEl) countEl.textContent = selectedUsers.length;
 }
-function openUserPicker(){
-  pickTemp = [...selectedUsers];
-  document.getElementById('userSearch').value = '';
-  renderUserList();
-  document.getElementById('modalUsers').classList.add('show');
-}
 function renderUserList(){
   const kw = (document.getElementById('userSearch').value||'').trim();
   const el = document.getElementById('userList');
   const list = USER_POOL.filter(u=>!kw||u.name.includes(kw)||u.contact.includes(kw));
   el.innerHTML = list.map(u=>`
-    <div class="user-opt${pickTemp.includes(u.name)?' on':''}" data-user="${u.name}">
-      <span class="check">${pickTemp.includes(u.name)?icon('check'):''}</span>
+    <div class="user-opt${selectedUsers.includes(u.name)?' on':''}" data-user="${u.name}">
+      <span class="check">${selectedUsers.includes(u.name)?icon('check'):''}</span>
       <span class="u-name">${u.name}</span>
       <span class="u-contact">${u.contact}</span>
     </div>`).join('') || `<div class="empty" style="padding:30px 0">${icon('search')}<span>无匹配人员</span></div>`;
   el.querySelectorAll('.user-opt').forEach(o=>{
     o.addEventListener('click',()=>{
       const n = o.dataset.user;
-      pickTemp.includes(n)?pickTemp=pickTemp.filter(x=>x!==n):pickTemp.push(n);
+      selectedUsers.includes(n)?selectedUsers=selectedUsers.filter(x=>x!==n):selectedUsers.push(n);
+      settingsDirty = true;
       renderUserList();
+      renderAuthGrid(); updateAuthCount();
     });
   });
 }
@@ -2865,14 +3168,17 @@ function bindSwitchToggles(){
       const msg = turningOn ? '开启后新事件将进入审核列表' : '关闭后新事件不进入审核列表，已有事件不受影响';
       if(!confirm(msg)) return;
       s.classList.toggle('on');
+      // 同步全局事件开关状态
+      const tName = s.getAttribute('data-sw');
+      if(tName && tName !== 'all' && Object.prototype.hasOwnProperty.call(eventSwState, tName)){
+        eventSwState[tName] = turningOn;
+      }
       settingsDirty = true;
       toast(msg);
     });
   });
 }
 function bindSettingsRight(eventTypeName, state, authState){
-  const pick = document.getElementById('btnPickUsers');
-  if(pick) pick.addEventListener('click',openUserPicker);
   document.querySelectorAll('[data-sw="all"]').forEach(s=>{
     s.addEventListener('click',()=>{
       // 右侧面板的开关由这里处理toggle（bindSwitchToggles已跳过这些元素）
@@ -2894,6 +3200,11 @@ function bindSettingsRight(eventTypeName, state, authState){
   if(save) save.addEventListener('click',()=>{
     // 保存当前状态到 authState
     if(eventTypeName && state && authState){
+      const cur = authState[eventTypeName];
+      if(cur.mode !== 'all' && selectedUsers.length === 0){
+        toast('请至少选择一位授权人员');
+        return;
+      }
       authState[eventTypeName].users = [...selectedUsers];
       const authValEl = document.getElementById('authVal-'+eventTypeName.replace(/\s/g,''));
       if(authValEl){
@@ -2903,7 +3214,7 @@ function bindSettingsRight(eventTypeName, state, authState){
     }
     settingsDirty = false;
     toast('保存成功');
-    switchView('viewList');
+    closeSettingsConfig();
   });
   const cancel = document.querySelector('[data-cancel]');
   if(cancel) cancel.addEventListener('click',()=>{
@@ -2918,17 +3229,14 @@ function switchView(id){
   document.querySelectorAll('.view').forEach(v=>v.hidden = true);
   document.getElementById(id).hidden = false;
   
-  // 中看板只在审核相关视图显示
+  // 中间审核大类面板只在审核列表页显示，二级页面整体盖住
   const middleDashboard = document.getElementById('middleDashboard');
   if(!middleDashboard) return;
-  
-  const auditViews = ['viewList', 'viewSettings']; // 审核相关视图
-  const deviceViews = ['viewDeviceList', 'viewDeviceDetail']; // 设备管理相关视图
-  
-  if(auditViews.includes(id)){
+
+  if(id === 'viewList'){
     middleDashboard.style.display = ''; // 显示中看板
-  } else if(deviceViews.includes(id)){
-    middleDashboard.style.display = 'none'; // 隐藏中看板
+  } else {
+    middleDashboard.style.display = 'none'; // 二级页面隐藏中看板
   }
 }
 
@@ -3072,7 +3380,6 @@ function hasUnfinishedTasks(ev){
   return tasksOf(ev.deviceId).some(t=>t.status==='待处理'||t.status==='处理中');
 }
 function confirmUnfinished(ev){
-  if(hasUnfinishedTasks(ev)) return confirm('该事件仍有未完成关联任务，确认后继续执行原审核动作？');
   return true;
 }
 function openModal(id){
@@ -3082,23 +3389,44 @@ function openModal(id){
     box.querySelectorAll('.phrase.on').forEach(b=>b.classList.remove('on'));
     const ta = box.querySelector('textarea');
     if(ta) ta.value = '';
+    const warn = box.querySelector('.unfinish-warn');
+    if(warn) warn.hidden = !(activeEvent && hasUnfinishedTasks(activeEvent));
   }
 }
-function openMaint(){ openModal('modalMaint'); }
+function openMaintRecordModal(){
+  const d = new Date();
+  const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const dt = document.getElementById('maintDate');
+  if(dt) dt.value = dateStr;
+  const person = document.getElementById('maintPerson');
+  if(person) person.value = '';
+  const items = document.getElementById('maintItems');
+  if(items) items.value = '';
+  const mileage = document.getElementById('maintMileage');
+  if(mileage) mileage.value = '0';
+  const sync = document.getElementById('maintSync');
+  if(sync) sync.checked = true;
+  const partsBody = document.getElementById('maintPartsBody');
+  if(partsBody) partsBody.innerHTML = `<tr class="maint-empty"><td colspan="6">无结果</td></tr>`;
+  const costB = document.querySelectorAll('.maint-cost b');
+  if(costB.length===3){ costB[0].textContent='-'; costB[1].textContent='-'; costB[2].textContent='-'; }
+  openModal('modalMaint');
+}
+function openMaintRecord(){
+  const ev = activeEvent;
+  if(!ev){ openMaintRecordModal(); return; }
+  const dev = DEVICES.find(d=>d.id===ev.deviceId);
+  if(!dev){ openMaintRecordModal(); return; }
+  sdMaintParams = { deviceNo: ev.deviceName, maintTime: ev.time.slice(0,10), lastMaintTime: '2026-06-30' };
+  hideDetailPanel();
+  jumpToDeviceDetail(dev.id, 'maint');
+}
 function closeModals(){
   document.querySelectorAll('.modal-mask.show').forEach(m=>m.classList.remove('show'));
 }
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',closeModals));
 document.querySelectorAll('.modal-mask').forEach(m=>{
   m.addEventListener('click',e=>{ if(e.target===m) closeModals(); });
-});
-document.getElementById('userSearch').addEventListener('input',renderUserList);
-document.getElementById('userConfirm').addEventListener('click',()=>{
-  selectedUsers = [...pickTemp];
-  settingsDirty = true;
-  closeModals();
-  renderAuthGrid(); updateAuthCount();
-  toast('已更新授权人员');
 });
 function fillPhrases(el, arr){
   el.innerHTML = arr.map(p=>`<button class="phrase" data-p="${p}">${p}</button>`).join('');
@@ -3134,11 +3462,18 @@ document.getElementById('btnSettings').addEventListener('click',()=>{
   hideDetailPanel();
   renderSettings(); switchView('viewSettings');
 });
+document.getElementById('tenantDemo').addEventListener('click',e=>{
+  const opt = e.target.closest('.td-opt'); if(!opt) return;
+  demoTenant = opt.dataset.tenant;
+  document.querySelectorAll('#tenantDemo .td-opt').forEach(x=>x.classList.toggle('on',x===opt));
+  renderSettings();
+});
 document.getElementById('btnRefresh').addEventListener('click',()=>{
   const now = new Date();
   document.getElementById('lastUpdated').textContent = `最后更新 ${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   toast('已刷新当前大类数据');
 });
+document.getElementById('btnResetFilter').addEventListener('click',resetAllFilters);
 document.getElementById('modeSwitch').addEventListener('click',()=>{
   grouped = !grouped;
   document.getElementById('modeSwitch').classList.toggle('on',grouped);
@@ -3155,18 +3490,12 @@ document.getElementById('tableBody').addEventListener('scroll',()=>{
 document.getElementById('searchInput').addEventListener('input',e=>{filters.kw=e.target.value; applyFilters();});
 document.getElementById('taskSearch').addEventListener('input',renderTasks);
 document.getElementById('btnHandle').addEventListener('click',()=>{
-  if(activeEvent.cat==='maintain'){
-    sdMaintParams = {
-      deviceNo: activeEvent.deviceName || activeEvent.deviceId,
-      maintTime: activeEvent.maintTime || activeEvent.time,
-      lastMaintTime: activeEvent.lastMaintTime || ''
-    };
-    jumpToDeviceDetail(activeEvent.deviceId, 'maint');
-    return;
-  }
+  if(!canViewEvent(activeEvent)) return;
+  if(activeEvent.cat==='maintain'){ openMaintRecord(); return; }
   if(!confirmUnfinished(activeEvent)) return;
   openModal('modalHandle');
 });
+document.getElementById('btnCurve').addEventListener('click',()=>openCurve('dynamic'));
 document.getElementById('handleSubmit').addEventListener('click',()=>{
   closeModals(); activeEvent.status='已处理'; activeEvent.handler='张三'; activeEvent.handleTime=fmt(new Date());
   activeEvent.unread=false; updateAuditBadge();
@@ -3181,20 +3510,72 @@ document.getElementById('ignoreSubmit').addEventListener('click',()=>{
   hideDetailPanel();
   renderTable(); refreshCategoryCounts(); renderCategories();
 });
-document.getElementById('btnTasks').addEventListener('click',()=>{renderTasks(); showPanel('panelTasks');});
 document.getElementById('btnPrevEvent').addEventListener('click',()=>navigateEvent(-1));
 document.getElementById('btnNextEvent').addEventListener('click',()=>navigateEvent(1));
-document.getElementById('maintCancel').addEventListener('click',closeModals);
-document.getElementById('maintSelf').addEventListener('click',()=>{
+document.getElementById('maintSubmit').addEventListener('click',()=>{
+  const doneTime = document.getElementById('maintDate').value;
+  const person = document.getElementById('maintPerson').value.trim();
+  if(!doneTime || !person){ toast('请填写保养日期和保养人'); return; }
+  const mileage = document.getElementById('maintMileage').value || '0';
   closeModals();
-  activeEvent.status='已处理'; activeEvent.handler='张三'; activeEvent.handleTime=fmt(new Date());
+  activeEvent.status='已处理'; activeEvent.handler=person; activeEvent.handleTime=fmt(new Date());
+  activeEvent.maintDone=true; activeEvent.maintDoneTime=doneTime; activeEvent.maintMileage=mileage;
   activeEvent.unread=false; updateAuditBadge();
-  toast('自行保养提交成功');
+  toast('自行保养提交成功，事件已处理');
   hideDetailPanel(); renderTable(); refreshCategoryCounts(); renderCategories();
 });
-document.getElementById('maintBook').addEventListener('click',()=>{ closeModals(); toast('预约保养提交成功，事件保持待处理'); });
+document.getElementById('maintUpload').addEventListener('click',()=>toast('附件上传为演示占位，正式实现沿用现有上传组件'));
+function updatePartsCost(){
+  const rows = document.querySelectorAll('#maintPartsBody .maint-part-row');
+  let total = 0;
+  rows.forEach(tr=>{
+    const inputs = tr.querySelectorAll('input');
+    const qty = parseFloat(inputs[2] && inputs[2].value) || 0;
+    const price = parseFloat(inputs[3] && inputs[3].value) || 0;
+    const sub = qty * price;
+    const subEl = tr.querySelector('.maint-subtotal');
+    if(subEl) subEl.textContent = sub ? sub.toFixed(2) : '-';
+    total += sub;
+  });
+  const b = document.querySelectorAll('.maint-cost b');
+  if(b.length===3){
+    b[0].textContent = total ? total.toFixed(2) : '-';
+    b[1].textContent = '-';
+    b[2].textContent = total ? total.toFixed(2) : '-';
+  }
+}
+function addPartRow(){
+  const body = document.getElementById('maintPartsBody');
+  if(!body) return;
+  const empty = body.querySelector('.maint-empty');
+  if(empty) empty.remove();
+  const tr = document.createElement('tr');
+  tr.className = 'maint-part-row';
+  tr.innerHTML = `<td><input class="maint-cell-input" placeholder="配件名称"></td>
+    <td><input class="maint-cell-input" placeholder="规格型号"></td>
+    <td><input class="maint-cell-input" type="number" min="0" placeholder="数量"></td>
+    <td><input class="maint-cell-input" type="number" min="0" placeholder="单价"></td>
+    <td class="maint-subtotal">-</td>
+    <td><button class="icon-btn" title="删除">${icon('x')}</button></td>`;
+  tr.querySelector('.icon-btn').addEventListener('click',()=>{
+    tr.remove();
+    if(!body.querySelector('.maint-part-row')){
+      body.innerHTML = `<tr class="maint-empty"><td colspan="6">无结果</td></tr>`;
+    }
+    updatePartsCost();
+  });
+  tr.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',updatePartsCost));
+  body.appendChild(tr);
+  updatePartsCost();
+}
+document.getElementById('btnAddPart').addEventListener('click',addPartRow);
 document.getElementById('btnCloseDetail').addEventListener('click',hideDetailPanel);
-document.getElementById('panelMask').addEventListener('click',hideDetailPanel);
+document.getElementById('panelMask').addEventListener('click',()=>{
+  if(!document.getElementById('settingsConfigPanel').hidden){ closeSettingsConfig(); return; }
+  hideDetailPanel();
+});
+document.getElementById('btnCloseConfig').addEventListener('click',closeSettingsConfig);
+document.getElementById('btnCloseConfigX').addEventListener('click',closeSettingsConfig);
 document.getElementById('btnBackCurve').addEventListener('click',closeCurve);
 document.getElementById('btnBackToAudit').addEventListener('click',()=>{
   if(sdSource === 'audit'){
