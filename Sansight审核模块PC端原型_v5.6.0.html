@@ -179,10 +179,6 @@
   .menu-opt .check{width:16px;height:16px;border:1px solid #C7CBD4;border-radius:3px;flex:none;display:inline-flex;align-items:center;justify-content:center;color:#fff}
   .menu-opt.on .check{background:var(--primary);border-color:var(--primary)}
   .menu-opt.on{color:var(--primary)}
-  .menu-search{display:flex;align-items:center;gap:6px;padding:6px 8px 4px}
-  .menu-search > .icon{color:var(--text-3);flex:none}
-  .menu-search input{flex:1;min-width:0;height:28px;border:1px solid var(--border);border-radius:4px;padding:0 8px;font-size:12.5px;outline:none;background:#fff}
-  .menu-search input:focus{border-color:var(--primary)}
   .menu-sep{height:1px;background:var(--border);margin:5px 4px}
   .menu-clear{display:flex;align-items:center;justify-content:center;gap:6px;height:30px;margin:0 4px 6px;border:1px dashed var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--text-2);cursor:pointer}
   .menu-clear:hover{color:var(--primary);border-color:var(--primary);background:var(--primary-bg)}
@@ -876,7 +872,6 @@
             <div class="dropdown" id="ddRange"></div>
           </div>
           <span class="filter-count" id="filterCount"></span>
-          <button class="link-btn ghost" id="btnResetFilter">清空筛选</button>
         </div>
         <div class="table-wrap">
           <div class="table-head" id="tableHead"></div>
@@ -1593,7 +1588,7 @@ function makeDropdown(containerId, opts){
   wrap.className = 'dropdown';
   wrap.innerHTML = `<button class="dropdown-trigger"><span class="d-label">${opts.label}</span><span class="caret">${icon('chevronDown')}</span></button>
     <div class="dropdown-menu">${opts.render()}</div>`;
-  const d = { wrap, menu: wrap.querySelector('.dropdown-menu'), opts, label: wrap.querySelector('.d-label'), id: containerId, searchText:'' };
+  const d = { wrap, menu: wrap.querySelector('.dropdown-menu'), opts, label: wrap.querySelector('.d-label'), id: containerId };
   DD[containerId] = d;
   bindMenu(d);
   wrap.querySelector('.dropdown-trigger').addEventListener('click', e=>{
@@ -1603,14 +1598,6 @@ function makeDropdown(containerId, opts){
     if(!was){ wrap.classList.add('open'); refreshMenu(containerId); }
   });
   wrap.querySelector('.dropdown-menu').addEventListener('click', e=>{ e.stopPropagation(); });
-  wrap.addEventListener('input', e=>{
-    if(e.target.classList && e.target.classList.contains('menu-search-input')){
-      d.searchText = e.target.value;
-      refreshMenu(d.id);
-      const ni = wrap.querySelector('.menu-search-input');
-      if(ni){ ni.focus(); const len = ni.value.length; ni.setSelectionRange(len,len); }
-    }
-  });
   document.getElementById(containerId).appendChild(wrap);
   return d;
 }
@@ -1652,9 +1639,6 @@ function clearRow(){
 function optRow(v, selected){
   return `<div class="menu-opt${selected?' on':''}" data-opt="${v}"><span class="check">${selected?icon('check'):''}</span>${v}</div>`;
 }
-function searchRow(v){
-  return `<div class="menu-search"><span class="icon" data-icon="search"></span><input class="menu-search-input" placeholder="搜索" value="${v||''}"></div>`;
-}
 function deviceTypeOptions(){
   return [...new Set(EVENTS.filter(e=>e.cat===currentCat).map(e=>e.deviceType))];
 }
@@ -1674,8 +1658,7 @@ function initFilters(){
     label:'全部类型',
     labelText:()=>filters.type.length?`已选 ${filters.type.length}`:'全部类型',
     render:()=>{
-      const q = (DD.ddType?DD.ddType.searchText:'').trim();
-      return searchRow(DD.ddType?DD.ddType.searchText:'')+clearRow()+EVENT_TYPES[currentCat].filter(s=>!q||s.includes(q)).map(s=>optRow(s, filters.type.includes(s))).join('');
+      return clearRow()+EVENT_TYPES[currentCat].map(s=>optRow(s, filters.type.includes(s))).join('');
     },
     onClick:s=>{ filters.type.includes(s)?filters.type=filters.type.filter(x=>x!==s):filters.type.push(s); },
     onClear:()=>{ filters.type=[]; },
@@ -1685,8 +1668,7 @@ function initFilters(){
     label:'全部设备',
     labelText:()=>filters.deviceType.length?`已选 ${filters.deviceType.length}`:'全部设备',
     render:()=>{
-      const q = (DD.ddDeviceType?DD.ddDeviceType.searchText:'').trim();
-      return searchRow(DD.ddDeviceType?DD.ddDeviceType.searchText:'')+clearRow()+deviceTypeOptions().filter(s=>!q||s.includes(q)).map(s=>optRow(s, filters.deviceType.includes(s))).join('');
+      return clearRow()+deviceTypeOptions().map(s=>optRow(s, filters.deviceType.includes(s))).join('');
     },
     onClick:s=>{ filters.deviceType.includes(s)?filters.deviceType=filters.deviceType.filter(x=>x!==s):filters.deviceType.push(s); },
     onClear:()=>{ filters.deviceType=[]; },
@@ -1801,7 +1783,7 @@ function resetAllFilters(){
   filters.status=['待处理'];
   filters.type=[]; filters.deviceType=[]; filters.kw='';
   filters.startDate='2026-07-26'; filters.endDate='2026-08-02';
-  Object.values(DD).forEach(d=>{ d.searchText=''; if(d.label) d.label.textContent=d.opts.labelText(); });
+  Object.values(DD).forEach(d=>{ if(d.label) d.label.textContent=d.opts.labelText(); });
   const si = document.getElementById('searchInput'); if(si) si.value='';
   flatPage=1;
   applyFilters();
@@ -3473,7 +3455,6 @@ document.getElementById('btnRefresh').addEventListener('click',()=>{
   document.getElementById('lastUpdated').textContent = `最后更新 ${now.getMonth()+1}/${now.getDate()}/${now.getFullYear()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   toast('已刷新当前大类数据');
 });
-document.getElementById('btnResetFilter').addEventListener('click',resetAllFilters);
 document.getElementById('modeSwitch').addEventListener('click',()=>{
   grouped = !grouped;
   document.getElementById('modeSwitch').classList.toggle('on',grouped);
