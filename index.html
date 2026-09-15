@@ -3678,18 +3678,18 @@ function openTaskCreateFromAudit(){
 
 /* ============ View switching ============ */
 /* ============ Check module ============ */
-const CHECK_TYPES = ['日检','周检','月检','专项检查'];
+const CHECK_TYPES = ['上车随检','日检','月检','周检'];
 const CHECK_TYPE_ITEM_COUNTS = {
+  '上车随检': 3,
   '日检': 5,
   '周检': 6,
-  '月检': 8,
-  '专项检查': 4
+  '月检': 8
 };
 const CHECK_TYPE_DISPLAY_NAMES = {
+  '上车随检':'上车随检',
   '日检':'日常设备检查',
   '周检':'周度综合检查',
-  '月检':'月度深度检查',
-  '专项检查':'专项安全检查'
+  '月检':'月度深度检查'
 };
 const CHECK_RESULT_META = {
   '正常':{key:'normal',symbol:'✓',label:'正常'},
@@ -3764,7 +3764,7 @@ const CHECK_RESULTS = [
     ]
   },
   {
-    id:'CHK-0905', deviceId:'D011', checkType:'专项检查', submitTime:'2026-09-07 11:20', submitter:'周成',
+    id:'CHK-0905', deviceId:'D011', checkType:'上车随检', submitTime:'2026-09-07 11:20', submitter:'周成',
     audit:null,
     groups:[
       {name:'电池与充电', items:[
