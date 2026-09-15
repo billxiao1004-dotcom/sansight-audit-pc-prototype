@@ -4361,7 +4361,7 @@ function renderCheckItems(r){
     <div class="ck-summary-section ck-detail-summary-block">
       <div class="ck-section-title ck-summary-title-row">
         <span class="ck-summary-title-main">${icon('chart')}检查汇总</span>
-        <span class="ck-summary-total">共 ${stats.total} 项检查</span>
+        <span class="ck-summary-total">共${stats.total}项检查项</span>
       </div>
       <div class="ck-detail-stats">
         <button class="ck-detail-stat need${checkDetailStatusFilter==='需处理'?' active':''}" data-detail-filter="需处理">
@@ -4388,7 +4388,7 @@ function renderCheckItems(r){
     </div>
     <div class="ck-detail-section-head">
       <div class="ck-sec-title">${icon('doc')}检查明细</div>
-      <span class="ck-detail-count">${checkDetailStatusFilter?`${checkDetailStatusFilter} · ${visibleItems.length} 项`:`共 ${items.length} 项检查 · 需处理 / 需关注优先`}</span>
+      <span class="ck-detail-count">${checkDetailStatusFilter?`${checkDetailStatusFilter} · ${visibleItems.length} 项`:`共${items.length}项检查项 · 需处理 / 需关注优先`}</span>
     </div>
     <div class="ck-items-list">
       ${itemsHtml || '<div class="check-empty" style="padding:32px 0"><b>当前状态下暂无检查项</b></div>'}
