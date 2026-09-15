@@ -3676,13 +3676,14 @@ function openTaskCreateFromAudit(){
 
 /* ============ View switching ============ */
 /* ============ Check module ============ */
-const CHECK_TYPES = ['上车随检','日检','月检','周检'];
-const CHECK_TYPE_ITEM_COUNTS = {
-  '上车随检': 3,
-  '日检': 5,
-  '周检': 6,
-  '月检': 8
-};
+let CHECK_TYPES = [];
+/* 仅用于静态原型模拟后台导入的检查类型与模板项数，正式实现必须由服务端配置驱动。 */
+const CHECK_TYPE_DEMO_CONFIG = [
+  {type:'上车随检', itemCount:3},
+  {type:'日检', itemCount:5},
+  {type:'周检', itemCount:6},
+  {type:'月检', itemCount:8}
+];
 const CHECK_RESULT_META = {
   '正常':{key:'normal',symbol:'✓',label:'正常'},
   '需关注':{key:'follow',symbol:'!',label:'需关注'},
@@ -3803,7 +3804,7 @@ for(let i=0;i<22;i++){
     ? [{type:'image',name:nm+'（近景）.jpg'},{type:'image',name:nm+'（远景）.jpg'}]
     : (st==='需关注' ? [{type:'image',name:nm+'（观察记录）.jpg'}] : []);
   const dev = DEVICES[(i*2+1) % DEVICES.length];
-  const checkType = CHECK_TYPES[i % CHECK_TYPES.length];
+  const checkType = CHECK_TYPE_DEMO_CONFIG[i % CHECK_TYPE_DEMO_CONFIG.length].type;
   const day = 3 + Math.floor((i*11) % 6);
   const hour = 8 + ((i*3) % 12);
   const minute = (i*17) % 60;
@@ -3850,7 +3851,8 @@ for(let i=0;i<22;i++){
 }
 
 function normalizeCheckResultItemCount(r){
-  const target = CHECK_TYPE_ITEM_COUNTS[r.checkType];
+  const config = CHECK_TYPE_DEMO_CONFIG.find(c=>c.type===r.checkType);
+  const target = config && config.itemCount;
   if(!target) return;
   const items = r.groups.flatMap(g=>g.items);
   let supplementIndex = 0;
@@ -3869,6 +3871,9 @@ function normalizeCheckResultItemCount(r){
   r.audit = needCount ? (r.audit || {type:'检查需处理',status:'待处理',time:r.submitTime}) : null;
 }
 CHECK_RESULTS.forEach(normalizeCheckResultItemCount);
+CHECK_TYPES = CHECK_TYPE_DEMO_CONFIG
+  .map(c=>c.type)
+  .filter(type=>CHECK_RESULTS.some(r=>r.checkType===type));
 
 let currentCheckId = null;
 let checkDetailStatusFilter = '';
