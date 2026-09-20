@@ -876,9 +876,17 @@
   .check-pager .page-btn.on{background:var(--primary);color:#fff;font-weight:600}
   .check-pager .page-btn:disabled{color:#C4C9D2;background:#F8F9FB;cursor:not-allowed}
   .check-pager .page-btn:last-child{border-right:0}
+  .check-foot-right{display:inline-flex;align-items:center;gap:12px;margin-left:auto}
+  .ck-page-size{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-3);white-space:nowrap}
+  .ck-page-size select{height:30px;border:1px solid #DCE1EA;border-radius:6px;background:#fff;padding:0 6px;font-size:12.5px;color:var(--text)}
 
   /* Check result detail */
-  #checkDetailPanel{width:64vw;box-shadow:-12px 0 32px rgba(5,12,50,.12)}
+  #checkDetailPanel{
+    top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);
+    width:min(1180px,calc(100vw - 72px));height:min(820px,calc(100vh - 104px));
+    max-height:calc(100vh - 104px);border:1px solid var(--border);border-left:1px solid var(--border);
+    border-radius:10px;box-shadow:0 24px 64px rgba(5,12,50,.22);
+  }
   #checkDetailPanel .detail-head{background:#fff;justify-content:space-between}
   #checkDetailPanel .detail-head .panel-title{font-size:17px;font-weight:700;color:var(--text)}
   #checkDetailPanel .detail-head .panel-close{margin-left:auto;margin-right:0}
@@ -927,6 +935,7 @@
   .ck-sec-title .icon{width:17px;height:17px;color:var(--primary)}
   .ck-detail-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .ck-detail-count{font-size:12px;color:var(--text-3);white-space:nowrap}
+  .ck-detail-head-right{display:flex;align-items:center;gap:8px;flex:none}
   .ck-items-list{display:flex;flex-direction:column;gap:8px}
   .ck-device-card{display:flex;gap:12px;background:#FAFBFC;border:1px solid var(--border);border-radius:8px;padding:14px;align-items:center;min-width:0}
   .ck-device-card .ck-dev-ico{width:38px;height:38px;flex:none;border-radius:6px;background:var(--head);display:flex;align-items:center;justify-content:center;color:var(--text-2)}
@@ -1278,6 +1287,7 @@
       <div class="action-bar">
         <button class="btn-primary" id="btnHandle" title="确认处理"><span class="icon" data-icon="check"></span><span id="btnHandleLabel">确认处理</span></button>
         <button class="btn-default" id="btnCurve" style="display:none" title="查看动态曲线"><span class="icon" data-icon="chart"></span><span>查看动态曲线</span></button>
+        <button class="btn-default" id="btnCheckResult" style="display:none" title="查看检查结果"><span class="icon" data-icon="clipboard"></span><span>查看检查结果</span></button>
         <button class="btn-default" id="btnTaskList" title="关联任务"><span class="icon" data-icon="task"></span><span>关联任务</span></button>
         <div class="dropdown" id="ddMore"></div>
       </div>
@@ -1314,7 +1324,7 @@
       <div class="detail-body" id="tdBody"></div>
     </div>
     </section>
-    <section class="detail-panel" id="checkDetailPanel" hidden>
+    <section class="detail-panel check-result-modal" id="checkDetailPanel" hidden>
       <div class="detail-head">
         <span class="panel-title">检查结果详情</span>
         <button class="icon-btn panel-close" id="btnCloseCheckDetail" title="关闭"><span class="icon" data-icon="x"></span></button>
@@ -2485,6 +2495,12 @@ function refreshActionBar(){
   h.classList.toggle('disabled', activeEvent.status!=='待处理');
   const curveBtn = document.getElementById('btnCurve');
   if(curveBtn) curveBtn.style.display = actionsForEvent(activeEvent).includes('curve') ? '' : 'none';
+  // 检查异常事件：展示“查看检查结果”入口
+  const crBtn = document.getElementById('btnCheckResult');
+  if(crBtn){
+    const canView = activeEvent.type === '检查需处理' && !!activeEvent.checkId;
+    crBtn.style.display = canView ? '' : 'none';
+  }
 }
 function actionsForEvent(ev){
   if(!ev) return [];
@@ -3881,9 +3897,13 @@ CHECK_TYPES = CHECK_TYPE_DEMO_CONFIG
 
 let currentCheckId = null;
 let checkDetailStatusFilter = '';
+let checkDetailSortByResult = false;
+let checkDetailFromAudit = false;
+let auditBackEventId = null;
 let checkPage = 1;
 let checkSortNeedTop = false;
-const CHECK_PAGE_SIZE = 8;
+let checkPageSize = 10;
+const CHECK_PAGE_SIZE_OPTIONS = [10,20,50,100];
 function checkDevice(id){
   return DEVICES.find(d=>d.id===id) || {name:'未知设备', type:'未知类型'};
 }
@@ -3898,6 +3918,19 @@ function checkStats(r){
   }));
   return s;
 }
+/* 审核-检查联动：为“检查需处理”审核事件绑定对应的检查结果 */
+(function linkCheckResultsToAuditEvents(){
+  const pool = CHECK_RESULTS.filter(r=>checkStats(r).need > 0);
+  if(!pool.length) return;
+  let seq = 0;
+  EVENTS.forEach(ev=>{
+    if(ev.type !== '检查需处理') return;
+    const sameDevice = pool.find(r=>r.deviceId === ev.deviceId);
+    const target = sameDevice || pool[seq % pool.length];
+    seq++;
+    if(target) ev.checkId = target.id;
+  });
+})();
 function checkFiltered(){
   const st = checkState;
   return CHECK_RESULTS.filter(r=>{
@@ -3954,10 +3987,10 @@ function refreshCheckFilterLabels(){
 }
 function renderCheckList(){
   const list = checkFiltered();
-  const totalPages = Math.max(1, Math.ceil(list.length / CHECK_PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(list.length / checkPageSize));
   if(checkPage > totalPages) checkPage = totalPages;
   if(checkPage < 1) checkPage = 1;
-  const shown = list.slice((checkPage - 1) * CHECK_PAGE_SIZE, checkPage * CHECK_PAGE_SIZE);
+  const shown = list.slice((checkPage - 1) * checkPageSize, checkPage * checkPageSize);
   const body = document.getElementById('checkBody');
   if(!shown.length){
     body.innerHTML = '<div class="check-empty"><span class="icon lg" data-icon="search"></span><b>未找到符合条件的检查结果</b><span>请调整搜索或筛选条件</span><button class="btn sm" id="ckEmptyReset">清除筛选</button></div>';
@@ -3968,6 +4001,10 @@ function renderCheckList(){
     body.innerHTML = shown.map(r=>{
       const dev = checkDevice(r.deviceId);
       const st = checkStats(r);
+      // 时间原样展示 APP 提交的快照，不做截断或二次格式化
+      const timeParts = String(r.submitTime || '').trim().split(' ');
+      const timeDate = timeParts[0] || '';
+      const timeClock = timeParts.slice(1).join(' ');
       return `<div class="check-row" data-check="${r.id}">
         <div class="ck-device-cell">
           <span class="ck-device-icon">${icon('truck')}</span>
@@ -4001,12 +4038,18 @@ function renderCheckList(){
             <span class="ck-result-label">不适用</span>
           </div>
         </div>
-        <div><div class="ck-time-main">${r.submitTime.slice(0,10)}</div><div class="ck-time-sub">${r.submitTime.slice(11)}</div></div>
+        <div><div class="ck-time-main">${timeDate}</div><div class="ck-time-sub">${timeClock}</div></div>
         <div class="ck-submitter">${r.submitter}</div>
       </div>`;
     }).join('');
   }
-  document.getElementById('checkFoot').innerHTML = `<span>共 ${list.length} 条检查结果</span><div class="check-pager">${checkPagerButtons(checkPage, totalPages)}</div>`;
+  document.getElementById('checkFoot').innerHTML = `<span>共 ${list.length} 条检查结果</span><div class="check-foot-right"><label class="ck-page-size">每页<select id="ckPageSize">${CHECK_PAGE_SIZE_OPTIONS.map(n=>`<option value="${n}"${n===checkPageSize?' selected':''}>${n}</option>`).join('')}</select>条</label><div class="check-pager">${checkPagerButtons(checkPage, totalPages)}</div></div>`;
+  const pageSizeSel = document.getElementById('ckPageSize');
+  if(pageSizeSel) pageSizeSel.addEventListener('change', ()=>{
+    checkPageSize = Number(pageSizeSel.value) || 10;
+    checkPage = 1;
+    renderCheckList();
+  });
   const sortBtn = document.getElementById('ckSortUp');
   if(sortBtn){
     sortBtn.classList.toggle('on', checkSortNeedTop);
@@ -4256,8 +4299,12 @@ function showCheckModule(){
 function openCheckDetail(id){
   const r = CHECK_RESULTS.find(x=>x.id===id);
   if(!r) return;
+  const opts = arguments[1] || {};
   currentCheckId = id;
-  checkDetailStatusFilter = '';
+  checkDetailFromAudit = !!opts.fromAudit;
+  auditBackEventId = opts.fromAudit ? (opts.auditEventId || null) : null;
+  checkDetailStatusFilter = opts.statusFilter || '';
+  checkDetailSortByResult = false;
   document.getElementById('checkDetailPanel').hidden = false;
   syncPanelMask();
   renderCheckSummary(r);
@@ -4268,6 +4315,22 @@ function closeCheckDetail(){
   closeCheckMedia();
   document.getElementById('checkDetailPanel').hidden = true;
   syncPanelMask();
+  // 从审核事件进入时，关闭检查结果后回到原审核事件详情
+  if(checkDetailFromAudit){
+    const backId = auditBackEventId;
+    checkDetailFromAudit = false;
+    auditBackEventId = null;
+    if(backId && EVENTS.some(e=>e.id===backId)) openDetail(backId);
+  }
+}
+/* 审核事件详情 → 查看完整检查结果 */
+function openCheckResultFromAudit(){
+  if(!activeEvent || !activeEvent.checkId) return;
+  const r = CHECK_RESULTS.find(x=>x.id===activeEvent.checkId);
+  if(!r){ toast('未找到关联的检查结果'); return; }
+  const auditId = activeEvent.id;
+  hideDetailPanel();
+  openCheckDetail(r.id, {fromAudit:true, auditEventId:auditId});
 }
 function renderCheckSummary(r){
   const dev = checkDevice(r.deviceId);
@@ -4280,7 +4343,7 @@ function renderCheckSummary(r){
     <div class="ck-summary-section">
       <div class="ck-section-title">${icon('truck')}基本信息</div>
       <div class="ck-device-summary">
-        <img class="ck-device-photo" src="../在数字化中应用AI能力/原型/sanvist-copy/assets/devices/_placeholder.png" alt="${dev.name}设备占位图">
+        <img class="ck-device-photo" src="./_device-placeholder.svg" alt="${dev.name}设备占位图">
         <div class="ck-device-info">
           <div class="kv"><span class="k">设备主标识</span><span class="v">${dev.name}</span></div>
           <div class="kv"><span class="k">设备类型</span><span class="v">${dev.type}</span></div>
@@ -4351,17 +4414,17 @@ function renderCheckItems(r){
   const col = document.getElementById('checkItems');
   const mediaReg = [];   // 每次渲染重建：索引 → 该检查项的附件数组
   const attachHtml = it => {
-    if(!it.attach || !it.attach.length) return '';
-    const mi = mediaReg.push(it.attach) - 1;
-    const thumbs = it.attach.map((m,k)=>{
-      const isVideo = m.type === 'video';
-      return `<button class="ck-thumb${isVideo?' video':''}" data-mi="${mi}" data-mk="${k}" title="${isVideo?'视频':'图片'}：${m.name}">
-        ${isVideo ? icon('play') : icon('image')}
-        ${isVideo ? '<span class="ck-thumb-tag">视频</span>' : ''}
+    // WEB 检查结果只展示图片附件，视频等其它类型不展示
+    const imgs = (it.attach || []).filter(m=>m.type !== 'video');
+    if(!imgs.length) return '';
+    const mi = mediaReg.push(imgs) - 1;
+    const thumbs = imgs.map((m,k)=>{
+      return `<button class="ck-thumb" data-mi="${mi}" data-mk="${k}" title="图片：${m.name}">
+        ${icon('image')}
       </button>`;
     }).join('');
     return `<div class="ck-item-attach">${thumbs}</div>
-      <div class="ck-item-attach-hint">共 ${it.attach.length} 个附件，点击缩略图可查看</div>`;
+      <div class="ck-item-attach-hint">共 ${imgs.length} 张图片，点击缩略图可查看</div>`;
   };
   const resultOrder = {'需处理':0,'需关注':1,'正常':2,'不适用':3};
   const items = [];
@@ -4370,7 +4433,12 @@ function renderCheckItems(r){
       items.push({...it,groupName:g.name,groupTotal:g.items.length,sourceOrder:gi*100+ii});
     });
   });
-  items.sort((a,b)=>(resultOrder[a.result]??9)-(resultOrder[b.result]??9) || a.sourceOrder-b.sourceOrder);
+  if(checkDetailSortByResult){
+    items.sort((a,b)=>(resultOrder[a.result]??9)-(resultOrder[b.result]??9) || a.sourceOrder-b.sourceOrder);
+  } else {
+    // 默认与 APP 一致：按模板原始分组/顺序展示
+    items.sort((a,b)=>a.sourceOrder-b.sourceOrder);
+  }
   const visibleItems = checkDetailStatusFilter ? items.filter(it=>it.result===checkDetailStatusFilter) : items;
   const itemsHtml = visibleItems.map(it=>{
     const resultMeta = CHECK_RESULT_META[it.result] || CHECK_RESULT_META['不适用'];
@@ -4420,11 +4488,15 @@ function renderCheckItems(r){
     </div>
     <div class="ck-detail-section-head">
       <div class="ck-sec-title">${icon('doc')}检查明细</div>
-      <span class="ck-detail-count">${checkDetailStatusFilter?`${checkDetailStatusFilter} · ${visibleItems.length} 项`:`共${items.length}项检查项 · 需处理 / 需关注优先`}</span>
+      <div class="ck-detail-head-right">
+        <span class="ck-detail-count">${checkDetailStatusFilter?`${checkDetailStatusFilter} · ${visibleItems.length} 项`:`共${items.length}项检查项 · ${checkDetailSortByResult?'结果优先':'按模板顺序'}`}</span>
+        <button class="ck-sort-btn${checkDetailSortByResult?' on':''}" id="ckDetailSort" type="button" title="${checkDetailSortByResult?'已按结果优先，点击恢复模板顺序':'按模板顺序，点击结果优先'}"><span class="ck-sort-ico" data-icon="${checkDetailSortByResult?'arrowUp':'arrowDown'}"></span></button>
+      </div>
     </div>
     <div class="ck-items-list">
       ${itemsHtml || '<div class="check-empty" style="padding:32px 0"><b>当前状态下暂无检查项</b></div>'}
     </div>
+    ${checkDetailFromAudit ? '' : `
     <div class="ck-summary-section">
       <div class="ck-section-title">${icon('audit')}关联审核事件</div>
       ${r.audit ? `
@@ -4436,9 +4508,14 @@ function renderCheckItems(r){
           </div>
           <span class="ck-audit-more">查看 ›</span>
         </div>` : '<div class="ck-no-data">暂无关联审核事件</div>'}
-    </div>
+    </div>`}
   `;
   document.querySelectorAll('#checkItems [data-icon]').forEach(el=>{el.innerHTML = icon(el.dataset.icon);});
+  const detailSortBtn = document.getElementById('ckDetailSort');
+  if(detailSortBtn) detailSortBtn.addEventListener('click', ()=>{
+    checkDetailSortByResult = !checkDetailSortByResult;
+    renderCheckItems(r);
+  });
   document.querySelectorAll('#checkItems [data-detail-filter]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const filter = btn.dataset.detailFilter;
@@ -4791,6 +4868,7 @@ document.getElementById('btnHandle').addEventListener('click',()=>{
   openModal('modalHandle');
 });
 document.getElementById('btnCurve').addEventListener('click',()=>openCurve('dynamic'));
+document.getElementById('btnCheckResult').addEventListener('click',()=>openCheckResultFromAudit());
 document.getElementById('handleSubmit').addEventListener('click',()=>{
   closeModals(); activeEvent.status='已处理'; activeEvent.handler='张三'; activeEvent.handleTime=fmt(new Date());
   activeEvent.unread=false; updateAuditBadge();
