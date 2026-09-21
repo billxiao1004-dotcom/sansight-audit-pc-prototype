@@ -882,6 +882,9 @@
 
   /* Check result detail */
   #checkDetailPanel{
+    width:64vw;box-shadow:-12px 0 32px rgba(5,12,50,.12);
+  }
+  #checkDetailPanel.check-result-modal{
     top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);
     width:min(1180px,calc(100vw - 72px));height:min(820px,calc(100vh - 104px));
     max-height:calc(100vh - 104px);border:1px solid var(--border);border-left:1px solid var(--border);
@@ -1324,7 +1327,7 @@
       <div class="detail-body" id="tdBody"></div>
     </div>
     </section>
-    <section class="detail-panel check-result-modal" id="checkDetailPanel" hidden>
+    <section class="detail-panel" id="checkDetailPanel" hidden>
       <div class="detail-head">
         <span class="panel-title">检查结果详情</span>
         <button class="icon-btn panel-close" id="btnCloseCheckDetail" title="关闭"><span class="icon" data-icon="x"></span></button>
@@ -4305,7 +4308,9 @@ function openCheckDetail(id){
   auditBackEventId = opts.fromAudit ? (opts.auditEventId || null) : null;
   checkDetailStatusFilter = opts.statusFilter || '';
   checkDetailSortByResult = false;
-  document.getElementById('checkDetailPanel').hidden = false;
+  const panel = document.getElementById('checkDetailPanel');
+  panel.classList.toggle('check-result-modal', checkDetailFromAudit);
+  panel.hidden = false;
   syncPanelMask();
   renderCheckSummary(r);
   renderCheckItems(r);
@@ -4313,7 +4318,9 @@ function openCheckDetail(id){
 function closeCheckDetail(){
   currentCheckId = null;
   closeCheckMedia();
-  document.getElementById('checkDetailPanel').hidden = true;
+  const panel = document.getElementById('checkDetailPanel');
+  panel.hidden = true;
+  panel.classList.remove('check-result-modal');
   syncPanelMask();
   // 从审核事件进入时，关闭检查结果后回到原审核事件详情
   if(checkDetailFromAudit){
